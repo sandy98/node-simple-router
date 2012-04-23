@@ -30,16 +30,38 @@ http   = require 'http'
 router = Router()
 
 router.get '/', (request, response) ->
-  response.end('Home page')
+  response.end 'Home page'
 
 router.get '/hello/:who', (request, response) ->
-  response.end("Hello, #{params.who}"
+  response.end "Hello, #{params.who}"
 
-server = http.createServer(router)
+server = http.createServer router
 
 server.listen 3000
 
 #Off you go!
 ```
+or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:
 
+```javascript
+// Assumes router.coffee is located at the current working directory.
+var Router = require('./router')
+var http   = require('http')
+
+var router = Router();
+
+router.get('/', function (request, response) {
+  response.end('Home page');})
+
+router.get('/hello/:who', function(request, response) {
+  response.end("Hello, " + params.who);})
+
+server = http.createServer(router)
+
+server.listen(3000)
+
+//Off you go!
+```
+
+### Complementary topics
 
