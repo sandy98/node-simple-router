@@ -1,0 +1,15 @@
+{ "name" : "node-simple-router"
+, "description" : "Yet another minimalistic router for node.js"
+, "tags" : ["http", "simple", "routing", "util", "utility"]
+, "version" : "0.1.2"
+, "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
+, "repository" :
+  { "type" : "git"
+  , "url" : "http://github.com/sandy98/node-simple-router.git"
+  }
+, "bugs" :
+  { "url" : "http://github.com/sandy98/node-simple-router/issues" }
+, "engines" : ["node >= 0.6", "coffee-script >= 1.2"]
+, "main" : "./main"
+, "scripts": { "test": ".test_router.coffee" }
+}
