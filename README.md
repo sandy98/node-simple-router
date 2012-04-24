@@ -44,13 +44,12 @@ server = http.createServer router
 
 server.listen 3000
 
-#Off you go!
 ```
 or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:
 
 ```javascript
 // Javascript version
-// Assumes router.coffee is located at the current working directory.
+// Assumes router.js is located at the current working directory.
 var Router = require('./router')
 var http   = require('http')
 
@@ -66,7 +65,6 @@ server = http.createServer(router)
 
 server.listen(3000)
 
-//Off you go!
 ```
 
 ## Complementary topics
