@@ -1,6 +1,6 @@
-## Node.js Simple Router - Yet another minimalistic router for node.js
+# Node.js Simple Router - Yet another minimalistic router for node.js
 
-### Install
+## Install
 
 From Node Package Manager:
 
@@ -14,14 +14,14 @@ or from source:
   git clone git://github.com/sandy98/node-simple-router.git
 </pre>
 
-### Purpose
+## Purpose
 Designed to provide routes to barebones node http server, Sinatra style (or Express.js router, for that matter) staying out
 of your way for the rest.
 Source main file - router.coffee - and testing utility - test_router.coffee - are coffeescript source files. Should you prefer to
 work with javascript, just simply compile them (i.e. coffee -c router.coffee) provided you have installed coffee-script, which is as
 simple as <pre>sudo npm install coffee-script -g</pre>
 
-### Basic Usage
+## Basic Usage
 ```coffeescript
 # Assumes router.coffee is located at the current working directory.
 Router = require './router'
@@ -63,8 +63,8 @@ server.listen(3000)
 //Off you go!
 ```
 
-### Complementary topics
-I) Default options
+## Complementary topics
+###I) Default options
 
 -    *logging: true*                         Turns off logging if defined false
 -    *log: console.log*                      Defines console.log as default logging output.
@@ -78,28 +78,36 @@ Example:
 //defaults remaining options
 var router = Router({logging: false; list_dir: false; static_route: __dirname + '/static'})
 ```
-II) Retrieving get/post data
+###II) Retrieving get/post data
+
 Request get data may be retrieved from *request.get*, an object in JSON format
+
 Request post data is included, also in JSON format, in *request.post*, although in this case, if data came in an
 unrecognized format, it will be retrieved as raw data, without any conversion.
+
 Finally, *request.get* and *request.post* are joined in *request.body*, so if you don't care how the data got to the
 server, you can use that.
 
-III) Todo list
+###III) Todo list
 -    Making directory listing actually work
 -    Preparing a nice template for directory listing.
 -    Managing file uploads.
 
 
-### Final note
+## Final note
 Was this necessary?
+
 Probably not.
+
 But then again, there are a couple of reasons that I think make it worth, and perhaps, useful to someone who shares these.
+
 For one thing, *reinventing the wheel is not only fun, it's frequently highly educative*.
+
 Second, there are quite of bunch of routing solutions for node.js, but I found the ones that come bundled with node frameworks,
 although in most cases high quality and performant, also in many cases just a bit too much stuffed with features that either I didn't
 need or was unable to manage/tweak to my projects needs, hence the decision to roll my own, mainly aimed to serve as a lightweight
 component for a *restful API*.
+
 Last but not least, I wanted to *share the fun*.
 
 
