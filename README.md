@@ -2,16 +2,16 @@
 
 ### Install
 
-From source:
+From Node Package Manager:
+
+<pre>
+  npm install node-simple-router
+</pre>
+
+or from source:
 
 <pre>
   git clone git://github.com/sandy98/node-simple-router.git
-</pre>
-
-or from Node Package Manager:
-
-<pre>
-  npm: not yet available, soon to be added
 </pre>
 
 ### Purpose
