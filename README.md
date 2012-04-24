@@ -94,7 +94,7 @@ Example:
 ```javascript
 //Disallows logging and directory listing, uses '/static' for static contents,
 //defaults remaining options
-var router = Router({logging: false; list_dir: false; static_route: __dirname + '/static'})
+var router = Router({logging: false, list_dir: false, static_route: __dirname + '/static'})
 ```
 ###II) Retrieving get/post data
 
