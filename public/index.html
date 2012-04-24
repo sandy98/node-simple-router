@@ -11,7 +11,8 @@
     <a href="http://github.com/sandy98/node-simple-router">
         <img style="position: absolute; top: 0; right: 0; border: 0;" src="images/github_ribbon.png" alt="Fork me on GitHub">
     </a>
-    <h1>Node.js Simple Router - Yet another minimalistic router for node.js</h1>
+    <h1>Node.js Simple Router</h1>
+    <h1>Yet another minimalistic router for node.js</h1>
 
     <a name="install"></a><h2>Install</h2>
 
@@ -41,7 +42,9 @@
     <a name="basic-usage"></a><h2>Basic Usage</h2>
 
     <div class="highlight">
-<pre><span class="c1"># Assumes router.coffee is located at the current working directory.</span>
+<pre>
+    <span class="c1">// Coffeescript version.</span>
+    <span class="c1"># Assumes router.coffee is located at the current working directory.</span>
 <span class="nv">Router = </span><span class="nx">require</span> <span class="s">'./router'</span>
 <span class="nv">http   = </span><span class="nx">require</span> <span class="s">'http'</span>
 
@@ -51,7 +54,7 @@
   <span class="nx">response</span><span class="p">.</span><span class="nx">end</span> <span class="s">'Home page'</span>
 
 <span class="nx">router</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/hello/:who'</span><span class="p">,</span> <span class="nf">(request, response) -&gt;</span>
-  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span> <span class="s">"Hello, </span><span class="si">#{</span><span class="nx">params</span><span class="p">.</span><span class="nx">who</span><span class="si">}</span><span class="s">"</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span> <span class="s">"Hello, </span><span class="si">#{</span><span class="nx">request.params</span><span class="p">.</span><span class="nx">who</span><span class="si">}</span><span class="s">"</span>
 
 <span class="nv">server = </span><span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span> <span class="nx">router</span>
 
@@ -65,7 +68,9 @@
     <p>or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:</p>
 
     <div class="highlight">
-<pre><span class="c1">// Assumes router.coffee is located at the current working directory.</span>
+<pre>
+    <span class="c1">// Javascript version.</span>
+    <span class="c1">// Assumes router.coffee is located at the current working directory.</span>
 <span class="kd">var</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./router'</span><span class="p">)</span>
 <span class="kd">var</span> <span class="nx">http</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">)</span>
 
@@ -75,7 +80,7 @@
   <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Home page'</span><span class="p">);})</span>
 
 <span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/hello/:who'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">"Hello, "</span> <span class="o">+</span> <span class="nx">params</span><span class="p">.</span><span class="nx">who</span><span class="p">);})</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">"Hello, "</span> <span class="o">+</span> <span class="nx">request.params</span><span class="p">.</span><span class="nx">who</span><span class="p">);})</span>
 
 <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">router</span><span class="p">)</span>
 

@@ -1,4 +1,5 @@
-# Node.js Simple Router - Yet another minimalistic router for node.js
+# Node.js Simple Router
+# Yet another minimalistic router for node.js
 
 ## Install
 
@@ -26,6 +27,7 @@ simple as <pre>sudo npm install coffee-script -g</pre>
 
 ## Basic Usage
 ```coffeescript
+# Coffeescript version
 # Assumes router.coffee is located at the current working directory.
 Router = require './router'
 http   = require 'http'
@@ -36,7 +38,7 @@ router.get '/', (request, response) ->
   response.end 'Home page'
 
 router.get '/hello/:who', (request, response) ->
-  response.end "Hello, #{params.who}"
+  response.end "Hello, #{request.params.who}"
 
 server = http.createServer router
 
@@ -47,6 +49,7 @@ server.listen 3000
 or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:
 
 ```javascript
+// Javascript version
 // Assumes router.coffee is located at the current working directory.
 var Router = require('./router')
 var http   = require('http')
@@ -57,7 +60,7 @@ router.get('/', function (request, response) {
   response.end('Home page');})
 
 router.get('/hello/:who', function(request, response) {
-  response.end("Hello, " + params.who);})
+  response.end("Hello, " + request.params.who);})
 
 server = http.createServer(router)
 
