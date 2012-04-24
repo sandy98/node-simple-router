@@ -120,7 +120,7 @@ But then again, there are a couple of reasons that I think make it worth, and pe
 
 For one thing, *reinventing the wheel is not only fun, it's frequently highly educative*.
 
-Second, there are quite of bunch of routing solutions for node.js, but I found the ones that come bundled with node frameworks,
+Second, there are quite a bunch of routing solutions for node.js, but I found the ones that come bundled with node frameworks,
 although in most cases high quality and performant, also in many cases just a bit too much stuffed with features that either I didn't
 need or was unable to manage/tweak to my projects needs, hence the decision to roll my own, mainly aimed to serve as a lightweight
 component for a *restful API*.
