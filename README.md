@@ -69,11 +69,16 @@ server.listen(3000)
 ## Complementary topics
 ###I) Default options
 
--    **logging**: *true*                                            Turns off logging if defined false
--    **log**: *console.log*                                         Defines console.log as default logging output.
--    **serve_static**: *true*                                       Allows serving static content.
--    **static_route**: *"#{__dirname}/public"*                      Defines root directory for static contents
--    **list_dir**: *true*                                           Allows/disallows directory listings
+-    **logging**: *true*
+     Turns off logging if defined false
+-    **log**: *console.log*
+     Defines console.log as default logging output.
+-    **serve_static**: *true*
+     Allows serving static content.
+-    **static_route**: *"#{__dirname}/public"*
+     Defines root directory for static contents
+-    **list_dir**: *true*
+     Allows/disallows directory listings
 
 Example:
 ```javascript
