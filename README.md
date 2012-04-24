@@ -74,7 +74,8 @@ I) Default options
 
 Example:
 ```javascript
-//Disallows logging and directory listing, uses '/static' for static contents, defaults remaining options
+//Disallows logging and directory listing, uses '/static' for static contents,
+//defaults remaining options
 var router = Router({logging: false; list_dir: false; static_route: __dirname + '/static'}
 ```
 
