@@ -65,7 +65,7 @@ Router = (options = {}) ->
 
   dispatch = (req, res) ->
     done = false
-    parsed = urlparse(req.url).pathname
+    parsed = urlparse(req.url)
     pathname = parsed.pathname
     req.get = if parsed.query? then querystring.parse(parsed.query) else {}
     req.body = _extend {}, req.get

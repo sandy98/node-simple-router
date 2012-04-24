@@ -14,11 +14,11 @@ server.listen if argv[0]? and not isNaN(parseInt(argv[0])) then parseInt(argv[0]
 #  res.end "Inicio"
 
 router.get "/hello", (req, res) ->
-  res.end "Hola, Mundo!"
+  res.end "Hello, World!, Hola, Mundo!"
 
 router.get "/users", (req, res) ->
   res.writeHead(200, {'Content-type': 'text/html'})
-  res.end "<h1 style='color: navy; text-align: center;'>Registro de Socios Activos</h1>"
+  res.end "<h1 style='color: navy; text-align: center;'>Active members registry</h1>"
 
 
 router.post "/users", (req, res) ->
@@ -29,13 +29,16 @@ router.post "/users", (req, res) ->
   res.write "\nRequest body object properties\n"
   try
     router.log "#{key}: #{val}" for key, val of req.body
-    res.write "#{key}: #{val}\n" for key, val of req.body
   catch e
-    res.write "Me parece que Ud. es un pelotudo, mire lo que hizo: #{e.toString()}\n"	
-  res.end "#{req.body.toString()}\n"	
-	
+    res.write "Looks like you did something dumb: #{e.toString()}\n"
+  for key, val of req.body
+    res.write "#{key} = #{val}\n"
+  res.end()
+
 router.get "/users/:id", (req, res) ->
   res.writeHead(200, {'Content-type': 'text/html'})
   res.end "<h1>Socio No: <span style='color: red;'>#{req.params.id}</span></h1>"
 
-console.log "Serving web content at #{server.address().address}:#{server.address().port}"
+addr = server?.address() or {address: '0.0.0.0', port: argv[0] or 8000}
+
+console.log "Serving web content at #{addr.address}:#{addr.port}"
