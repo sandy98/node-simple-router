@@ -17,6 +17,9 @@ or from source:
 ## Purpose
 Designed to provide routes to barebones node http server, Sinatra style (or Express.js router, for that matter) staying out
 of your way for the rest.
+
+Main target: restful APIs for single page applications.
+
 Source main file - router.coffee - and testing utility - test_router.coffee - are coffeescript source files. Should you prefer to
 work with javascript, just simply compile them (i.e. coffee -c router.coffee) provided you have installed coffee-script, which is as
 simple as <pre>sudo npm install coffee-script -g</pre>
