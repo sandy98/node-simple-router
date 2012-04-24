@@ -1,7 +1,7 @@
 { "name" : "node-simple-router"
 , "description" : "Yet another minimalistic router for node.js"
 , "tags" : ["http", "simple", "routing", "util", "utility"]
-, "version" : "0.1.2"
+, "version" : "0.1.3"
 , "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
 , "repository" :
   { "type" : "git"
