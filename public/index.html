@@ -121,12 +121,18 @@
         </li>
     </ul><p>Example:</p>
 
-    <div class="highlight">
+<div class="highlight">
 <pre><span class="c1">//Disallows logging and directory listing, uses '/static' for static contents,</span>
 <span class="c1">//defaults remaining options</span>
-<span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="nx">Router</span><span class="p">({</span><span class="nx">logging</span><span class="o">:</span> <span class="kc">false</span><span class="p">;</span> <span class="nx">list_dir</span><span class="o">:</span> <span class="kc">false</span><span class="p">;</span> <span class="nx">static_route</span><span class="o">:</span> <span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">'/static'</span><span class="p">})</span>
+<span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="nx">Router</span>
+<span class="p">({</span><span class="nx">logging</span><span class="o">:</span>
+<span class="kc">false</span>
+<span class="p">,</span><br/> <span class="nx">list_dir</span><span class="o">:</span> <span class="kc">false</span>
+<span class="p">,</span><br/> <span class="nx">static_route</span><span class="o">:</span>
+<span class="nx">__dirname</span>
+<span class="o">+</span> <span class="s1">'/static'</span><span class="p">})</span>
 </pre>
-    </div>
+</div>
 
 
     <a name="ii-retrieving-getpost-data"></a><h3>II) Retrieving get/post data</h3>
