@@ -50,6 +50,7 @@ Router = (options = {}) ->
   _extend = (obj_destiny, obj_src) ->
     for key, val of obj_src
       obj_destiny[key] = val
+    obj_destiny
 
   _parsePattern = (pat) ->
     re = /\/:([A-Za-z0-9_]+)+/g
@@ -64,8 +65,12 @@ Router = (options = {}) ->
 
   dispatch = (req, res) ->
     done = false
-    pathname = urlparse(req.url).pathname
+    parsed = urlparse(req.url).pathname
+    pathname = parsed.pathname
+    req.get = if parsed.query? then querystring.parse(parsed.query) else {}
+    req.body = _extend {}, req.get
     method = req.method.toLowerCase()
+
     for route in dispatch.routes[method]
       m = pathname.match(route.pattern)
       if m isnt null
@@ -142,14 +147,15 @@ Router = (options = {}) ->
     body
 
 
-  _makewrapper = (cb) ->
+  _make_request_wrapper = (cb) ->
     wrapper = (req, res) ->
       body = []
       req.on 'data', (chunk) ->
         body.push chunk
       req.on 'end', () ->
         body = body.join('')
-        req.body = _bodyparser body
+        req.post = _bodyparser body
+        req.body = _extend req.body, req.post
         cb(req, res)
     wrapper
 	
@@ -157,10 +163,10 @@ Router = (options = {}) ->
       _pushRoute pattern, callback, 'get'
 
   dispatch.post = (pattern, callback) ->    	
-    _pushRoute pattern, _makewrapper(callback), 'post'
+    _pushRoute pattern, _make_request_wrapper(callback), 'post'
 
   dispatch.put = (pattern, callback) ->
-    _pushRoute pattern, _makewrapper(callback), 'put'
+    _pushRoute pattern, _make_request_wrapper(callback), 'put'
 
   dispatch.delete = (pattern, callback) ->
     _pushRoute pattern, callback, 'delete'

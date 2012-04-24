@@ -76,12 +76,19 @@ Example:
 ```javascript
 //Disallows logging and directory listing, uses '/static' for static contents,
 //defaults remaining options
-var router = Router({logging: false; list_dir: false; static_route: __dirname + '/static'}
+var router = Router({logging: false; list_dir: false; static_route: __dirname + '/static'})
 ```
+II) Retrieving get/post data
+Request get data may be retrieved from *request.get*, an object in JSON format
+Request post data is included, also in JSON format, in *request.post*, although in this case, if data came in an
+unrecognized format, it will be retrieved as raw data, without any conversion.
+Finally, *request.get* and *request.post* are joined in *request.body*, so if you don't care how the data got to the
+server, you can use that.
 
-
-
-
+III) Todo list
+-    Making directory listing actually work
+-    Preparing a nice template for directory listing.
+-    Managing file uploads.
 
 
 ### Final note
