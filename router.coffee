@@ -58,9 +58,12 @@ Router = (options = {}) ->
         </head>
         <body>
             <h2>Directory listing for <%= @cwd %></h2>
+            <hr/>
             <ul id="dircontents">
               <%= @cwd_contents %>
             </ul>
+            <hr/>
+            <p>Served by Node Simple Router v#{dispatch.version}</p>
         </body>
       </html>
       """
