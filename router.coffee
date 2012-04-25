@@ -59,7 +59,7 @@ Router = (options = {}) ->
         <body>
             <h2>Directory listing for <%= @cwd %></h2>
             <ul id="dircontents">
-
+              <%= @cwd_contents %>
             </ul>
         </body>
       </html>
@@ -139,7 +139,7 @@ Router = (options = {}) ->
     else
       return dispatch._404 req, res, pathname
 
-  dispatch.version = '0.1.3'
+  dispatch.version = '0.1.4'
 
   dispatch.static = (pathname, res) ->
     full_path = "#{dispatch.static_route}#{pathname}"
@@ -163,9 +163,14 @@ Router = (options = {}) ->
   dispatch.directory = (fpath, path, res) ->
     resp = _dirlist_template
     resp = resp.replace("<%= @cwd %>", path) while resp.indexOf("<%= @cwd %>") isnt -1
-
-    res.writeHead 200, {'Content-type': 'text/html'}
-    res.end resp
+    fs.readdir fpath, (err, files) ->
+      if err
+        return dispatch._404(null, res, path)
+      else
+        links = ("<li><a href='#{path}/#{file}'>#{file}</a></li>" for file in files).join('')
+        resp = resp.replace("<%= @cwd_contents %>", links)
+      res.writeHead 200, {'Content-type': 'text/html'}
+      res.end resp
 
   default_options =
     logging: true
