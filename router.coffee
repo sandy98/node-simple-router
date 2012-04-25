@@ -47,6 +47,24 @@ Router = (options = {}) ->
     '.rb':   'text/x-ruby'
 
 
+  _dirlist_template = """
+      <!DOCTYPE  html>
+      <html>
+        <head>
+            <title>Directory listing for <%= @cwd %></title>
+            <style type="text/css" media="screen">
+
+            </style>
+        </head>
+        <body>
+            <h2>Directory listing for <%= @cwd %></h2>
+            <ul id="dircontents">
+
+            </ul>
+        </body>
+      </html>
+      """
+
   _extend = (obj_destiny, obj_src) ->
     for key, val of obj_src
       obj_destiny[key] = val
@@ -143,7 +161,11 @@ Router = (options = {}) ->
             dispatch.log err.toString() unless (not err or not dispatch.logging )
 
   dispatch.directory = (fpath, path, res) ->
-    res.end "Directory #{path}: listing not yet implemented.\nCheck for updates."
+    resp = _dirlist_template
+    resp = resp.replace("<%= @cwd %>", path) while resp.indexOf("<%= @cwd %>") isnt -1
+
+    res.writeHead 200, {'Content-type': 'text/html'}
+    res.end resp
 
   default_options =
     logging: true
