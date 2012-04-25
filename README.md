@@ -106,7 +106,17 @@ unrecognized format, it will be retrieved as raw data, without any conversion.
 Finally, *request.get* and *request.post* are joined in *request.body*, so if you don't care how the data got to the
 server, you can use that.
 
-###III) Todo list
+###III) Getting parameters from urls
+
+Uses a similar convention as Express.js: any url segment preceded by a colon is treated as a parameter, as shown below
+
+```javascript
+router.get('/users/**:id**', function(request, response) {
+  response.end("User: " + getUserById(request.**params.id**).fullName);})
+```
+
+
+###IV) Todo list
 -    Making directory listing actually work
 -    Preparing a nice template for directory listing.
 -    Managing file uploads.
