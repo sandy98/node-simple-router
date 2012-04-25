@@ -63,6 +63,40 @@ Router = (options = {}) ->
       pars = null
     {pattern: retpat, params: pars}
 
+  _pushRoute = (pattern, callback, method) ->
+    params = null
+    if typeof pattern is "string"
+      parsed = _parsePattern(pattern)
+      pattern = new RegExp("^#{parsed.pattern}$")
+      params = parsed.params
+    dispatch.routes[method].push {pattern: pattern, handler: callback, params: params}
+    dispatch.routes[method].sort (it1, it2) -> it2.pattern.toString().length > it1.pattern.toString().length
+
+  _bodyparser = (body) ->
+    if body.indexOf('=') isnt -1
+      try
+        return querystring.parse(body)
+      catch e
+        dispatch.log e unless not dispatch.logging
+    try
+      return JSON.parse(body)
+    catch e
+      dispatch.log e unless not dispatch.logging
+    body
+
+
+  _make_request_wrapper = (cb) ->
+    wrapper = (req, res) ->
+      body = []
+      req.on 'data', (chunk) ->
+        body.push chunk
+      req.on 'end', () ->
+        body = body.join('')
+        req.post = _bodyparser body
+        req.body = _extend req.body, req.post
+        cb(req, res)
+    wrapper
+
   dispatch = (req, res) ->
     done = false
     parsed = urlparse(req.url)
@@ -86,6 +120,8 @@ Router = (options = {}) ->
       return dispatch.static pathname, res
     else
       return dispatch._404 req, res, pathname
+
+  dispatch.version = '0.1.3'
 
   dispatch.static = (pathname, res) ->
     full_path = "#{dispatch.static_route}#{pathname}"
@@ -125,40 +161,6 @@ Router = (options = {}) ->
     put:  []
     delete:  []
 
-  _pushRoute = (pattern, callback, method) ->
-    params = null
-    if typeof pattern is "string"
-      parsed = _parsePattern(pattern)
-      pattern = new RegExp("^#{parsed.pattern}$")
-      params = parsed.params
-    dispatch.routes[method].push {pattern: pattern, handler: callback, params: params}
-    dispatch.routes[method].sort (it1, it2) -> it2.pattern.toString().length > it1.pattern.toString().length
-
-  _bodyparser = (body) ->
-    if body.indexOf('=') isnt -1
-      try
-        return querystring.parse(body)
-      catch e
-        dispatch.log e unless not dispatch.logging
-    try
-      return JSON.parse(body)
-    catch e
-      dispatch.log e unless not dispatch.logging
-    body
-
-
-  _make_request_wrapper = (cb) ->
-    wrapper = (req, res) ->
-      body = []
-      req.on 'data', (chunk) ->
-        body.push chunk
-      req.on 'end', () ->
-        body = body.join('')
-        req.post = _bodyparser body
-        req.body = _extend req.body, req.post
-        cb(req, res)
-    wrapper
-	
   dispatch.get = (pattern, callback) ->
       _pushRoute pattern, callback, 'get'
 
