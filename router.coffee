@@ -47,6 +47,31 @@ Router = (options = {}) ->
     '.rb':   'text/x-ruby'
 
 
+  dispatch = (req, res) ->
+    done = false
+    parsed = urlparse(req.url)
+    pathname = parsed.pathname
+    req.get = if parsed.query? then querystring.parse(parsed.query) else {}
+    req.body = _extend {}, req.get
+    method = req.method.toLowerCase()
+    for route in dispatch.routes[method]
+      m = pathname.match(route.pattern)
+      if m isnt null
+        if route.params
+          req.params = {}
+          args = m.slice(1)
+          for param, index in route.params
+            req.params[param] = args[index]
+        return route.handler(req, res)
+    if pathname is "/"
+      return dispatch.static "/index.html", res
+    if dispatch.serve_static
+      return dispatch.static pathname, res
+    else
+      return dispatch._404 req, res, pathname
+
+  dispatch.version = '0.1.4'
+
   _dirlist_template = """
       <!DOCTYPE  html>
       <html>
@@ -63,7 +88,7 @@ Router = (options = {}) ->
               <%= @cwd_contents %>
             </ul>
             <hr/>
-            <p>Served by Node Simple Router v#{dispatch.version}</p>
+            <p><strong>Served by Node Simple Router v#{dispatch.version}</strong></p>
         </body>
       </html>
       """
@@ -117,32 +142,6 @@ Router = (options = {}) ->
         req.body = _extend req.body, req.post
         cb(req, res)
     wrapper
-
-  dispatch = (req, res) ->
-    done = false
-    parsed = urlparse(req.url)
-    pathname = parsed.pathname
-    req.get = if parsed.query? then querystring.parse(parsed.query) else {}
-    req.body = _extend {}, req.get
-    method = req.method.toLowerCase()
-
-    for route in dispatch.routes[method]
-      m = pathname.match(route.pattern)
-      if m isnt null
-        if route.params
-          req.params = {}
-          args = m.slice(1)
-          for param, index in route.params
-            req.params[param] = args[index]
-        return route.handler(req, res)
-    if pathname is "/"
-       return dispatch.static "/index.html", res
-    if dispatch.serve_static
-      return dispatch.static pathname, res
-    else
-      return dispatch._404 req, res, pathname
-
-  dispatch.version = '0.1.4'
 
   dispatch.static = (pathname, res) ->
     full_path = "#{dispatch.static_route}#{pathname}"
