@@ -111,8 +111,8 @@ server, you can use that.
 Uses a similar convention as Express.js: any url segment preceded by a colon is treated as a parameter, as shown below
 
 ```javascript
-router.get('/users/**:id**', function(request, response) {
-  response.end("User: " + getUserById(request.**params.id**).fullName);})
+router.get('/users/:id', function(request, response) {
+  response.end("User: " + getUserById(request.params.id).fullName);})
 ```
 
 
