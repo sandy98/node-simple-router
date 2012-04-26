@@ -35,6 +35,8 @@ Router = require 'node-simple-router'
 
 var http   = require('http')
 
+router  = Router()
+
 router.get '/', (request, response) ->
   response.end 'Home page'
 
