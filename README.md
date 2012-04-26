@@ -27,12 +27,13 @@ simple as <pre>sudo npm install coffee-script -g</pre>
 
 ## Basic Usage
 ```coffeescript
-# Coffeescript version
-# Assumes router.coffee is located at the current working directory.
-Router = require './router'
-http   = require 'http'
+# CoffeeScript version
+# Assumes usual installation through npm.
+Router = require 'node-simple-router'
+# Alternative: assumes router.js - or router.coffee - is located at the current working directory.
+#Router = require('./router')
 
-router = Router()
+var http   = require('http')
 
 router.get '/', (request, response) ->
   response.end 'Home page'
@@ -49,8 +50,11 @@ or, for the unlikely case you didn't yet discover/fall in love with coffeescript
 
 ```javascript
 // Javascript version
-// Assumes router.js is located at the current working directory.
-var Router = require('./router')
+// Assumes usual installation through npm.
+var Router = require('node-simple-router')
+// Alternative: assumes router.js is located at the current working directory.
+//var Router = require('./router')
+
 var http   = require('http')
 
 var router = Router();
