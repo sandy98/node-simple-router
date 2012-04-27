@@ -144,6 +144,9 @@ component for a *restful API*.
 
 Last but not least, I wanted to *share the fun*.
 
+**Last minute note:** added guaycuru.coffee, which is a static server, to the test suite.
+The name stands for an indian group that used to live in the sorroundings of my home town - no apaches or cherokees
+around here... -
 
 ## License
 
