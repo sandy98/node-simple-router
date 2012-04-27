@@ -54,6 +54,8 @@ Router = (options = {}) ->
     req.get = if parsed.query? then querystring.parse(parsed.query) else {}
     req.body = _extend {}, req.get
     method = req.method.toLowerCase()
+    if dispatch.logging
+      dispatch.log "#{req.client.remoteAddress} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
     for route in dispatch.routes[method]
       m = pathname.match(route.pattern)
       if m isnt null
@@ -145,7 +147,6 @@ Router = (options = {}) ->
 
   dispatch.static = (pathname, res) ->
     full_path = "#{dispatch.static_route}#{pathname}"
-    dispatch.log "trying static #{full_path}" unless not dispatch.logging
     fs.stat full_path, (err, stats) ->
       if err
         dispatch.log err.toString() unless not dispatch.logging
@@ -157,7 +158,6 @@ Router = (options = {}) ->
           return dispatch._405(null, res, pathname, "Directory listing not allowed")
         if stats.isFile()
           fd = fs.createReadStream full_path
-#          res.writeHead 200, {'Content-Type': if pathname[0] is "/" then pathname.substring(1) else pathname}
           res.writeHead 200, {'Content-Type': mime_types[path_tools.extname(full_path)] or 'text/plain'}
           util.pump fd, res, (err) ->
             dispatch.log err.toString() unless (not err or not dispatch.logging )
