@@ -5,7 +5,7 @@ http   = require 'http'
 
 #!/usr/bin/env coffee
 
-router = Router({static_route: __dirname})
+router = Router({static_route: process.cwd()})
 router.log "Working directory: #{router.static_route}"
 
 server = http.createServer router
