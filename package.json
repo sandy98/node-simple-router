@@ -13,5 +13,6 @@
   { "url" : "http://github.com/sandy98/node-simple-router/issues" }
 , "engines" : ["node >= 0.6", "coffee-script >= 1.2"]
 , "main" : "./lib/router.js"
+, "bin"  : {"guaycuru": "./bin/guaycuru"}
 , "scripts": { "test": "./test/test_router.coffee" }
 }
