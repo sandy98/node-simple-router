@@ -46,6 +46,13 @@ Router = (options = {}) ->
     '.py':   'text/x-python'
     '.rb':   'text/x-ruby'
 
+  default_options =
+    logging: true
+    log: console.log
+    static_route: "#{process.cwd()}/public"
+    serve_static: true
+    list_dir: true
+    default_home: ['index.html', 'index.htm', 'default.htm']
 
   dispatch = (req, res) ->
     done = false
@@ -65,8 +72,17 @@ Router = (options = {}) ->
           for param, index in route.params
             req.params[param] = args[index]
         return route.handler(req, res)
+
     if pathname is "/"
-      return dispatch.static "/index.html", res
+      for home_page in dispatch.default_home
+        full_path = "#{dispatch.static_route}/#{home_page}"
+        try
+          fs.statSync full_path
+          return dispatch.static "/#{home_page}", res
+        catch error
+          dispatch.log error.toString() unless not dispatch.logging
+      return dispatch.directory dispatch.static_route, '.', res
+
     if dispatch.serve_static
       return dispatch.static pathname, res
     else
@@ -174,13 +190,6 @@ Router = (options = {}) ->
       res.writeHead 200, {'Content-type': 'text/html'}
       res.end resp
 
-  default_options =
-    logging: true
-    log: console.log
-    static_route: "#{process.cwd()}/public"
-    serve_static: true
-    list_dir: true
-
   _extend(default_options, options)
   _extend(dispatch, default_options)
 
@@ -193,7 +202,7 @@ Router = (options = {}) ->
   dispatch.get = (pattern, callback) ->
       _pushRoute pattern, callback, 'get'
 
-  dispatch.post = (pattern, callback) ->    	
+  dispatch.post = (pattern, callback) ->
     _pushRoute pattern, _make_request_wrapper(callback), 'post'
 
   dispatch.put = (pattern, callback) ->
