@@ -88,7 +88,7 @@ Router = (options = {}) ->
     else
       return dispatch._404 req, res, pathname
 
-  dispatch.version = '0.1.6'
+  dispatch.version = '0.1.7'
 
   _dirlist_template = """
       <!DOCTYPE  html>
