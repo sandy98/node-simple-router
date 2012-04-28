@@ -60,7 +60,7 @@ Router = (options = {}) ->
     list_dir: true
     default_home: ['index.html', 'index.htm', 'default.htm']
     served_by: 'Node Simple Router'
-    version: '0.1.9'
+    version: '0.2.0'
 
 # End of Constants.
 
@@ -231,7 +231,7 @@ Router = (options = {}) ->
       if err
         return dispatch._404(null, res, path)
       else
-        links = ("<li><a href='#{path}/#{querystring.unescape(file)}'>#{file}</a></li>" for file in files).join('')
+        links = ("<li><a href='#{path}/#{querystring.escape(file)}'>#{file}</a></li>" for file in files).join('')
         resp = resp.replace("<%= @cwd_contents %>", links)
       res.writeHead 200, {'Content-type': 'text/html'}
       res.end resp
