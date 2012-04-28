@@ -9,7 +9,8 @@
   http = require('http');
 
   router = Router({
-    static_route: process.cwd()
+      static_route: process.cwd()
+    , served_by: "Guaycuru Static Server"
   });
 
   router.log("Working directory: " + router.static_route);

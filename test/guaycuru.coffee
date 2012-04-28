@@ -5,7 +5,7 @@ http   = require 'http'
 
 #!/usr/bin/env coffee
 
-router = Router({static_route: process.cwd()})
+router = Router({static_route: process.cwd(), served_by: "Guaycuru Static Server"})
 router.log "Working directory: #{router.static_route}"
 
 server = http.createServer router
