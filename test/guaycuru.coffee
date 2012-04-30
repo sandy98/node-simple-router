@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-Router = require 'node-simple-router'
+Router = require './router'
 http   = require 'http'
 
 router = Router({static_route: process.cwd(), served_by: "Guaycuru Web Server", version: '0.0.1'})
