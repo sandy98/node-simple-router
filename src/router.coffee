@@ -257,7 +257,7 @@ Router = (options = {}) ->
     res.writeHead(404, {'Content-Type': 'text/html'})
     res.end("""
             <h2>404 - Resource #{path} not found at this server</h2>
-            <hr/><h3>>#{dispatch.served_by} v#{dispatch.version}</h3>
+            <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
             <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
         """)
 
@@ -265,7 +265,7 @@ Router = (options = {}) ->
     res.writeHead(405, {'Content-Type': 'text/html'})
     res.end("""
                 <h2>405 - Resource #{path}: #{message}</h2>
-                <hr/><h3>#{dispatch.served_by} v#{dispatch.version}</h3>
+                <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
 
