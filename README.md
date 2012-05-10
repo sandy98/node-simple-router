@@ -145,7 +145,7 @@ component for a *restful API*.
 Last but not least, I wanted to *share the fun*.
 
 **Last minute note:** Guaycuru web server, initially included as a test of the static resource serving capabilities of this router,
-is no longer present in current distribution. Instead, you can get it at [here](https://github.com/sandy98/guaycuru) or install it by 
+is no longer present in current distribution. Instead, you can get it [here](https://github.com/sandy98/guaycuru) or install it by 
 means of *npm*  
 
 ## License
