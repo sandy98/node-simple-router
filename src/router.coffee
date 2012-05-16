@@ -122,8 +122,8 @@ Router = (options = {}) ->
       for home_page in dispatch.default_home
         full_path = "#{dispatch.static_route}/#{home_page}"
         try
-          fs.statSync full_path
-          return dispatch.static "/#{home_page}", res
+          if path_tools.existsSync full_path
+            return dispatch.static "/#{home_page}", res
         catch error
           dispatch.log error.toString() unless not dispatch.logging
       if dispatch.list_dir

@@ -122,8 +122,8 @@ Router = (options = {}) ->
       for home_page in dispatch.default_home
         full_path = "#{dispatch.static_route}/#{home_page}"
         try
-          fs.statSync full_path
-          return dispatch.static "/#{home_page}", res
+          if path_tools.existsSync full_path
+            return dispatch.static "/#{home_page}", res
         catch error
           dispatch.log error.toString() unless not dispatch.logging
       if dispatch.list_dir
@@ -257,7 +257,7 @@ Router = (options = {}) ->
     res.writeHead(404, {'Content-Type': 'text/html'})
     res.end("""
             <h2>404 - Resource #{path} not found at this server</h2>
-            <hr/><h3>Node Simple Router v#{dispatch.version}</h3>
+            <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
             <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
         """)
 
@@ -265,7 +265,7 @@ Router = (options = {}) ->
     res.writeHead(405, {'Content-Type': 'text/html'})
     res.end("""
                 <h2>405 - Resource #{path}: #{message}</h2>
-                <hr/><h3>Node Simple Router v#{dispatch.version}</h3>
+                <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
 
