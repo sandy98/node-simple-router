@@ -8,6 +8,7 @@ Router = (options = {}) ->
   fs       = require('fs')
   util      = require('util')
   path_tools      = require('path')
+  spawn  = require('child_process').spawn
 
 # End of required modules
 
