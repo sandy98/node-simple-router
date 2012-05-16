@@ -59,8 +59,10 @@ Router = (options = {}) ->
     serve_static: true
     list_dir: true
     default_home: ['index.html', 'index.htm', 'default.htm']
+    cgi_dir: "cgi-bin"
+    serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.2.0'
+    version: '0.2.2'
 
 # End of Constants.
 
@@ -209,6 +211,8 @@ Router = (options = {}) ->
     delete:  []
 
   dispatch.static = (pathname, res) ->
+    if pathname.indexOf("#{dispatch.cgi_dir}/") isnt - 1 and dispatch.serve_cgi is true
+     return dispatch.cgi(pathname, res)
     full_path = "#{dispatch.static_route}#{pathname}"
     fs.stat full_path, (err, stats) ->
       if err
@@ -223,6 +227,21 @@ Router = (options = {}) ->
           res.writeHead 200, {'Content-Type': mime_types[path_tools.extname(full_path)] or 'text/plain'}
           util.pump fd, res, (err) ->
             dispatch.log err.toString() unless (not err or not dispatch.logging )
+
+
+# CGI support (still very basic, as of 2012-05-16)
+
+  dispatch.cgi = (pathname, res) ->
+      try
+        full_path = "#{dispatch.static_route}#{pathname}"
+        child = spawn full_path
+        res.writeHead 200, {'Content-type': 'text/html'}
+        child.stdout.on 'data', (data) -> res.write(data)
+        child.on 'exit', -> res.end()
+      catch error
+        dispatch._500 null, res, pathname, error.toString() 
+
+# End of CGI support
 
   dispatch.directory = (fpath, path, res) ->
     resp = _dirlist_template
@@ -267,6 +286,14 @@ Router = (options = {}) ->
                 <h2>405 - Resource #{path}: #{message}</h2>
                 <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
+            """)
+
+  dispatch._500 = (req, res, path, message) ->
+    res.writeHead(500, {'Content-Type': 'text/html'})
+    res.end("""
+                <h2>500 - Internal server error at #{path}: #{message}</h2>
+                <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
+              <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
 
 # End of Dispatch function properties and methods 	
