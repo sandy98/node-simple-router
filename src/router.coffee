@@ -47,6 +47,8 @@ Router = (options = {}) ->
     '.xul':  'text/xul'
     '.doc':  'application/msword'
     '.pdf':  'application/pdf'
+    '.mobi': 'application/x-mobipocket-ebook'
+    '.epub': 'application/epub+zip'
     '.js':   'text/x-javascript'
     '.json': 'text/x-json'
     '.sh':   'application/x-sh'
@@ -63,7 +65,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.2.2'
+    version: '0.2.3'
 
 # End of Constants.
 
