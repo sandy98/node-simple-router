@@ -47,6 +47,8 @@ Router = (options = {}) ->
     '.xul':  'text/xul'
     '.doc':  'application/msword'
     '.pdf':  'application/pdf'
+    '.mobi': 'application/x-mobipocket-ebook'
+    '.epub': 'application/epub+zip'
     '.js':   'text/x-javascript'
     '.json': 'text/x-json'
     '.sh':   'application/x-sh'
@@ -63,7 +65,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.2.2'
+    version: '0.2.4'
 
 # End of Constants.
 
@@ -126,7 +128,7 @@ Router = (options = {}) ->
         full_path = "#{dispatch.static_route}/#{home_page}"
         try
           if path_tools.existsSync full_path
-            return dispatch.static "/#{home_page}", res
+            return dispatch.static "/#{home_page}", req, res
         catch error
           dispatch.log error.toString() unless not dispatch.logging
       if dispatch.list_dir
@@ -135,7 +137,7 @@ Router = (options = {}) ->
         return dispatch._404 req, res, pathname
 
     if dispatch.serve_static
-      return dispatch.static pathname, res
+      return dispatch.static pathname, req, res
     else
       return dispatch._404 req, res, pathname
 
@@ -211,9 +213,9 @@ Router = (options = {}) ->
     put:  []
     delete:  []
 
-  dispatch.static = (pathname, res) ->
+  dispatch.static = (pathname, req, res) ->
     if pathname.indexOf("#{dispatch.cgi_dir}/") isnt - 1 and dispatch.serve_cgi is true
-     return dispatch.cgi(pathname, res)
+     return dispatch.cgi(pathname, req, res)
     full_path = "#{dispatch.static_route}#{pathname}"
     fs.stat full_path, (err, stats) ->
       if err
@@ -230,15 +232,40 @@ Router = (options = {}) ->
             dispatch.log err.toString() unless (not err or not dispatch.logging )
 
 
-# CGI support (still very basic, as of 2012-05-16)
+# CGI support (improved on 2012-09-07)
 
-  dispatch.cgi = (pathname, res) ->
+  dispatch.cgi = (pathname, req, res) ->
       try
         full_path = "#{dispatch.static_route}#{pathname}"
         child = spawn full_path
-        res.writeHead 200, {'Content-type': 'text/html'}
-        child.stdout.on 'data', (data) -> res.write(data)
-        child.on 'exit', -> res.end()
+
+        body = []
+
+        if req.method.toLowerCase() is "post"
+          req.on 'data', (chunk) ->
+            body.push(chunk)
+          req.on 'end', ->
+            body = body.join ''
+            req.post = _bodyparser body
+            req.body = _extend req.body, req.post
+            child.stdin.write("#{JSON.stringify(req.body)}\n")
+        else
+          child.stdin.write("#{JSON.stringify(req.body)}\n")
+
+        child.stderr.pipe(process.stderr);
+
+        child.stdout.on 'data', (data) ->
+          arrdata = data.toString().split('\n')
+          for elem in arrdata
+            if (elem.substr(0,8).toLowerCase() isnt "content-")
+              res.write elem
+            else
+              pair = elem.split(/:\s+/)
+              res.setHeader(pair[0], pair[1])
+
+        child.stdout.on 'end', ->
+          res.end()
+
       catch error
         dispatch._500 null, res, pathname, error.toString() 
 
