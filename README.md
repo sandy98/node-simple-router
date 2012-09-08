@@ -72,7 +72,23 @@ server = http.createServer(router)
 server.listen(3000)
 
 ```
-
+## Changelog
+### < 0.2.4 Basically all the basic stuff
+### 2012-09-07: v0.2.4 Added CGI support
+Currently the cgi dispatcher relies - as it's supposed to be - on the cgi process to provide the correct headers.
+Also, post and get - summed up in 'body' - must be readed by the cgi process via std input and converted to json 
+object by whatever means the cgi implementation provides. For instance, a python example could be implemented along 
+the lines:
+```python   
+    
+import json, sys
+    
+body = json.loads(sys.stdin.readline())
+for key in body:
+    print "%s = %s" % (key, body[key])
+      
+```
+    
 ## Complementary topics
 ###I) Default options
 
