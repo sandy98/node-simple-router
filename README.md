@@ -73,7 +73,7 @@ server.listen(3000)
 
 ```
 ## Changelog
-### < 0.2.4 Basically all the basic stuff
+### < 0.2.4 All the basic stuff
 ### 2012-09-07: v0.2.4 Added CGI support
 Currently the cgi dispatcher relies - as it's supposed to be - on the cgi process to provide the correct headers.
 Also, post and get - summed up in 'body' - must be readed by the cgi process via std input and converted to json 
