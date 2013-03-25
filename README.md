@@ -86,8 +86,10 @@ import json, sys
 body = json.loads(sys.stdin.readline())
 for key in body:
     print "%s = %s" % (key, body[key])
-### 2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types      
 ```
+
+### 2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types      
+
     
 ## Complementary topics
 ###I) Default options
