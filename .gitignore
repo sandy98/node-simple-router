@@ -2,3 +2,4 @@
 
 .idea/*
 tmp/*
+test/uploader/public/uploads/*

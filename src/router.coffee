@@ -217,6 +217,9 @@ Router = (options = {}) ->
         m = part.match(/filename="(.+?)"/i)
         if m
           obj.fileName = m[1]
+        m = part.match(/Content-Type:\s+(.+?)\s/i)
+        if m
+          obj.contentType = m[1]
         if obj.fileName
           m = part.match(/\r\n\r\n(.+)\r\n/i)
           if m
