@@ -1,9 +1,18 @@
 #!/usr/bin/env coffee
 
+#Err... sorry for the monkey patching ;-)
+String.prototype.repeat = String.prototype.repeat or (times) ->
+  (@ for n in [1..times]).join('')
+
+   
+###
 try
   Router = require 'node-simple-router'
 catch e
   Router = require '../lib/router'
+###
+
+Router = require '../../src/router'
 
 http = require 'http'
 router = Router(list_dir: true)
@@ -13,16 +22,42 @@ router = Router(list_dir: true)
 
 router.post "/upload", (req, res) ->
   res.writeHead(200, {'Content-type': 'text/html'})
-  #router.log "Someone is trying to upload something"
-  #router.log JSON.stringify(req.body)
+  res.end """
+	  <script type="text/javascript">
+	    alert("Upload successful!");
+	    history.back();
+	  </script>'
+	  """ 
+  ###
+  router.log "Someone is trying to upload something"
+  
   for key, val of req.post
     console.log "@#{key.toUpperCase().replace('\n', '#')}@ === #{val.replace('\n','|')}"
     console.log "\n\n\n"
-  res.end '<h1 style="color: navy; text-align: center;">Upload!</h1>'
-
+  ###
+  router.log "Request IP: #{req.connection.remoteAddress}"
+  router.log "Request URL: #{req.url}"
+  router.log "Request headers:\n#{JSON.stringify req.headers}\n\n"
+  router.log "Request content-type: #{req.headers['content-type']  or 'content-type not found'}"
+  router.log "#".repeat 20
+  router.log "Raw Request data:"
+  router.log "=".repeat 100
+  router.log JSON.stringify req.post
+  router.log "=".repeat 100
+  router.log "Request data:"
+  router.log "=".repeat 100
+  body = ""
+  for key, val of req.post
+    body += val
+  for line in body.split('\r\n')
+    router.log line
+    router.log "#".repeat 20
+  router.log "=".repeat 100
+    
 #
 #End of example routes
 #
+
 
 
 #Ok, just start the server!
