@@ -1,74 +1,43 @@
 #!/usr/bin/env coffee
 
-"use strict"
 
-coffee = """
-         #!/usr/bin/env coffee
-
-         try
-         Router = require 'node-simple-router'
-         catch e
-         Router = require '../lib/router'
-
-         http = require 'http'
-
-         router = Router(list_dir: true)
-
-         ###
-         Example routes
-         ###
-
-         #router.get "/", (req, res) ->
-         #  res.end "Home"
-
-         router.get "/hello", (req, res) ->
-         res.end "Hello, World!, Hola, Mundo!"
-
-         router.get "/users", (req, res) ->
-         res.writeHead(200, {'Content-type': 'text/html'})
-         res.end "<h1 style='color: navy; text-align: center;'>Active members registry</h1>"
-
-
-         router.post "/users", (req, res) ->
-         router.log "\n\nBody of request is: #{req.body.toString()}\nRequest content type is: #{req.headers['content-type']}"
-         router.log "\nRequest Headers"
-         router.log "#{key} = #{val}" for key, val of req.headers
-         router.log "\nRequest body object properties"
-         res.write "\nRequest body object properties\n"
-         try
-         router.log "#{key}: #{val}" for key, val of req.body
-         catch e
-         res.write "Looks like you did something dumb: #{e.toString()}\n"
-         for key, val of req.body
-         res.write "#{key} = #{val}\n"
-         res.end()
-
-         router.get "/users/:id", (req, res) ->
-         res.writeHead(200, {'Content-type': 'text/html'})
-         res.end "<h1>User No: <span style='color: red;'>#{req.params.id}</span></h1>"
-
-         ###
-         End of example routes
-         ###
-
-         #Ok, just start the server!
-
-         argv = process.argv.slice 2
-
-         server = http.createServer router
-
-         server.on 'listening', ->
-         addr = server.address() or {address: '0.0.0.0', port: argv[0] or 8000}
-         router.log "Serving web content at #{addr.address}:#{addr.port}"
-
-         process.on "SIGINT", ->
-         server.close()
-         router.log "\n Server shutting up...\n"
-         process.exit 0
-
-         server.listen if argv[0]? and not isNaN(parseInt(argv[0])) then parseInt(argv[0]) else 8000
-
-         """
+cs = "#!/usr/bin/env coffee"
+cs += "\n\n"
+cs += "try\n"
+cs += "  Router = require 'node-simple-router'\n"
+cs += "catch e\n"
+cs += "  Router = require '../lib/router'\n\n"
+cs += "http = require 'http'\n"
+cs += "router = Router(list_dir: true)\n"
+cs += "#\n"
+cs += "#Example routes\n"
+cs += "#\n"
+cs += "router.get \"/\", (request, response) ->\n"
+cs += "  response.end 'Home'\n\n"
+cs += "router.get \"/hello\", (req, res) ->\n"
+cs += " res.end 'Hello, World!, Hola, Mundo!'\n\n"
+cs += "router.get \"/users\", (req, res) ->\n"
+cs += "  res.writeHead(200, {'Content-type': 'text/html'})\n"
+cs += "  res.end '<h1 style=\"color: navy; text-align: center;\">Active members registry</h1>'\n\n"
+cs += "router.get \"/users/:id\", (req, res) ->\n"
+cs += "  res.writeHead(200, {'Content-type': 'text/html'})\n"
+cs += "  res.end \"<h1>User No: <span style='color: red;'>\" + req.params.id + \"</span></h1>\"\n\n"
+cs += "#\n"
+cs += "#End of example routes\n"
+cs += "#\n\n\n"
+cs += "#Ok, just start the server!\n\n"
+cs += "argv = process.argv.slice 2\n\n"
+cs += "server = http.createServer router\n\n"
+cs += "server.on 'listening', ->\n"
+cs += "  addr = server.address() or {address: '0.0.0.0', port: argv[0] or 8000}\n"
+cs += "  router.log \"Serving web content at \" + addr.address + \":\" + addr.port  \n\n"
+cs += "process.on \"SIGINT\", ->\n"
+cs += "  server.close()\n"
+cs += "  router.log ' '\n"
+cs += "  router.log \"Server shutting up...\"\n"
+cs += "  router.log ' '\n"
+cs += "  process.exit 0\n\n"
+cs += "server.listen if argv[0]? and not isNaN(parseInt(argv[0])) then parseInt(argv[0]) else 8000\n"
 
 js = """
      #!/usr/bin/env node
@@ -93,51 +62,26 @@ js = """
      Example routes
      */
 
+     router.get("/", function(req, res) {
+         return res.end("Home");
+         });
 
      router.get("/hello", function(req, res) {
-     return res.end("Hello, World!, Hola, Mundo!");
+       return res.end("Hello, World!, Hola, Mundo!");
      });
 
      router.get("/users", function(req, res) {
-     res.writeHead(200, {
-     'Content-type': 'text/html'
-     });
-     return res.end("<h1 style='color: navy; text-align: center;'>Active members registry</h1>");
-     });
-
-     router.post("/users", function(req, res) {
-     var key, val, _ref, _ref1, _ref2;
-     router.log("\n\nBody of request is: " + (req.body.toString()) + "\nRequest content type is: " + req.headers['content-type']);
-     router.log("\nRequest Headers");
-     _ref = req.headers;
-     for (key in _ref) {
-     val = _ref[key];
-     router.log("" + key + " = " + val);
-     }
-     router.log("\nRequest body object properties");
-     res.write("\nRequest body object properties\n");
-     try {
-     _ref1 = req.body;
-     for (key in _ref1) {
-     val = _ref1[key];
-     router.log("" + key + ": " + val);
-     }
-     } catch (e) {
-     res.write("Looks like you did something dumb: " + (e.toString()) + "\n");
-     }
-     _ref2 = req.body;
-     for (key in _ref2) {
-     val = _ref2[key];
-     res.write("" + key + " = " + val + "\n");
-     }
-     return res.end();
+       res.writeHead(200, {
+       'Content-type': 'text/html'
+       });
+       return res.end("<h1 style='color: navy; text-align: center;'>Active members registry</h1>");
      });
 
      router.get("/users/:id", function(req, res) {
-     res.writeHead(200, {
-     'Content-type': 'text/html'
-     });
-     return res.end("<h1>User No: <span style='color: red;'>" + req.params.id + "</span></h1>");
+       res.writeHead(200, {
+         'Content-type': 'text/html'
+       });
+       return res.end("<h1>User No: <span style='color: red;'>" + req.params.id + "</span></h1>");
      });
 
      /*
@@ -150,18 +94,20 @@ js = """
      server = http.createServer(router);
 
      server.on('listening', function() {
-     var addr;
-     addr = server.address() || {
-     address: '0.0.0.0',
-     port: argv[0] || 8000
-     };
-     return router.log("Serving web content at " + addr.address + ":" + addr.port);
+       var addr;
+       addr = server.address() || {
+         address: '0.0.0.0',
+         port: argv[0] || 8000
+       };
+       return router.log("Serving web content at " + addr.address + ":" + addr.port);
      });
 
      process.on("SIGINT", function() {
-     server.close();
-     router.log("\n Server shutting up...\n");
-     return process.exit(0);
+       server.close();
+       router.log(" ");
+       router.log("Server shutting up...");
+       router.log(" ");
+       return process.exit(0);
      });
 
      server.listen((argv[0] != null) && !isNaN(parseInt(argv[0])) ? parseInt(argv[0]) : 8000);
@@ -169,3 +115,18 @@ js = """
      }).call(this);
 
      """
+
+fs = require 'fs'
+
+filename = if process.argv[2]?.toLowerCase() is 'js' then 'server.js' else 'server.coffee'
+full_filename = "#{process.cwd()}/#{filename}"
+text = if process.argv[2]?.toLowerCase() is 'js' then js else cs
+
+fs.writeFileSync full_filename, text
+
+fs.chmodSync full_filename, 0o755
+
+
+
+
+

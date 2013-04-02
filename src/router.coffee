@@ -6,8 +6,8 @@ Router = (options = {}) ->
   urlparse = require('url').parse
   querystring = require('querystring')
   fs       = require('fs')
-  util      = require('util')
-  path_tools      = require('path')
+  path_tools = require('path')
+#  util      = require('util')
   spawn  = require('child_process').spawn
 
 # End of required modules
@@ -129,7 +129,7 @@ Router = (options = {}) ->
       for home_page in dispatch.default_home
         full_path = "#{dispatch.static_route}/#{home_page}"
         try
-          if path_tools.existsSync full_path
+          if fs.existsSync full_path
             return dispatch.static "/#{home_page}", req, res
         catch error
           dispatch.log error.toString() unless not dispatch.logging
@@ -230,8 +230,9 @@ Router = (options = {}) ->
         if stats.isFile()
           fd = fs.createReadStream full_path
           res.writeHead 200, {'Content-Type': mime_types[path_tools.extname(full_path)] or 'text/plain'}
-          util.pump fd, res, (err) ->
-            dispatch.log err.toString() unless (not err or not dispatch.logging )
+          fd.pipe res
+#          util.pump fd, res, (err) ->
+#            dispatch.log err.toString() unless (not err or not dispatch.logging )
 
 
 # CGI support (improved on 2012-09-07)

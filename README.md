@@ -91,6 +91,14 @@ for key in body:
 ### 2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types      
 
 ### 2013-04-01: v0.2.6 Added compile to js tool 'compile.sh'      
+
+### 2013-04-02: v0.2.7 Added mk-server to the bin directory. 
+This is a tiny tool that will create a brand new node-simple-router powered server to the working directory.
+It can be invoked with no params, producing an executable server.coffee file. Should you prefer getting a javascript version of the server, 
+you must invoke it like so: mk-server js. This will produce server.js.
+
+It's worth noting that in order for this to be useful, you should install node-simple-router globally <code>sudo npm install -g node-simple-router</code>       
+
     
 ## Complementary topics
 ###I) Default options
