@@ -90,6 +90,7 @@ for key in body:
 
 ### 2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types      
 
+### 2013-04-01: v0.2.6 Added compile to js tool 'compile.sh'      
     
 ## Complementary topics
 ###I) Default options
