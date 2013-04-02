@@ -22,19 +22,31 @@ router = Router(list_dir: true)
 
 router.post "/upload", (req, res) ->
   res.writeHead(200, {'Content-type': 'text/html'})
+  if req.post['multipart-data']
+    res.write "<h2>Multipart Data</h2>"
+    for part in req.post['multipart-data']
+      for key, val of part
+        res.write "#{key.toUpperCase()} = #{val}<br/>"
+      res.write "<hr/>"
+  else
+    res.write "<h2>Form Data</h2>"
+    res.write "#{JSON.stringify(req.post)}<br/>"
   res.end """
+          <hr/>
+          <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
 	  <script type="text/javascript">
 	    alert("Upload successful!");
-	    history.back();
+	    //history.back();
 	  </script>'
 	  """ 
-  ###
+
   router.log "Someone is trying to upload something"
   
+  ###
   for key, val of req.post
     console.log "@#{key.toUpperCase().replace('\n', '#')}@ === #{val.replace('\n','|')}"
     console.log "\n\n\n"
-  ###
+  
   router.log "Request IP: #{req.connection.remoteAddress}"
   router.log "Request URL: #{req.url}"
   router.log "Request headers:\n#{JSON.stringify req.headers}\n\n"
@@ -53,7 +65,8 @@ router.post "/upload", (req, res) ->
     router.log line
     router.log "#".repeat 20
   router.log "=".repeat 100
-    
+  ###
+      
 #
 #End of example routes
 #

@@ -97,7 +97,13 @@ Router = (options = {}) ->
         body.push chunk
       req.on 'end', () ->
         body = body.join('')
-        req.post = _bodyparser body
+        contentType = 'application/x-www-form-urlencoded'
+        if req.headers['content-type']
+          contentType = req.headers['content-type']
+        if contentType is 'text/plain'
+          body = body.replace('\r\n', '')
+        mp_index = contentType.indexOf('multipart/form-data')
+        req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
         req.body = _extend req.body, req.post
         cb(req, res)
     wrapper
@@ -191,6 +197,33 @@ Router = (options = {}) ->
     dispatch.routes[method].push {pattern: pattern, handler: callback, params: params}
     dispatch.routes[method].sort (it1, it2) -> it2.pattern.toString().length > it1.pattern.toString().length
 
+
+  _multipartparser = (body, content_type) ->
+    resp = "multipart-data": []
+#    dispatch.log "CONTENT-TYPE: #{content_type}"
+    boundary = content_type.split(/;\s+/)[1].split('=')[1].trim()
+#    dispatch.log "BOUNDARY: #{boundary}"
+    parts = body.split(boundary)
+    for part in parts
+      if part and part.match(/Content-Disposition:/i)
+        dispatch.log "PART: #{part}"
+        obj = {}
+        m = part.match(/Content-Disposition:\s+(.+?);/i)
+        if m
+          obj.contentDisposition = m[1]
+        m = part.match(/name="(.+?)"/i)
+        if m
+          obj.fieldName = m[1]
+        m = part.match(/filename="(.+?)"/i)
+        if m
+          obj.fileName = m[1]
+        if obj.fileName
+          m = part.match(/\r\n\r\n(.+)\r\n/i)
+          if m
+            obj.fileData = m[1]
+        
+        resp['multipart-data'].push obj     
+    resp
 
   _bodyparser = (body) ->
     if body.indexOf('=') isnt -1
