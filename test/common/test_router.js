@@ -7,7 +7,7 @@
   try {
     Router = require('node-simple-router');
   } catch (e) {
-    Router = require('../lib/router');
+    Router = require('../../lib/router');
   }
 
   http = require('http');
