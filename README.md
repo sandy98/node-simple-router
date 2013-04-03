@@ -99,6 +99,11 @@ you must invoke it like so: mk-server js. This will produce server.js.
 
 It's worth noting that in order for this to be useful, you should install node-simple-router globally <code>sudo npm install -g node-simple-router</code>       
 
+### 2013-04-03: v0.3.0 node-simple-router becomes able to handle form uploads.
+Or, to be precise, *node-simple-router* aka *nsr* has earned the ability to handle multipart/form-data
+
+This can be seen as an important update, hence the minor version leap (0.2 to 0.3)
+
     
 ## Complementary topics
 ###I) Default options
