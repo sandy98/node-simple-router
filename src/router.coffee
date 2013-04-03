@@ -200,6 +200,7 @@ Router = (options = {}) ->
 
   _multipartparser = (body, content_type) ->
     resp = "multipart-data": []
+#    dispatch.log "MULTIPART BODY: #{body}"
 #    dispatch.log "CONTENT-TYPE: #{content_type}"
     boundary = content_type.split(/;\s+/)[1].split('=')[1].trim()
 #    dispatch.log "BOUNDARY: #{boundary}"
@@ -220,10 +221,13 @@ Router = (options = {}) ->
         m = part.match(/Content-Type:\s+(.+?)\s/i)
         if m
           obj.contentType = m[1]
+        m = part.match(/Content-Length:\s+(\d+?)/i)
+        if m
+          obj.contentLength = m[1]
         if obj.fileName
-          m = part.match(/\r\n\r\n(.+)\r\n/i)
-          if m
-            obj.fileData = m[1]
+          rows = part.split('\r\n')
+          obj.fileData = rows[rows.length - 2]
+          dispatch.log "FILEDATA LENGTH: #{obj.fileData.length}"
         
         resp['multipart-data'].push obj     
     resp

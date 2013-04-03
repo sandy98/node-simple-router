@@ -30,16 +30,16 @@ router.post "/upload", (req, res) ->
       for key, val of part
         if key isnt 'fileData'
           res.write "#{key.toUpperCase()} = #{val}<br/>"
-    if part.fileName
-      fullname = "#{__dirname}/public/uploads/#{part.fileName}"
-      fs.writeFileSync fullname, part.fileData
-      res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
-      if part.contentType.indexOf('image') >= 0
-        res.write "<img src='uploads/#{part.fileName}' />"
-      else
-        res.write "<pre>#{part.fileData}</pre>"
-      res.write '</div>' 
-    res.write "<hr/>"
+      if part.fileName
+        fullname = "#{__dirname}/public/uploads/#{part.fileName}"
+        fs.writeFileSync fullname, part.fileData
+        res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
+        if part.contentType.indexOf('image') >= 0
+          res.write "<img src='uploads/#{part.fileName}' />"
+        else
+          res.write "<pre>#{part.fileData}</pre>"
+        res.write '</div>' 
+      res.write "<hr/>"
   else
     res.write "<h2>Form Data</h2>"
     res.write "#{JSON.stringify(req.post)}<br/><hr/>"
