@@ -33,7 +33,12 @@ router.post "/upload", (req, res) ->
       if part.fileName
         fullname = "#{__dirname}/public/uploads/#{part.fileName}"
         router.log "BUFFER:", part.fileData
-        fs.writeFileSync fullname, part.fileData
+        router.log "First char (hex):", new Buffer(part.fileData)[0]
+        if part.contentType.indexOf('text') >= 0
+          fs.writeFileSync fullname, part.fileData
+        else
+          buffer = new Buffer(part.fileData, 'binary')
+          fs.writeFileSync fullname, buffer, 'binary'
         res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
         if part.contentType.indexOf('image') >= 0
           res.write "<img src='uploads/#{part.fileName}' />"
@@ -47,7 +52,7 @@ router.post "/upload", (req, res) ->
 
   res.end """
           <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
-	      """ 
+          """ 
 
   #router.log "Someone is trying to upload something"
   
