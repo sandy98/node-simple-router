@@ -204,10 +204,10 @@ Router = (options = {}) ->
 #    dispatch.log "CONTENT-TYPE: #{content_type}"
     boundary = content_type.split(/;\s+/)[1].split('=')[1].trim()
 #    dispatch.log "BOUNDARY: #{boundary}"
-    parts = body.split(boundary)
+    parts = body.split("--#{boundary}")
     for part in parts
       if part and part.match(/Content-Disposition:/i)
-        dispatch.log "PART: #{part}"
+        #dispatch.log "PART: #{part}"
         obj = {}
         m = part.match(/Content-Disposition:\s+(.+?);/i)
         if m
@@ -225,9 +225,13 @@ Router = (options = {}) ->
         if m
           obj.contentLength = m[1]
         if obj.fileName
-          rows = part.split('\r\n')
-          obj.fileData = rows[rows.length - 2]
-          dispatch.log "FILEDATA LENGTH: #{obj.fileData.length}"
+          #rows = part.split('\r\n')
+          #obj.fileData = rows[rows.length - 2]
+          ##dispatch.log "FILEDATA LENGTH: #{obj.fileData.length}"
+          m = part.match(new RegExp "\\r\\n\\r\\n")
+          if m
+            obj.fileData = part.slice(m.index + 4, -2)
+            obj.fileLen = obj.fileData.length
         
         resp['multipart-data'].push obj     
     resp

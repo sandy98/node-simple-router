@@ -32,6 +32,7 @@ router.post "/upload", (req, res) ->
           res.write "#{key.toUpperCase()} = #{val}<br/>"
       if part.fileName
         fullname = "#{__dirname}/public/uploads/#{part.fileName}"
+        router.log "BUFFER:", part.fileData
         fs.writeFileSync fullname, part.fileData
         res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
         if part.contentType.indexOf('image') >= 0
@@ -48,7 +49,7 @@ router.post "/upload", (req, res) ->
           <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
 	      """ 
 
-  router.log "Someone is trying to upload something"
+  #router.log "Someone is trying to upload something"
   
   ###
   for key, val of req.post
