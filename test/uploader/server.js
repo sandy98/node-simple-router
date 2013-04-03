@@ -18,15 +18,11 @@
     }).call(this)).join('');
   };
 
-  /*
-  try
-    Router = require 'node-simple-router'
-  catch e
-    Router = require '../lib/router'
-  */
-
-
-  Router = require('../../src/router');
+  try {
+    Router = require('../../src/router');
+  } catch (e) {
+    Router = require('../../lib/router');
+  }
 
   http = require('http');
 
@@ -72,31 +68,6 @@
       res.write("" + (JSON.stringify(req.post)) + "<br/><hr/>");
     }
     return res.end("<div style=\"text-align: center;\"><button onclick=\"history.back();\">Back</button></div>");
-    /*
-      for key, val of req.post
-        console.log "@#{key.toUpperCase().replace('\n', '#')}@ === #{val.replace('\n','|')}"
-        console.log "\n\n\n"
-      
-      router.log "Request IP: #{req.connection.remoteAddress}"
-      router.log "Request URL: #{req.url}"
-      router.log "Request headers:\n#{JSON.stringify req.headers}\n\n"
-      router.log "Request content-type: #{req.headers['content-type']  or 'content-type not found'}"
-      router.log "#".repeat 20
-      router.log "Raw Request data:"
-      router.log "=".repeat 100
-      router.log JSON.stringify req.post
-      router.log "=".repeat 100
-      router.log "Request data:"
-      router.log "=".repeat 100
-      body = ""
-      for key, val of req.post
-        body += val
-      for line in body.split('\r\n')
-        router.log line
-        router.log "#".repeat 20
-      router.log "=".repeat 100
-    */
-
   });
 
   argv = process.argv.slice(2);
