@@ -28,17 +28,17 @@ router.post "/upload", (req, res) ->
     res.write "<h2>Multipart Data</h2>"
     for part in req.post['multipart-data']
       for key, val of part
-        if key isnt 'fileData'
-          res.write "#{key.toUpperCase()} = #{val}<br/>"
+          res.write "#{key} = #{val}<br/>" unless ((key is 'fileData') and part.fileName)
       if part.fileName
         fullname = "#{__dirname}/public/uploads/#{part.fileName}"
-        router.log "BUFFER:", part.fileData
-        router.log "First char (hex):", new Buffer(part.fileData)[0]
+        #router.log "BUFFER:", part.fileData
+        #router.log "First char (hex):", new Buffer(part.fileData)[0]
         if part.contentType.indexOf('text') >= 0
           fs.writeFileSync fullname, part.fileData
         else
-          buffer = new Buffer(part.fileData, 'binary')
-          fs.writeFileSync fullname, buffer, 'binary'
+          #buffer = new Buffer(part.fileData, 'binary')
+          #fs.writeFileSync fullname, buffer, 'binary'
+          fs.writeFileSync fullname, part.fileData, 'binary'
         res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
         if part.contentType.indexOf('image') >= 0
           res.write "<img src='uploads/#{part.fileName}' />"

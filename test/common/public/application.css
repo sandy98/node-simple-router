@@ -1,0 +1,206 @@
+.pbox {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: center;
+  -moz-box-pack: center;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Verdana, "MS Trebuchet", sans-serif;
+  background: #efefef;
+  padding-left: 1em;
+}
+.spinner {
+  position: absolute;
+  top: 11px;
+  right: 50%;
+  display: none;
+}
+body>div:not('.spinner') {
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: -o-box;
+  -o-box-orient: vertical;
+  -o-box-align: stretch;
+}
+.stack>*:not(.active) {
+  display: none;
+}
+header {
+  background: #bcbcbc;
+  background: #dedede;
+  background: -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#bcbcbc));
+  background: -moz-linear-gradient(top, #dedede, #bcbcbc);
+  background: linear-gradient(top, #dedede, #bcbcbc);
+  height: 50px;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: -o-box;
+  -o-box-orient: vertical;
+  -o-box-align: stretch;
+}
+header>div {
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  -webkit-box-pack: start;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  -moz-box-pack: start;
+  display: -o-box;
+  -o-box-orient: horizontal;
+  -o-box-align: stretch;
+  -o-box-pack: start;
+}
+header ul {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  -webkit-box-pack: start;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  -moz-box-pack: start;
+  display: -o-box;
+  -o-box-orient: horizontal;
+  -o-box-align: stretch;
+  -o-box-pack: start;
+}
+header ul li {
+  font-weight: bold;
+  list-style-type: none;
+  margin-right: 2em;
+  cursor: pointer;
+}
+header ul li:hover {
+  color: #777;
+}
+header ul li.active {
+  color: #0ac;
+}
+header>div>div {
+  position: fixed;
+  right: 2em;
+  top: 16px;
+}
+header span.login {
+  font-weight: bold;
+  cursor: pointer;
+}
+header span.login:hover {
+  color: #777;
+}
+footer {
+  background: #bcbcbc;
+  position: fixed;
+  width: 100%;
+  height: 20px;
+  bottom: 0;
+  padding-left: 0.5em;
+  padding-top: 8px;
+  border-top: solid 1px;
+}
+footer>span {
+  cursor: pointer;
+  float: right;
+  margin-right: 1em;
+}
+.main_header,
+.main_footer,
+.main_contents {
+  color: #333;
+  width: 100%;
+}
+.main_contents {
+  padding-left: 1em;
+  padding-top: 0.5em;
+}
+table.zebra {
+  margin: 1em;
+  padding: 1em;
+  border: solid 1px #000;
+  border-collapse: collapse;
+  width: 95%;
+}
+table.zebra td,
+table.zebra th {
+  border: solid 2px #ddd;
+  padding: 0.4em;
+}
+table.zebra th {
+  background: #dedede;
+}
+table.zebra tbody td {
+  cursor: pointer;
+}
+table.zebra tbody tr:hover td {
+  background: #ffebaf;
+  color: #000;
+}
+table.zebra tbody tr:nth-child(odd) {
+  background: #dcedf7;
+}
+table.zebra tbody tr:nth-child(even) {
+  background: #f7f3e6;
+}
+div.form {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: -o-box;
+  -o-box-orient: vertical;
+  -o-box-align: stretch;
+}
+div.formheader {
+  background: #069;
+  color: #f8f8f8;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: center;
+  -moz-box-pack: center;
+}
+div.formbody {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  -webkit-box-pack: justify;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  -moz-box-pack: justify;
+}
+div.formrow {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: center;
+  -webkit-box-pack: justify;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: center;
+  -moz-box-pack: justify;
+  padding: 1em;
+}
