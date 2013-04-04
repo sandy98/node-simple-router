@@ -6,6 +6,10 @@
 
   fs = require('fs');
 
+  if (!fs.existsSync('public/uploads')) {
+    fs.mkdirSync('public/uploads');
+  }
+
   String.prototype.repeat = String.prototype.repeat || function(times) {
     var n;
     return ((function() {
