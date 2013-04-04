@@ -2,6 +2,8 @@
 
 fs = require 'fs'
 
+fs.mkdirSync 'public/uploads' unless fs.existsSync 'public/uploads'
+
 #Err... sorry for the monkey patching ;-)
 String.prototype.repeat = String.prototype.repeat or (times) ->
   (@ for n in [1..times]).join('')

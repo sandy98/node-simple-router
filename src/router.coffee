@@ -67,7 +67,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.3.1'
+    version: '0.3.2'
 
 # End of Constants.
 
