@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
-try
-  Router = require 'node-simple-router'
+try 
+  Router = require '../../src/router'
 catch e
   Router = require '../../lib/router'
   
@@ -41,6 +41,9 @@ router.post "/users", (req, res) ->
 router.get "/users/:id", (req, res) ->
   res.writeHead(200, {'Content-type': 'text/html'})
   res.end "<h1>User No: <span style='color: red;'>#{req.params.id}</span></h1>"
+
+router.get "/crashit", (req, res) ->
+  throw new Error("Crashed on purpose...")
 
 ###
 End of example routes

@@ -67,7 +67,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.3.0'
+    version: '0.3.1'
 
 # End of Constants.
 
@@ -106,7 +106,10 @@ Router = (options = {}) ->
         mp_index = contentType.indexOf('multipart/form-data')
         req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
         req.body = _extend req.body, req.post
-        cb(req, res)
+        try
+          cb(req, res)
+        catch e
+          dispatch._500 req, res, req.url, e.toString()
     wrapper
 
 # End of Auxiliary functions.	

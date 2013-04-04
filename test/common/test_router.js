@@ -5,7 +5,7 @@
   var Router, argv, http, router, server;
 
   try {
-    Router = require('node-simple-router');
+    Router = require('../../src/router');
   } catch (e) {
     Router = require('../../lib/router');
   }
@@ -65,6 +65,10 @@
       'Content-type': 'text/html'
     });
     return res.end("<h1>User No: <span style='color: red;'>" + req.params.id + "</span></h1>");
+  });
+
+  router.get("/crashit", function(req, res) {
+    throw new Error("Crashed on purpose...");
   });
 
   /*
