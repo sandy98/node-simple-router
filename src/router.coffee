@@ -219,6 +219,8 @@ Router = (options = {}) ->
         m = part.match(/Content-Type:\s+(.+?)\s/i)
         if m
           obj.contentType = m[1]
+        else
+          obj.contentType = 'text/plain'
         m = part.match(/Content-Length:\s+(\d+?)/i)
         if m
           obj.contentLength = m[1]
