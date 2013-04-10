@@ -104,6 +104,33 @@ Or, to be precise, *node-simple-router* aka *nsr* has earned the ability to hand
 
 This can be seen as an important update, hence the minor version leap (0.2 to 0.3)
 
+There is an example of the way to use it to handle uploads that may be found in test/uploader/server.coffee (or server.js, 
+for that matter), following the route "/upload". A simplified version follows:
+
+```coffeescript   
+router.post "/upload", (req, res) ->
+  res.writeHead(200, {'Content-type': 'text/html'})
+  if req.post['multipart-data']
+    for part in req.post['multipart-data']
+      for key, val of part
+          res.write "#{key} = #{val}<br/>" unless ((key is 'fileData') and part.fileName)
+      if part.fileName
+        fullname = "#{__dirname}/public/uploads/#{part.fileName}"
+        if part.contentType.indexOf('text') >= 0
+          fs.writeFileSync fullname, part.fileData
+        else
+          fs.writeFileSync fullname, part.fileData, 'binary'
+        res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
+        if part.contentType.indexOf('image') >= 0
+          res.write "<img src='uploads/#{part.fileName}' />"
+        else
+          res.write "<pre>#{part.fileData}</pre>"
+        res.write '</div>'
+      res.write "<hr/>"
+
+  res.end "" 
+```   
+Essentially, what you get is an object labeled 'multipart-data' added to the body of the request.
     
 ## Complementary topics
 ###I) Default options
