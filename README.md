@@ -159,7 +159,7 @@ will have some, or all of the following properties (some may lack "filename")
 
 -   *contentType*
 
-    Mimetype of the fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc
+    Mimetype of fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc
     
     
     
