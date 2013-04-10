@@ -130,7 +130,38 @@ router.post "/upload", (req, res) ->
 
   res.end "" 
 ```   
-Essentially, what you get is an object labeled 'multipart-data' added to the body of the request.
+Essentially, what you get is an array labeled 'multipart-data' added to the body of the request. Each of its members 
+will have some, or all of the following properties (some may lack "filename")
+
+-   *contentDisposition*
+
+    Just for reference. This will always be "form-data"
+   
+-   *fieldName*
+
+    The name of the input element that originated the current member of the array.
+
+-   *fileName*
+
+    This will only exist if the originating field is <input type="file">
+   
+-   *fileData*
+
+    This and the following may be somewhat misleading names, because as has been noted the object may not be a
+    file. Regardless, it contains whatever was in the originating field. If this was a text input type, it will be
+    the contents input by the user. If it was a file, it will be its contents.
+    Its worth noting that in order for this to work accurately, the request input has been previously determined as
+    binary by the router, like so: ``` req.setEncoding('binary') ``` 
+
+-   *fileLen*
+
+    Length of fileData 
+
+-   *contentType*
+
+    Mimetype of the fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc
+    
+    
     
 ## Complementary topics
 ###I) Default options
