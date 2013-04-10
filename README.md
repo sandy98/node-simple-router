@@ -143,7 +143,7 @@ will have some, or all of the following properties (some may lack "filename")
 
 -   *fileName*
 
-    This will only exist if the originating field is <input type="file">
+    This will only exist if the originating field is &lt;input type="file"&gt;
    
 -   *fileData*
 
