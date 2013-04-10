@@ -51,11 +51,13 @@ Router = (options = {}) ->
     '.pdf':  'application/pdf'
     '.mobi': 'application/x-mobipocket-ebook'
     '.epub': 'application/epub+zip'
-    '.js':   'text/x-javascript'
-    '.json': 'text/x-json'
-    '.sh':   'application/x-sh'
+    '.js':   'application/x-javascript'
+    '.json': 'application/json'
+    '.sh':   'text/x-sh'
     '.py':   'text/x-python'
     '.rb':   'text/x-ruby'
+    '.c':    'text/x-csrc'
+    '.cpp':  'text/x-c++src'
 
   default_options =
     logging: true
@@ -67,7 +69,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.3.3'
+    version: '0.3.4'
 
 # End of Constants.
 
