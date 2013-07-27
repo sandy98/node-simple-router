@@ -69,7 +69,7 @@ Router = (options = {}) ->
     cgi_dir: "cgi-bin"
     serve_cgi: true
     served_by: 'Node Simple Router'
-    version: '0.3.4'
+    version: '0.3.5'
 
 # End of Constants.
 
@@ -264,7 +264,7 @@ Router = (options = {}) ->
   dispatch.static = (pathname, req, res) ->
     if pathname.indexOf("#{dispatch.cgi_dir}/") isnt - 1 and dispatch.serve_cgi is true
      return dispatch.cgi(pathname, req, res)
-    full_path = "#{dispatch.static_route}#{pathname}"
+    full_path = "#{dispatch.static_route}#{unescape(pathname)}"
     fs.stat full_path, (err, stats) ->
       if err
         dispatch.log err.toString() unless not dispatch.logging

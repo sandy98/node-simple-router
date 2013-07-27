@@ -161,6 +161,7 @@ will have some, or all of the following properties (some may lack "filename")
 
     Mimetype of fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc
     
+### 2013-07-27: v0.3.5 Correction for paths which have escaped characters.
     
     
 ## Complementary topics
