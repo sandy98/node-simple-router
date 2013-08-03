@@ -165,6 +165,8 @@ will have some, or all of the following properties (some may lack "filename")
     
 ### 2013-08-02: v0.3.6 Added default favicon. Fixed cgi-bin.
     
+### 2013-08-03: v0.4.1 Improved cgi-bin. Looks like it's now really usable. Now FCGI to come.
+
 ## Complementary topics
 ###I) Default options
 
