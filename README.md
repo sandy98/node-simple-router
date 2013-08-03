@@ -163,6 +163,7 @@ will have some, or all of the following properties (some may lack "filename")
     
 ### 2013-07-27: v0.3.5 Correction for paths which have escaped characters.
     
+### 2013-08-02: v0.3.6 Added default favicon. Fixed cgi-bin.
     
 ## Complementary topics
 ###I) Default options

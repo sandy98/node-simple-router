@@ -9,8 +9,10 @@ for i in range(1, random.randint(2, 11)):
     output = '<h3>Hello, World No <span style="color: red;">%0.2d</span></h3>' % i
     sys.stderr.write("%s\n" % output)
     sys.stdout.write("%s\n" % output)
-    
-    
+
+sys.stdout.flush()        
+sys.exit(0)
+
 
 
 
