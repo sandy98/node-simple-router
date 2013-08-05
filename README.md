@@ -167,6 +167,8 @@ will have some, or all of the following properties (some may lack "filename")
     
 ### 2013-08-03: v0.4.1 Improved cgi-bin. Looks like it's now really usable. Now FCGI to come.
 
+### 2013-08-04: v0.4.5 Further improvement for cgi-bin, mainly PHP related. Some issues remain as regards to PHP, though.
+
 ## Complementary topics
 ###I) Default options
 

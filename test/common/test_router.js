@@ -71,6 +71,36 @@
     throw new Error("Crashed on purpose...");
   });
 
+  router.post("/showrequest", function(req, res) {
+    var key, stri, val;
+    res.writeHead(200, {
+      'Content-type': 'text/plain'
+    });
+    res.write('-----------------------------------------------------------\n\n');
+    res.write("The name is Bond...hey, no, it is " + (req.post['name'] || 'unknown') + "\n");
+    res.write("And the age is " + req.post['age'] + "\n\n");
+    for (key in req) {
+      val = req[key];
+      try {
+        stri = "Request " + key + " = " + (JSON.stringify(val)) + "\n";
+        if (!!router.logging) {
+          router.log(stri);
+        }
+        res.write(stri);
+      } catch (e) {
+        res.write("NASTY ERROR: " + e.message + "\n");
+      }
+    }
+    return res.end();
+  });
+
+  router.get("/formrequest", function(req, res) {
+    res.writeHead(200, {
+      'Content-type': 'text/html'
+    });
+    return res.end("<title>Request vars discovery</title>\n<form action=\"/showrequest\" method=\"post\" enctype=\"application/x-www-form-urlencoded\">\n  <p>Name:<input type=\"text\" required=\"required\" size=\"40\" name=\"name\" /></p>\n  <p>Age:&nbsp;&nbsp;&nbsp;<input type=\"number\" required=\"required\" size=\"4\" name=\"age\" /></p>\n  <p><input type=\"submit\" value=\"Submit to /showrequest\" /><input type=\"reset\" value=\"Reset\" /></p>\n</form>");
+  });
+
   /*
   End of example routes
   */

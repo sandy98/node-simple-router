@@ -10,3 +10,6 @@ echo "<p>"
 echo $vars
 echo "</p>"
 
+echo "<p>"
+echo "QUERY STRING: $QUERY_STRING"
+echo "</p>"

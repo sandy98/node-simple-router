@@ -45,6 +45,33 @@ router.get "/users/:id", (req, res) ->
 router.get "/crashit", (req, res) ->
   throw new Error("Crashed on purpose...")
 
+router.post "/showrequest", (req, res) ->
+  res.writeHead(200, {'Content-type': 'text/plain'})
+  res.write '-----------------------------------------------------------\n\n'
+  res.write "The name is Bond...hey, no, it is #{req.post['name'] or 'unknown'}\n"
+  res.write "And the age is #{req.post['age']}\n\n";
+  #res.write("And that is all, folks...")
+  for key, val of req
+    try
+      stri = "Request #{key} = #{JSON.stringify(val)}\n"
+      router.log stri unless not router.logging
+      res.write stri
+    catch e
+      res.write "NASTY ERROR: #{e.message}\n"
+  res.end()
+
+router.get "/formrequest", (req, res) ->
+  res.writeHead(200, {'Content-type': 'text/html'})
+  res.end """
+    <title>Request vars discovery</title>
+    <form action="/showrequest" method="post" enctype="application/x-www-form-urlencoded">
+      <p>Name:<input type="text" required="required" size="40" name="name" /></p>
+      <p>Age:&nbsp;&nbsp;&nbsp;<input type="number" required="required" size="4" name="age" /></p>
+      <p><input type="submit" value="Submit to /showrequest" /><input type="reset" value="Reset" /></p>
+    </form>
+          """
+
+
 ###
 End of example routes
 ###
