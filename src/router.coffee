@@ -10,7 +10,8 @@ Router = (options = {}) ->
 #  util      = require('util')
   spawn  = require('child_process').spawn
   domain = require 'domain'
-  
+  net = require 'net'
+      
 # End of required modules
 
 
@@ -416,6 +417,98 @@ Router = (options = {}) ->
     0
 
 # End of CGI support
+
+#SCGI Support
+
+  dispatch.sendSCGIRequest = (request, sock) ->
+    encBody = querystring.stringify(request.body)
+    req = ""
+    req += "CONTENT_LENGTH\0#{encBody.length}\0"
+    req += "REQUEST_METHOD\0#{request.method}\0"
+    req += "REQUEST_URI\0#{'/'}\0"
+    req += "QUERY_STRING\0#{querystring.stringify request.get}\0"
+    req += "CONTENT_TYPE\0#{request.headers?['CONTENT_TYPE'] or 'text/plain'}\0"
+    req += "DOCUMENT_URI\0#{'/'}\0"
+    req += "DOCUMENT_ROOT\0#{'/'}\0"
+    req += "SCGI\u00000#{'1'}\u0000"
+    req += "SERVER_PROTOCOL\0HTTP/1.1\0"
+    #req += "HTTPS\0#{'$https if_not_empty'}\0"
+    req += "REMOTE_ADDR\0#{'127.0.0.1'}\0"
+    req += "REMOTE_PORT\0#{''}\0"
+    req += "SERVER_PORT\0#{'8000'}\0"
+    req += "SERVER_NAME\0#{'testing.savos.ods.org'}\0"
+    req = "#{req.length}:#{req},"
+    dispatch.log "Sending '#{req}' of length #{req.length} to SCGI" if dispatch.logging
+    sock.write(req)
+    sock.end()
+  
+  dispatch.scgi_pass = (conn, request, response) ->
+    if not isNaN(parseInt(conn))
+      conn_options = port: parseInt(conn)
+    else
+      conn_options = path: conn
+    
+    getData = ->
+      retval = ""
+      client = net.connect(
+        #path: '/tmp/hello_scgi_py.sk'
+        #port: 26000
+        conn_options
+        ->
+          dispatch.sendSCGIRequest(request, client)
+      )
+      client.on 'data', (data) ->
+        retval += data
+      client.on 'end', (data) ->
+        retval += data if data
+        dispatch.log "Ending SCGI transaction"
+        retval = retval.replace /\r/g, ''
+        lines = retval.split '\n'
+        statusDone = false
+        contentTypeDone = false
+        headerSet = false
+        status = 0
+        contentType = ''
+        for line, index in lines
+          dispatch.log "LINE ##{index + 1}: #{line}"
+          if not headerSet
+            writeThis = true
+            if not statusDone
+              m = line.match /Status: (\d+)/i
+              if m
+                writeThis = false
+                statusDone = true
+                status = m[1]
+                dispatch.log "Detected status: #{status}"
+                if contentTypeDone
+                  dispatch.log "Response: Status #{status}  - Content-Type: #{contentType}"
+                  response.writeHead status, 'Content-Type': contentType or 'text/plain'
+                  headerSet = true
+            if not contentTypeDone
+              m = line.match /Content\-Type\:\s+(.+\/.+)/i
+              if m
+                writeThis = false
+                contentTypeDone = true
+                contentType = m[1]
+                dispatch.log "Detected Content-Type: #{contentType}"
+                if statusDone
+                  dispatch.log "Response: Status #{status}  - Content-Type: #{contentType}"
+                  response.writeHead status, 'Content-Type': contentType or 'text/plain'
+                  headerSet = true
+             if writeThis
+               response.write line        
+          else
+            response.write line
+         
+        response.end()
+ 
+    d = domain.create()      
+    d.on 'error', (e) ->
+      response.writeHead 502, 'Bad gateway', 'Content-Type': 'text/plain'
+      response.end "502 - Bad gateway\n\n\n#{e.message}"
+    d.run getData
+
+# End of SCGI support
 
   dispatch.directory = (fpath, path, res) ->
     resp = _dirlist_template

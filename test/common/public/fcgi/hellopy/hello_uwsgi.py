@@ -14,7 +14,13 @@ def application(environ, start_response):
     for i in range(1, random.randint(2, 11)):
 	ret.append('<h3>Hello, World No <span style="color: blue;">%0.2d</span></h3>' % i)
     
+    f = open('current.txt', 'r')
+    current = int(f.read())
+    f.close()
     current += 1
+    f = open('current.txt', 'w')
+    f.write(str(current))
+    f.close()
     ret.append('<p>&nbsp;</p><p>Current request: <strong>%s</strong></p>' % (current,))    
     return ret
 

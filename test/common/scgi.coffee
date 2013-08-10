@@ -1,27 +1,40 @@
 #!/usr/bin/env coffee
 
-try
-  Router = require 'node-simple-router'
-catch e
-  Router = require '../lib/router'
+Router = require '../../src/router'
 
-
+spawn = require('child_process').spawn
+domain = require 'domain'
+querystring = require 'querystring'
+net = require 'net'
 http = require 'http'
 router = Router(list_dir: true)
+fs = require 'fs'
 
 #
 #Example routes
 #
-router.get "/", (request, response) ->
-  response.writeHead 200, 'Content-Type': 'text/html'
-  response.end '<title>Home Page</title><div style="text-align: center;">Home, sweet home..</div>'
 
+router.get "/", (request, response) ->
+  router.scgi_pass '/tmp/hello_scgi_py.sk', request, response
+
+router.get "/hellonode", (request, response) ->
+  router.scgi_pass '/tmp/node_scgi.sk', request, response
+      
 #
 #End of example routes
 #
 
 
 #Ok, just start the server!
+
+#console.log __dirname
+
+
+childPath = "#{__dirname}/public/scgi/hellonode/hello.coffee"
+if fs.existsSync childPath
+  router.log "Going to spawn child #{childPath}"
+  child = spawn childPath, []
+  child.stdout.pipe process.stdout
 
 argv = process.argv.slice 2
 
