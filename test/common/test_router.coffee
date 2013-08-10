@@ -1,9 +1,7 @@
 #!/usr/bin/env coffee
 
-try 
-  Router = require '../../src/router'
-catch e
-  Router = require '../../lib/router'
+
+Router = require '../../src/router'
   
 http = require 'http'
 
@@ -71,6 +69,27 @@ router.get "/formrequest", (req, res) ->
     </form>
           """
 
+# Proxy pass
+
+router.get "/google", (req, res) ->
+  router.proxy_pass "http://www.google.com.ar", res
+
+router.get "/testing", (req, res) ->
+  router.proxy_pass "http://testing.savos.ods.org/", res
+
+router.get "/testing/:route", (req, res) ->
+  router.proxy_pass "http://testing.savos.ods.org/#{req.params.route}/", res
+
+# End of proxy pass
+
+#Auth
+
+router.get "/login", (req, res) ->
+  res.setHeader "WWW-Authenticate", 'Basic realm="node-simple-router"'
+  res.writeHead 200, 'Content-type': 'text/html'
+  res.end "Login here."
+
+#End of Auth
 
 ###
 End of example routes

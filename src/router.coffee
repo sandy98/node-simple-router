@@ -11,6 +11,7 @@ Router = (options = {}) ->
   spawn  = require('child_process').spawn
   domain = require 'domain'
   net = require 'net'
+  http = require 'http'
       
 # End of required modules
 
@@ -510,6 +511,10 @@ Router = (options = {}) ->
 
 # End of SCGI support
 
+  dispatch.proxy_pass = (url, response) ->
+    http.get url, (res) ->
+      res.pipe response
+  
   dispatch.directory = (fpath, path, res) ->
     resp = _dirlist_template
     resp = resp.replace("<%= @cwd %>", path) while resp.indexOf("<%= @cwd %>") isnt -1
