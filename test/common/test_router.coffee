@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
 
-Router = require '../../src/router'
+Router = require '../../lib/router'
   
 http = require 'http'
 
