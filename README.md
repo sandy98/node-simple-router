@@ -169,6 +169,8 @@ will have some, or all of the following properties (some may lack "filename")
 
 ### 2013-08-04: v0.4.5 Further improvement for cgi-bin, mainly PHP related. Some issues remain as regards to PHP, though.
 
+### 2013-08-12: v0.4.7 CGI works smoothly now. SCGI support - router.scgi_pass - added and working fine.
+
 ## Complementary topics
 ###I) Default options
 
