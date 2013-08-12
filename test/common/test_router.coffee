@@ -80,16 +80,76 @@ router.get "/testing", (req, res) ->
 router.get "/testing/:route", (req, res) ->
   router.proxy_pass "http://testing.savos.ods.org/#{req.params.route}/", res
 
+router.get "/shell", (req, res) ->
+  router.proxy_pass "http://testing.savos.ods.org:10001", res
+
 # End of proxy pass
 
 #Auth
 
-router.get "/login", (req, res) ->
-  res.setHeader "WWW-Authenticate", 'Basic realm="node-simple-router"'
-  res.writeHead 200, 'Content-type': 'text/html'
-  res.end "Login here."
 
+router.get "/login", (req, res) ->
+  require_credentials = ->
+    res.setHeader "WWW-Authenticate", 'Basic realm="node-simple-router"'
+    res.writeHead 401, 'Access denied', 'Content-type': 'text/html'
+    res.end()
+
+  console.log req.headers
+  console.log "----------------------------------------------------------------"
+  if not req.headers['authorization']
+    require_credentials()
+  else
+    console.log "req.headers['authorization'] = #{req.headers['authorization']}"
+    auth = req.headers['authorization'].split /\s+/
+    console.log "AUTH: #{auth[0] + ' - ' + auth[1]}"
+    [usr, pwd] = new Buffer(auth[1], 'base64').toString().split ':'
+    if usr is 'sandy' and pwd is 'ygnas'
+      res.writeHead 200, 'Content-type': 'text/plain'
+      res.write "usr: #{usr}\n"
+      res.write "pwd: #{pwd}\n"
+      res.end()
+    else
+      require_credentials()
+      
 #End of Auth
+
+
+#SCGI
+
+router.get "/scgi", (req, res) ->
+  router.scgi_pass '/tmp/node_scgi.sk', req, res
+
+get_scgi = (req, res) ->
+  router.scgi_pass 26000, req, res  
+
+router.get "/scgiform", (req, res) ->
+  res.writeHead 200, 'Content-type': 'text/html'
+  res.end """
+  <title>SCGI Form</title>
+  <h3 style="text-align: center; color: #220088;">SCGI Form</h3><hr/>
+  <form action="/uwsgi" method="post">
+    <table>
+      <tr>
+        <td>Name</td>
+        <td style="text-align: right;"><input type="text" size="40" name="name" required="required" /></td>
+      <tr>
+      <tr>
+        <td>Age</td>
+        <td style="text-align: right;"><input type="number" size="4" name="age" /></td>
+      <tr>
+      <tr>
+        <td><input type="submit" value="Send  data" /></td>
+        <td><input type="reset" value="Reset" /></td>
+      <tr>
+    </table>
+  </form>
+  """
+  
+router.get "/uwsgi", get_scgi
+router.post "/uwsgi", get_scgi
+
+#End of SCGI
+
 
 ###
 End of example routes

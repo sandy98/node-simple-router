@@ -392,7 +392,7 @@ Router = (options = {}) ->
         req.body = _extend req.body, req.post
         try
           data = querystring.stringify(req.body)
-          dispatch.log "Data to be posted: #{data}" unless not dispatch.logging
+          #dispatch.log "Data to be posted: #{data}" unless not dispatch.logging
           child = prepareChild(data)
           return if not child 
           d = domain.create()
@@ -422,26 +422,32 @@ Router = (options = {}) ->
 #SCGI Support
 
   dispatch.sendSCGIRequest = (request, sock) ->
-    encBody = querystring.stringify(request.body)
+    if request.method.toLowerCase() is 'post'
+      encPost = querystring.stringify(request.post)
+    else
+      encPost = ""
     req = ""
-    req += "CONTENT_LENGTH\0#{encBody.length}\0"
+    req += "CONTENT_LENGTH\0#{encPost.length}\0"
     req += "REQUEST_METHOD\0#{request.method}\0"
-    req += "REQUEST_URI\0#{'/'}\0"
+    req += "REQUEST_URI\0#{request.url}\0"
     req += "QUERY_STRING\0#{querystring.stringify request.get}\0"
-    req += "CONTENT_TYPE\0#{request.headers?['CONTENT_TYPE'] or 'text/plain'}\0"
-    req += "DOCUMENT_URI\0#{'/'}\0"
+    req += "CONTENT_TYPE\0#{request.headers['content-type'] or 'text/plain'}\0"
+    req += "DOCUMENT_URI\0#{request.url}\0"
     req += "DOCUMENT_ROOT\0#{'/'}\0"
-    req += "SCGI\u00000#{'1'}\u0000"
+    req += "SCGI\u0000\u0031\u0000"
     req += "SERVER_PROTOCOL\0HTTP/1.1\0"
     #req += "HTTPS\0#{'$https if_not_empty'}\0"
-    req += "REMOTE_ADDR\0#{'127.0.0.1'}\0"
-    req += "REMOTE_PORT\0#{''}\0"
-    req += "SERVER_PORT\0#{'8000'}\0"
-    req += "SERVER_NAME\0#{'testing.savos.ods.org'}\0"
-    req = "#{req.length}:#{req},"
+    req += "REMOTE_ADDR\0#{request.connection.remoteAddress}\0"
+    req += "REMOTE_PORT\0#{request.connection.remotePort}\0"
+    req += "SERVER_PORT\0#{request.headers['host'].match(/:(\d+)$/)[1] or '80'}\0"
+    req += "SERVER_NAME\0#{request.headers['host'].replace /:\d+/, ''}\0"
+    for key, val of request.headers
+      req += "HTTP_#{key.toUpperCase().replace('-', '_')}\0#{request.headers[key]}\0"
+    
+    req = "#{req.length}:#{req},#{encPost}"
     dispatch.log "Sending '#{req}' of length #{req.length} to SCGI" if dispatch.logging
     sock.write(req)
-    sock.end()
+    #sock.end()
   
   dispatch.scgi_pass = (conn, request, response) ->
     if not isNaN(parseInt(conn))
