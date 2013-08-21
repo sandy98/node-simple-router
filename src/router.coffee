@@ -132,6 +132,7 @@ Router = (options = {}) ->
   dispatch = (req, res) ->
     parsed = urlparse(req.url)
     pathname = parsed.pathname
+    pathname = pathname.replace /\/$/, "" if (pathname.split '/') .length > 2
     req.get = if parsed.query? then querystring.parse(parsed.query) else {}
     req.body = _extend {}, req.get
     method = req.method.toLowerCase()
