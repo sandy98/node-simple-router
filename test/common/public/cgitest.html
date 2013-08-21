@@ -54,5 +54,22 @@
          </p>
       </fieldset>
     </form>
+    <hr/>
+    <form method="GET" enctype="application/x-www-form-urlencoded" action="/cgi-bin/hello.rb">
+      <fieldset>
+         <p>
+           <label for="txt-name4">Name: </label>
+           <input type="text" size="60" id="txt-name4" name="name" required="required" />
+         </p>
+         <p>
+           <label for="txt-age4">Age:&nbsp;&nbsp;&nbsp; </label>
+           <input type="number" size="2" id="txt-age4" name="age" />
+         </p>
+         <p>
+           <input type="submit" value="Submit to Ruby" />
+           <input type="reset" value="Reset" />
+         </p>
+      </fieldset>
+    </form>
   </body>
 </html>
