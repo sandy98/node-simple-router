@@ -104,15 +104,16 @@ Router = (options = {}) ->
   
   _make_request_wrapper = (cb) ->
     wrapper = (req, res) ->
-      body = ''
+      body = []
       contentType = 'application/x-www-form-urlencoded'
       if req.headers['content-type']
         contentType = req.headers['content-type']
       mp_index = contentType.indexOf('multipart/form-data')
       req.setEncoding('binary') if (mp_index isnt -1)
       req.on 'data', (chunk) ->
-        body += chunk
+        body.push chunk
       req.on 'end', () ->
+        body = body.join ''
         if contentType is 'text/plain'
           body = body.replace('\r\n', '')
         req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
