@@ -1,9 +1,6 @@
 #!/usr/bin/env coffee
 
-try
-  Router = require 'node-simple-router'
-catch e
-  Router = require '../lib/router'
+Router = require '../src/router'
 
 http = require 'http'
 router = Router(list_dir: true)
