@@ -270,6 +270,7 @@ Router = (options = {}) ->
     get:  []
     post: []
     put:  []
+    patch: []
     delete:  []
 
   dispatch.static = (pathname, req, res) ->
@@ -545,6 +546,9 @@ Router = (options = {}) ->
 
   dispatch.put = (pattern, callback) ->
     _pushRoute pattern, _make_request_wrapper(callback), 'put'
+  
+  dispatch.patch = (pattern, callback) ->
+    _pushRoute pattern, _make_request_wrapper(callback), 'patch'
 
   dispatch.delete = (pattern, callback) ->
     _pushRoute pattern, callback, 'delete'
