@@ -19,7 +19,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.4.9-1'
+    version: '0.4.9-2'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -139,7 +139,13 @@ Router = (options = {}) ->
     method = req.method.toLowerCase()
     if dispatch.logging
       dispatch.log "#{req.client.remoteAddress} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
-    selected_method = dispatch.routes[method] or dispatch.routes['any']
+
+    #selected_method = dispatch.routes[method] or dispatch.routes['any']
+    if dispatch.routes[method]
+      selected_method = dispatch.routes[method].concat dispatch.routes['any']
+    else
+      selected_method = dispatch.routes['any']
+      
     for route in selected_method
       m = pathname.match(route.pattern)
       if m isnt null
