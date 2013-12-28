@@ -3,10 +3,7 @@
 
 cs = "#!/usr/bin/env coffee"
 cs += "\n\n"
-cs += "try\n"
-cs += "  Router = require 'node-simple-router'\n"
-cs += "catch e\n"
-cs += "  Router = require '../lib/router'\n\n"
+cs += "Router = require 'node-simple-router'\n"
 cs += "http = require 'http'\n"
 cs += "router = Router(list_dir: true)\n"
 cs += "#\n"
