@@ -171,7 +171,7 @@ will have some, or all of the following properties (some may lack "filename")
 
 ### 2013-08-12: v0.4.7 CGI works smoothly now. SCGI support - router.scgi_pass - added and working fine.
 
-### 2013-12-28: v0.4.9-2 CGI Added support for request.any handler. Fixes nil error when request method is not known/handled.
+### 2013-12-28: v0.4.9-2 Fixes nil error when request method is not known/handled.
 
 ## Complementary topics
 ###I) Default options
