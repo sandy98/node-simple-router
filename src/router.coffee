@@ -19,7 +19,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.4.9-2'
+    version: '0.4.9-3'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -566,7 +566,7 @@ Router = (options = {}) ->
     _pushRoute pattern, callback, 'delete'
 
   dispatch.any = (pattern, callback) ->
-    _pushRoute pattern, callback, 'any'
+    _pushRoute pattern, _make_request_wrapper(callback), 'any'
 
 
   dispatch._404 = (req, res, path) ->
