@@ -173,7 +173,9 @@ will have some, or all of the following properties (some may lack "filename")
 
 ### 2013-12-28: v0.4.9-2 Fixes nil error when request method is not known/handled.
 
-### 2013-12-29: v0.4.9-3 As a result of the former, now NSR handles <em>router.any</em>, for example: <code>router.any("/doit", function (request, response) {});</code> will handle any incoming request to "/doit" uri, regardless the request method.
+### 2013-12-29: v0.4.9-3 As a result of the former, now NSR handles <em>router.any</em>, for example: 
+
+<code>router.any("/doit", function (request, response) {});</code> will handle any incoming request to "/doit" uri, regardless the request method.
 
 ## Complementary topics
 ###I) Default options
