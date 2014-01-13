@@ -2,7 +2,7 @@
 , "description" : "Yet another minimalistic router for node.js"
 , "tags" : ["http", "simple", "routing", "router", "utils"]
 , "keywords": ["http", "url", "dispatch", "router", "request handler", "middleware" ]
-, "version" : "0.4.9-4"
+, "version" : "0.5.0-1"
 , "homepage": "http://sandy98.github.com/node-simple-router"
 , "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
 , "repository" :
@@ -14,7 +14,7 @@
 , "engines" : ["node >= 0.6", "coffee-script >= 1.2"]
 , "main" : "./lib/router.js"
 , "bin"  : {"mk-server": "./bin/mk-server"}
-, "scripts": { "test": "cd test/common && ./test_router.coffee",
+, "scripts": { "test": "test/server.coffee",
     "test_uploader": "cd test/uploader && ./server.coffee",
     "prepublish": "./compile.sh"
   }

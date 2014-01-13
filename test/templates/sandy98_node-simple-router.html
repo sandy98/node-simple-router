@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)https://github.com/sandy98/node-simple-router -->
+<html class=" clickberry-extension clickberry-extension-standalone"><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# githubog: http://ogp.me/ns/fb/githubog#"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>sandy98/node-simple-router</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="https://github.com/opensearch.xml" title="GitHub">
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://github.com/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://github.com/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://github.com/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://github.com/apple-touch-icon-144.png">
+    <link rel="logo" type="image/svg" href="https://github-media-downloads.s3.amazonaws.com/github-logo.svg">
+    <meta property="og:image" content="https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png">
+    <meta name="hostname" content="github-fe124-cp1-prd.iad.github.net">
+    <meta name="ruby" content="ruby 2.1.0p0-github-tcmalloc (60139581e1) [x86_64-linux]">
+    <link rel="assets" href="https://github.global.ssl.fastly.net/">
+    <link rel="conduit-xhr" href="https://ghconduit.com:25035/">
+    <link rel="xhr-socket" href="https://github.com/_sockets">
+    
+
+
+    <meta name="msapplication-TileImage" content="/windows-tile.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="selected-link" value="repo_source" data-pjax-transient="">
+    <meta content="collector.githubapp.com" name="octolytics-host"><meta content="collector-cdn.github.com" name="octolytics-script-host"><meta content="github" name="octolytics-app-id"><meta content="B5A51017:5089:21A74C8:52D1DD52" name="octolytics-dimension-request_id"><meta content="204230" name="octolytics-actor-id"><meta content="sandy98" name="octolytics-actor-login"><meta content="5063219a6eb2ccbe0a3f367cf586bd87b488502e76fdbd1f2df1e02610183eff" name="octolytics-actor-hash">
+    
+
+    
+    
+    <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico">
+
+    <meta content="authenticity_token" name="csrf-param">
+<meta content="d4qOdN/JjS6M7/M8zfS98paadbtGsYczwLsn3iaKaOI=" name="csrf-token">
+
+    <link href="./sandy98_node-simple-router_files/github-e0318ec03abae32f266109d4e5ecb65a0ec7ab19.css" media="all" rel="stylesheet" type="text/css">
+    <link href="./sandy98_node-simple-router_files/github2-cb9092efb14f24f935f2ceaa5e139d61b58daec1.css" media="all" rel="stylesheet" type="text/css">
+    
+
+    
+
+      <script src="./sandy98_node-simple-router_files/frameworks-d4d23eefcbed557582cde6209ccd824fb98255d8.js" type="text/javascript"></script>
+      <script src="./sandy98_node-simple-router_files/github-2a93856bd56c545b500393f229515bfcb515f71c.js" type="text/javascript"></script><script type="text/javascript" async="" src="./sandy98_node-simple-router_files/ga.js"></script>
+      
+      <meta http-equiv="x-pjax-version" content="b642137d481deb5aea0154fc9e20903f">
+
+        <meta property="og:title" content="node-simple-router">
+  <meta property="og:type" content="githubog:gitrepository">
+  <meta property="og:url" content="https://github.com/sandy98/node-simple-router">
+  <meta property="og:image" content="https://github.global.ssl.fastly.net/images/gravatars/gravatar-user-420.png">
+  <meta property="og:site_name" content="GitHub">
+  <meta property="og:description" content="node-simple-router - Yet another minimalistic router for node.js">
+
+  <meta name="description" content="node-simple-router - Yet another minimalistic router for node.js">
+
+  <meta content="204230" name="octolytics-dimension-user_id"><meta content="sandy98" name="octolytics-dimension-user_login"><meta content="4118092" name="octolytics-dimension-repository_id"><meta content="sandy98/node-simple-router" name="octolytics-dimension-repository_nwo"><meta content="true" name="octolytics-dimension-repository_public"><meta content="false" name="octolytics-dimension-repository_is_fork"><meta content="4118092" name="octolytics-dimension-repository_network_root_id"><meta content="sandy98/node-simple-router" name="octolytics-dimension-repository_network_root_nwo">
+  <link href="https://github.com/sandy98/node-simple-router/commits/master.atom" rel="alternate" title="Recent Commits to node-simple-router:master" type="application/atom+xml">
+
+  <script type="text/javascript" async="" src="./sandy98_node-simple-router_files/api.js"></script><link type="text/css" rel="stylesheet" href="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/style.css"><script type="text/javascript" charset="utf-8" src="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/js/page_context.js"></script><meta content="clickberry-extension-here"><style>[touch-action="none"]{ -ms-touch-action: none; touch-action: none; }[touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }[touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }[touch-action="scroll"],[touch-action="pan-x pan-y"],[touch-action="pan-y pan-x"]{ -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; }</style><script id="clickberry-standalone-script" src="chrome-extension://lfmhcpmkbdkbgbmkjoiopeeegenkdikp/modules/clickberry/ChromeStdInjector.js?v=prod&addonType=fvd"></script><style id="clearly_highlighting_css" type="text/css">/* selection */ html.clearly_highlighting_enabled ::-moz-selection { background: rgba(246, 238, 150, 0.99); } html.clearly_highlighting_enabled ::selection { background: rgba(246, 238, 150, 0.99); } /* cursor */ html.clearly_highlighting_enabled {    /* cursor and hot-spot position -- requires a default cursor, after the URL one */    cursor: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--cursor.png") 14 16, text; } /* highlight tag */ em.clearly_highlight_element {    font-style: inherit !important; font-weight: inherit !important;    background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--yellow.png");    background-repeat: repeat-x; background-position: top left; background-size: 100% 100%; } /* the delete-buttons are positioned relative to this */ em.clearly_highlight_element.clearly_highlight_first { position: relative; } /* delete buttons */ em.clearly_highlight_element a.clearly_highlight_delete_element {    display: none; cursor: pointer;    padding: 0; margin: 0; line-height: 0;    position: absolute; width: 34px; height: 34px; left: -17px; top: -17px;    background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--delete-sprite.png"); background-repeat: no-repeat; background-position: 0px 0px; } em.clearly_highlight_element a.clearly_highlight_delete_element:hover { background-position: -34px 0px; } /* retina */ @media (min--moz-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {    em.clearly_highlight_element { background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--yellow@2x.png"); }    em.clearly_highlight_element a.clearly_highlight_delete_element { background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--delete-sprite@2x.png"); background-size: 68px 34px; } } </style></head>
+
+
+  <body class="logged_in  env-production macintosh vis-public" screen_capture_injected="true">
+    <div class="wrapper">
+      
+      
+      
+      
+
+
+      <div class="header header-logged-in true">
+  <div class="container clearfix">
+
+    <a class="header-logo-invertocat" href="https://github.com/">
+  <span class="mega-octicon octicon-mark-github"></span>
+</a>
+
+    
+    <a href="https://github.com/notifications" class="notification-indicator tooltipped downwards" data-gotokey="n" original-title="You have unread notifications">
+        <span class="mail-status unread"></span>
+</a>
+
+      <div class="command-bar js-command-bar  in-repository">
+          <form accept-charset="UTF-8" action="https://github.com/search" class="command-bar-form" id="top_search_form" method="get">
+
+<input type="text" data-hotkey="/ s" name="q" id="js-command-bar-field" placeholder="Search or type a command" tabindex="1" autocapitalize="off" data-username="sandy98" data-repo="sandy98/node-simple-router" data-branch="master" data-sha="46923931cc46fd7b318523783287a7858682734b">
+
+    <input type="hidden" name="nwo" value="sandy98/node-simple-router">
+
+    <div class="select-menu js-menu-container js-select-menu search-context-select-menu">
+      <span class="minibutton select-menu-button js-menu-target">
+        <span class="js-select-button">This repository</span>
+      </span>
+
+      <div class="select-menu-modal-holder js-menu-content js-navigation-container">
+        <div class="select-menu-modal">
+
+          <div class="select-menu-item js-navigation-item js-this-repository-navigation-item selected">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <input type="radio" class="js-search-this-repository" name="search_target" value="repository" checked="checked">
+            <div class="select-menu-item-text js-select-button-text">This repository</div>
+          </div> <!-- /.select-menu-item -->
+
+          <div class="select-menu-item js-navigation-item js-all-repositories-navigation-item">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <input type="radio" name="search_target" value="global">
+            <div class="select-menu-item-text js-select-button-text">All repositories</div>
+          </div> <!-- /.select-menu-item -->
+
+        </div>
+      </div>
+    </div>
+
+  <span class="octicon help tooltipped downwards" original-title="Show command bar help">
+    <span class="octicon octicon-question"></span>
+  </span>
+
+
+  <input type="hidden" name="ref" value="cmdform">
+
+</form>
+        <ul class="top-nav">
+          <li class="explore"><a href="https://github.com/explore">Explore</a></li>
+            <li><a href="https://gist.github.com/">Gist</a></li>
+            <li><a href="https://github.com/blog">Blog</a></li>
+          <li><a href="https://help.github.com/">Help</a></li>
+        </ul>
+      </div>
+
+    
+
+
+  <ul id="user-links">
+    <li>
+      <a href="https://github.com/sandy98" class="name">
+        <img height="20" src="./sandy98_node-simple-router_files/a2a4cd6ea03480676f4b0afe76e5d76a" width="20"> sandy98
+      </a>
+    </li>
+
+      <li class="new-menu dropdown-toggle js-menu-container">
+        <a href="https://github.com/sandy98/node-simple-router#" class="js-menu-target tooltipped downwards" original-title="Create new…">
+          <span class="octicon octicon-plus"></span>
+          <span class="dropdown-arrow"></span>
+        </a>
+
+        <div class="js-menu-content">
+        </div>
+      </li>
+
+      <li>
+        <a href="https://github.com/settings/profile" id="account_settings" class="tooltipped downwards" aria-label="Account settings " original-title="Account settings ">
+          <span class="octicon octicon-tools"></span>
+        </a>
+      </li>
+      <li>
+        <a class="tooltipped downwards" href="https://github.com/logout" data-method="post" id="logout" aria-label="Sign out" original-title="Sign out">
+          <span class="octicon octicon-log-out"></span>
+        </a>
+      </li>
+
+  </ul>
+
+<div class="js-new-dropdown-contents hidden">
+  
+
+<ul class="dropdown-menu">
+  <li>
+    <a href="https://github.com/new"><span class="octicon octicon-repo-create"></span> New repository</a>
+  </li>
+  <li>
+    <a href="https://github.com/organizations/new"><span class="octicon octicon-organization"></span> New organization</a>
+  </li>
+
+
+
+    <li class="section-title">
+      <span title="sandy98/node-simple-router">This repository</span>
+    </li>
+      <li>
+        <a href="https://github.com/sandy98/node-simple-router/issues/new"><span class="octicon octicon-issue-opened"></span> New issue</a>
+      </li>
+      <li>
+        <a href="https://github.com/sandy98/node-simple-router/settings/collaboration"><span class="octicon octicon-person-add"></span> New collaborator</a>
+      </li>
+</ul>
+
+</div>
+
+
+    
+  </div>
+</div>
+
+      
+
+      
+
+
+
+
+          <div class="site" itemscope="" itemtype="http://schema.org/WebPage">
+    
+    <div class="pagehead repohead instapaper_ignore readability-menu">
+      <div class="container">
+        
+
+<ul class="pagehead-actions">
+
+    <li class="subscription">
+      <form accept-charset="UTF-8" action="https://github.com/notifications/subscribe" class="js-social-container" data-autosubmit="true" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="authenticity_token" type="hidden" value="d4qOdN/JjS6M7/M8zfS98paadbtGsYczwLsn3iaKaOI="></div>  <input id="repository_id" name="repository_id" type="hidden" value="4118092">
+
+    <div class="select-menu js-menu-container js-select-menu">
+      <a class="social-count js-social-count" href="https://github.com/sandy98/node-simple-router/watchers">
+        2
+      </a>
+      <span class="minibutton select-menu-button with-count js-menu-target" role="button" tabindex="0">
+        <span class="js-select-button">
+          <span class="octicon octicon-eye-unwatch"></span>
+          Unwatch
+        </span>
+      </span>
+
+      <div class="select-menu-modal-holder">
+        <div class="select-menu-modal subscription-menu-modal js-menu-content">
+          <div class="select-menu-header">
+            <span class="select-menu-title">Notification status</span>
+            <span class="octicon octicon-remove-close js-menu-close"></span>
+          </div> <!-- /.select-menu-header -->
+
+          <div class="select-menu-list js-navigation-container" role="menu">
+
+            <div class="select-menu-item js-navigation-item " role="menuitem" tabindex="0">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <div class="select-menu-item-text">
+                <input id="do_included" name="do" type="radio" value="included">
+                <h4>Not watching</h4>
+                <span class="description">You only receive notifications for conversations in which you participate or are @mentioned.</span>
+                <span class="js-select-button-text hidden-select-button-text">
+                  <span class="octicon octicon-eye-watch"></span>
+                  Watch
+                </span>
+              </div>
+            </div> <!-- /.select-menu-item -->
+
+            <div class="select-menu-item js-navigation-item selected" role="menuitem" tabindex="0">
+              <span class="select-menu-item-icon octicon octicon octicon-check"></span>
+              <div class="select-menu-item-text">
+                <input checked="checked" id="do_subscribed" name="do" type="radio" value="subscribed">
+                <h4>Watching</h4>
+                <span class="description">You receive notifications for all conversations in this repository.</span>
+                <span class="js-select-button-text hidden-select-button-text">
+                  <span class="octicon octicon-eye-unwatch"></span>
+                  Unwatch
+                </span>
+              </div>
+            </div> <!-- /.select-menu-item -->
+
+            <div class="select-menu-item js-navigation-item " role="menuitem" tabindex="0">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <div class="select-menu-item-text">
+                <input id="do_ignore" name="do" type="radio" value="ignore">
+                <h4>Ignoring</h4>
+                <span class="description">You do not receive any notifications for conversations in this repository.</span>
+                <span class="js-select-button-text hidden-select-button-text">
+                  <span class="octicon octicon-mute"></span>
+                  Stop ignoring
+                </span>
+              </div>
+            </div> <!-- /.select-menu-item -->
+
+          </div> <!-- /.select-menu-list -->
+
+        </div> <!-- /.select-menu-modal -->
+      </div> <!-- /.select-menu-modal-holder -->
+    </div> <!-- /.select-menu -->
+
+</form>
+    </li>
+
+  <li>
+  
+
+  <div class="js-toggler-container js-social-container starring-container ">
+    <a href="https://github.com/sandy98/node-simple-router/unstar" class="minibutton with-count js-toggler-target star-button starred upwards" title="Unstar this repository" data-remote="true" data-method="post" rel="nofollow">
+      <span class="octicon octicon-star-delete"></span><span class="text">Unstar</span>
+    </a>
+
+    <a href="https://github.com/sandy98/node-simple-router/star" class="minibutton with-count js-toggler-target star-button unstarred upwards" title="Star this repository" data-remote="true" data-method="post" rel="nofollow">
+      <span class="octicon octicon-star"></span><span class="text">Star</span>
+    </a>
+
+      <a class="social-count js-social-count" href="https://github.com/sandy98/node-simple-router/stargazers">
+        10
+      </a>
+  </div>
+
+  </li>
+
+
+        <li>
+          <a href="https://github.com/sandy98/node-simple-router/fork" class="minibutton with-count js-toggler-target fork-button lighter upwards" title="Fork this repo" rel="nofollow" data-method="post">
+            <span class="octicon octicon-git-branch-create"></span><span class="text">Fork</span>
+          </a>
+          <a href="https://github.com/sandy98/node-simple-router/network" class="social-count">6</a>
+        </li>
+
+
+</ul>
+
+        <h1 itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+          <span class="repo-label"><span>public</span></span>
+          <span class="mega-octicon octicon-repo"></span>
+          <span class="author">
+            <a href="https://github.com/sandy98" class="url fn" itemprop="url" rel="author"><span itemprop="title">sandy98</span></a>
+          </span>
+          <span class="repohead-name-divider">/</span>
+          <strong><a href="./sandy98_node-simple-router_files/sandy98_node-simple-router.html" class="js-current-repository js-repo-home-link">node-simple-router</a></strong>
+
+          <span class="page-context-loader">
+            <img alt="Octocat-spinner-32" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+          </span>
+
+        </h1>
+      </div><!-- /.container -->
+    </div><!-- /.repohead -->
+
+    <div class="container">
+      
+
+      <div class="repository-with-sidebar repo-container with-full-navigation">
+
+        <div class="repository-sidebar">
+            
+
+<div class="sunken-menu vertical-right repo-nav js-repo-nav js-repository-container-pjax js-octicon-loaders">
+  <div class="sunken-menu-contents">
+    <ul class="sunken-menu-group">
+      <li class="tooltipped leftwards" original-title="Code">
+        <a href="./sandy98_node-simple-router_files/sandy98_node-simple-router.html" aria-label="Code" class="selected js-selected-navigation-item sunken-menu-item" data-gotokey="c" data-pjax="true" data-selected-links="repo_source repo_downloads repo_commits repo_tags repo_branches /sandy98/node-simple-router">
+          <span class="octicon octicon-code"></span> <span class="full-word">Code</span>
+          <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>      </li>
+
+        <li class="tooltipped leftwards" original-title="Issues">
+          <a href="https://github.com/sandy98/node-simple-router/issues" aria-label="Issues" class="js-selected-navigation-item sunken-menu-item js-disable-pjax" data-gotokey="i" data-selected-links="repo_issues /sandy98/node-simple-router/issues">
+            <span class="octicon octicon-issue-opened"></span> <span class="full-word">Issues</span>
+            <span class="counter">0</span>
+            <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>        </li>
+
+      <li class="tooltipped leftwards" original-title="Pull Requests">
+        <a href="https://github.com/sandy98/node-simple-router/pulls" aria-label="Pull Requests" class="js-selected-navigation-item sunken-menu-item js-disable-pjax" data-gotokey="p" data-selected-links="repo_pulls /sandy98/node-simple-router/pulls">
+            <span class="octicon octicon-git-pull-request"></span> <span class="full-word">Pull Requests</span>
+            <span class="counter">0</span>
+            <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>      </li>
+
+
+        <li class="tooltipped leftwards" original-title="Wiki">
+          <a href="https://github.com/sandy98/node-simple-router/wiki" aria-label="Wiki" class="js-selected-navigation-item sunken-menu-item" data-pjax="true" data-selected-links="repo_wiki /sandy98/node-simple-router/wiki">
+            <span class="octicon octicon-book"></span> <span class="full-word">Wiki</span>
+            <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>        </li>
+    </ul>
+    <div class="sunken-menu-separator"></div>
+    <ul class="sunken-menu-group">
+
+      <li class="tooltipped leftwards" original-title="Pulse">
+        <a href="https://github.com/sandy98/node-simple-router/pulse" aria-label="Pulse" class="js-selected-navigation-item sunken-menu-item" data-pjax="true" data-selected-links="pulse /sandy98/node-simple-router/pulse">
+          <span class="octicon octicon-pulse"></span> <span class="full-word">Pulse</span>
+          <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>      </li>
+
+      <li class="tooltipped leftwards" original-title="Graphs">
+        <a href="https://github.com/sandy98/node-simple-router/graphs" aria-label="Graphs" class="js-selected-navigation-item sunken-menu-item" data-pjax="true" data-selected-links="repo_graphs repo_contributors /sandy98/node-simple-router/graphs">
+          <span class="octicon octicon-graph"></span> <span class="full-word">Graphs</span>
+          <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>      </li>
+
+      <li class="tooltipped leftwards" original-title="Network">
+        <a href="https://github.com/sandy98/node-simple-router/network" aria-label="Network" class="js-selected-navigation-item sunken-menu-item js-disable-pjax" data-selected-links="repo_network /sandy98/node-simple-router/network">
+          <span class="octicon octicon-git-branch"></span> <span class="full-word">Network</span>
+          <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+</a>      </li>
+    </ul>
+
+
+      <div class="sunken-menu-separator"></div>
+      <ul class="sunken-menu-group">
+        <li class="tooltipped leftwards" original-title="Settings">
+          <a href="https://github.com/sandy98/node-simple-router/settings" class="sunken-menu-item" data-pjax="" aria-label="Settings">
+            <span class="octicon octicon-tools"></span> <span class="full-word">Settings</span>
+            <img alt="Octocat-spinner-32" class="mini-loader" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+          </a>
+        </li>
+      </ul>
+  </div>
+</div>
+
+            <div class="only-with-full-nav">
+              
+
+  
+
+<div class="clone-url open" data-protocol-type="http" data-url="/users/set_protocol?protocol_selector=http&amp;protocol_type=push">
+  <h3><strong>HTTPS</strong> clone URL</h3>
+  <div class="clone-url-box">
+    <input type="text" class="clone js-url-field" value="https://github.com/sandy98/node-simple-router.git" readonly="readonly">
+
+    <span class="js-zeroclipboard url-box-clippy minibutton zeroclipboard-button" data-clipboard-text="https://github.com/sandy98/node-simple-router.git" data-copied-hint="copied!" title="copy to clipboard"><span class="octicon octicon-clippy"></span></span>
+  </div>
+</div>
+
+  
+
+<div class="clone-url " data-protocol-type="ssh" data-url="/users/set_protocol?protocol_selector=ssh&amp;protocol_type=push">
+  <h3><strong>SSH</strong> clone URL</h3>
+  <div class="clone-url-box">
+    <input type="text" class="clone js-url-field" value="git@github.com:sandy98/node-simple-router.git" readonly="readonly">
+
+    <span class="js-zeroclipboard url-box-clippy minibutton zeroclipboard-button" data-clipboard-text="git@github.com:sandy98/node-simple-router.git" data-copied-hint="copied!" title="copy to clipboard"><span class="octicon octicon-clippy"></span></span>
+  </div>
+</div>
+
+  
+
+<div class="clone-url " data-protocol-type="subversion" data-url="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=push">
+  <h3><strong>Subversion</strong> checkout URL</h3>
+  <div class="clone-url-box">
+    <input type="text" class="clone js-url-field" value="https://github.com/sandy98/node-simple-router" readonly="readonly">
+
+    <span class="js-zeroclipboard url-box-clippy minibutton zeroclipboard-button" data-clipboard-text="https://github.com/sandy98/node-simple-router" data-copied-hint="copied!" title="copy to clipboard"><span class="octicon octicon-clippy"></span></span>
+  </div>
+</div>
+
+
+<p class="clone-options">You can clone with
+      <a href="https://github.com/sandy98/node-simple-router#" class="js-clone-selector" data-protocol="http">HTTPS</a>,
+      <a href="https://github.com/sandy98/node-simple-router#" class="js-clone-selector" data-protocol="ssh">SSH</a>,
+      or <a href="https://github.com/sandy98/node-simple-router#" class="js-clone-selector" data-protocol="subversion">Subversion</a>.
+  <span class="octicon help tooltipped upwards" original-title="Get help on which URL is right for you.">
+    <a href="https://help.github.com/articles/which-remote-url-should-i-use">
+    <span class="octicon octicon-question"></span>
+    </a>
+  </span>
+</p>
+
+  <a href="github-mac://openRepo/https://github.com/sandy98/node-simple-router" data-url="github-mac://openRepo/https://github.com/sandy98/node-simple-router" class="minibutton sidebar-button js-conduit-rewrite-url">
+    <span class="octicon octicon-device-desktop"></span>
+    Clone in Desktop
+  </a>
+
+
+              <a href="https://github.com/sandy98/node-simple-router/archive/master.zip" class="minibutton sidebar-button" title="Download this repository as a zip file" rel="nofollow">
+                <span class="octicon octicon-cloud-download"></span>
+                Download ZIP
+              </a>
+            </div>
+        </div><!-- /.repository-sidebar -->
+
+        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container="">
+          
+
+<span id="js-show-full-navigation"></span>
+
+<div class="repository-meta js-details-container ">
+    <div class="repository-description js-details-show">
+      <p>Yet another minimalistic router for node.js</p>
+    </div>
+
+    <div class="repository-website js-details-show">
+      <p><a href="http://sandy98.github.com/node-simple-router" rel="nofollow">http://sandy98.github.com/node-simple-router</a></p>
+    </div>
+
+    <span class="edit-link js-details-show js-details-target">— <a href="https://github.com/sandy98/node-simple-router#">Edit</a></span>
+    <form accept-charset="UTF-8" action="https://github.com/sandy98/node-simple-router/settings/update_meta" class="edit-repository-meta js-details-edit" method="post"><div style="margin:0;padding:0;display:inline"><input name="_method" type="hidden" value="put"><input name="authenticity_token" type="hidden" value="d4qOdN/JjS6M7/M8zfS98paadbtGsYczwLsn3iaKaOI="></div>
+
+      <div class="field description-field">
+        <label for="repo_description">Description</label>
+        <input type="text" name="repo_description" value="Yet another minimalistic router for node.js" placeholder="Short description of this repository">
+      </div>
+
+      <div class="field website-field">
+        <label for="repo_homepage">Website</label>
+        <input type="text" name="repo_homepage" value="sandy98.github.com/node-simple-router" placeholder="Website for this repository (optional)">
+      </div>
+
+      <button class="button classy">Save</button>
+      <span class="cancel">or <a href="https://github.com/sandy98/node-simple-router#" class="js-details-target">cancel</a></span>
+</form>
+</div>
+
+<div class="capped-box overall-summary ">
+
+  <div class="stats-switcher-viewport js-stats-switcher-viewport">
+
+    <ul class="numbers-summary">
+      <li class="commits">
+        <a data-pjax="" href="https://github.com/sandy98/node-simple-router/commits/master">
+            <span class="num">
+              <span class="octicon octicon-history"></span>
+              147
+            </span>
+            commits
+        </a>
+      </li>
+      <li>
+        <a data-pjax="" href="https://github.com/sandy98/node-simple-router/branches">
+          <span class="num">
+            <span class="octicon octicon-git-branch"></span>
+            1
+          </span>
+          branch
+        </a>
+      </li>
+
+      <li>
+        <a data-pjax="" href="https://github.com/sandy98/node-simple-router/releases">
+          <span class="num">
+            <span class="octicon octicon-tag"></span>
+            1
+          </span>
+          release
+        </a>
+      </li>
+
+      <li>
+
+  <a href="https://github.com/sandy98/node-simple-router/graphs/contributors">
+    <span class="num">
+      <span class="octicon octicon-organization"></span>
+      4
+    </span>
+    contributors
+  </a>
+      </li>
+    </ul>
+
+      <div class="repository-lang-stats">
+        <ol class="repository-lang-stats-numbers">
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=coffeescript">
+                <span class="color-block language-color" style="background-color:#244776;"></span>
+                <span class="lang">CoffeeScript</span>
+                <span class="percent">49.2%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=css">
+                <span class="color-block language-color" style="background-color:#1f085e;"></span>
+                <span class="lang">CSS</span>
+                <span class="percent">20.1%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=javascript">
+                <span class="color-block language-color" style="background-color:#f15501;"></span>
+                <span class="lang">JavaScript</span>
+                <span class="percent">17.4%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=python">
+                <span class="color-block language-color" style="background-color:#3581ba;"></span>
+                <span class="lang">Python</span>
+                <span class="percent">7.5%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=php">
+                <span class="color-block language-color" style="background-color:#6e03c1;"></span>
+                <span class="lang">PHP</span>
+                <span class="percent">1.5%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=c%2B%2B">
+                <span class="color-block language-color" style="background-color:#f34b7d;"></span>
+                <span class="lang">C++</span>
+                <span class="percent">1.4%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/sandy98/node-simple-router/search?l=shell">
+                <span class="color-block language-color" style="background-color:#5861ce;"></span>
+                <span class="lang">Shell</span>
+                <span class="percent">1.4%</span>
+              </a>
+          </li>
+          <li>
+              <span class="other">
+                <span data-lang="Other" class="color-block language-color"></span>
+                <span class="lang">Other</span>
+                <span class="percent">1.4%</span>
+              </span>
+          </li>
+        </ol>
+      </div>
+  </div>
+
+</div>
+
+  <a href="https://github.com/sandy98/node-simple-router#" class="repository-lang-stats-graph js-toggle-lang-stats tooltipped downwards" style="background-color:#ccc" original-title="Show language statistics">
+  <span class="language-color" style="width:49.2%; background-color:#244776;" itemprop="keywords">CoffeeScript</span><span class="language-color" style="width:20.1%; background-color:#1f085e;" itemprop="keywords">CSS</span><span class="language-color" style="width:17.4%; background-color:#f15501;" itemprop="keywords">JavaScript</span><span class="language-color" style="width:7.5%; background-color:#3581ba;" itemprop="keywords">Python</span><span class="language-color" style="width:1.5%; background-color:#6e03c1;" itemprop="keywords">PHP</span><span class="language-color" style="width:1.4%; background-color:#f34b7d;" itemprop="keywords">C++</span><span class="language-color" style="width:1.4%; background-color:#5861ce;" itemprop="keywords">Shell</span><span class="language-color" style="width:1.4%; background-color:#ccc;" itemprop="keywords">Other</span>
+  </a>
+
+
+  <div>
+  </div>
+
+
+<div class="file-navigation in-mid-page">
+    <a href="https://github.com/sandy98/node-simple-router/compare" aria-label="Compare, review, create a pull request" class="minibutton compact primary tooltipped downwards" data-pjax="" original-title="Compare &amp; review">
+      <span class="octicon octicon-git-compare"></span>
+    </a>
+
+  
+
+<div class="select-menu js-menu-container js-select-menu">
+  <span class="minibutton select-menu-button js-menu-target" data-hotkey="w" data-master-branch="master" data-ref="master" role="button" aria-label="Switch branches or tags" tabindex="0">
+    <span class="octicon octicon-git-branch"></span>
+    <i>branch:</i>
+    <span class="js-select-button">master</span>
+  </span>
+
+  <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax="">
+
+    <div class="select-menu-modal">
+      <div class="select-menu-header">
+        <span class="select-menu-title">Switch branches/tags</span>
+        <span class="octicon octicon-remove-close js-menu-close"></span>
+      </div> <!-- /.select-menu-header -->
+
+      <div class="select-menu-filters">
+        <div class="select-menu-text-filter">
+          <input type="text" aria-label="Find or create a branch…" id="context-commitish-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Find or create a branch…">
+        </div>
+        <div class="select-menu-tabs">
+          <ul>
+            <li class="select-menu-tab">
+              <a href="https://github.com/sandy98/node-simple-router#" data-tab-filter="branches" class="js-select-menu-tab">Branches</a>
+            </li>
+            <li class="select-menu-tab">
+              <a href="https://github.com/sandy98/node-simple-router#" data-tab-filter="tags" class="js-select-menu-tab">Tags</a>
+            </li>
+          </ul>
+        </div><!-- /.select-menu-tabs -->
+      </div><!-- /.select-menu-filters -->
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches">
+
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <div class="select-menu-item js-navigation-item selected">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="https://github.com/sandy98/node-simple-router/tree/master" data-name="master" data-skip-pjax="true" rel="nofollow" class="js-navigation-open select-menu-item-text js-select-button-text css-truncate-target" title="master">master</a>
+            </div> <!-- /.select-menu-item -->
+        </div>
+
+          <form accept-charset="UTF-8" action="https://github.com/sandy98/node-simple-router/branches" class="js-create-branch select-menu-item select-menu-new-item-form js-navigation-item js-new-item-form" method="post"><div style="margin:0;padding:0;display:inline"><input name="authenticity_token" type="hidden" value="d4qOdN/JjS6M7/M8zfS98paadbtGsYczwLsn3iaKaOI="></div>
+            <span class="octicon octicon-git-branch-create select-menu-item-icon"></span>
+            <div class="select-menu-item-text">
+              <h4>Create branch: <span class="js-new-item-name"></span></h4>
+              <span class="description">from ‘master’</span>
+            </div>
+            <input type="hidden" name="name" id="name" class="js-new-item-value">
+            <input type="hidden" name="branch" id="branch" value="master">
+            <input type="hidden" name="path" id="path" value="">
+          </form> <!-- /.select-menu-item -->
+
+      </div> <!-- /.select-menu-list -->
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="https://github.com/sandy98/node-simple-router/tree/v0.4.8-1" data-name="v0.4.8-1" data-skip-pjax="true" rel="nofollow" class="js-navigation-open select-menu-item-text js-select-button-text css-truncate-target" title="v0.4.8-1">v0.4.8-1</a>
+            </div> <!-- /.select-menu-item -->
+        </div>
+
+        <div class="select-menu-no-results">Nothing to show</div>
+      </div> <!-- /.select-menu-list -->
+
+    </div> <!-- /.select-menu-modal -->
+  </div> <!-- /.select-menu-modal-holder -->
+</div> <!-- /.select-menu -->
+
+
+  <div class="breadcrumb"><span class="repo-root js-repo-root"><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="./sandy98_node-simple-router_files/sandy98_node-simple-router.html" data-branch="master" data-direction="back" data-pjax="true" itemscope="url"><span itemprop="title">node-simple-router</span></a></span></span><span class="separator"> / </span><form action="https://github.com/sandy98/node-simple-router/new/master" class="js-new-blob-form tooltipped rightwards new-file-link" method="post" original-title="Create a new file here"><span aria-label="Create a new file here" class="js-new-blob-submit octicon octicon-file-add" data-test-id="create-new-git-file" role="button"></span></form></div>
+</div>
+
+
+
+<a href="https://github.com/sandy98/node-simple-router/find/master" data-hotkey="t" class="js-show-file-finder" style="display:none" data-pjax="">Show File Finder</a>
+<div class="bubble files-bubble">
+
+
+  <div class="commit commit-tease js-details-container">
+    <p class="commit-title ">
+        <a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a>
+        
+    </p>
+    <div class="commit-meta">
+      <span class="js-zeroclipboard zeroclipboard-link" data-clipboard-text="08105f82dd3c65f8b1f541151ff5d6270667177e" data-copied-hint="copied!" title="Copy SHA"><span class="octicon octicon-clippy"></span></span>
+      <a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="sha-block" data-pjax="">latest commit <span class="sha">08105f82dd</span></a>
+
+      <div class="authorship">
+        <img class="gravatar" height="20" src="./sandy98_node-simple-router_files/a2a4cd6ea03480676f4b0afe76e5d76a(1)" width="20">
+        <span class="author-name"><a href="https://github.com/sandy98" data-skip-pjax="true" rel="author">sandy98</a></span>
+        authored <time class="js-relative-date updated" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time>
+
+      </div>
+    </div>
+  </div>
+
+  <table class="files" data-pjax="">
+
+    
+<tbody class="" data-url="/sandy98/node-simple-router/file-list/master">
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-directory"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/tree/master/bin" class="js-directory-link" id="c1111bd512b29e821b120b86446026b8-65c44ca716297bdad1d47c747efab30868f00804" title="bin">bin</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-directory"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/tree/master/lib" class="js-directory-link" id="e8acc63b1e238f3255c900eed37254b8-0b15fc6b42ad0e7ddbfe1e3903887879a360fa01" title="lib">lib</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-directory"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/tree/master/src" class="js-directory-link" id="25d902c24283ab8cfbac54dfa101ad31-56f73f356e6beded65110f99dd698b8186ae939b" title="src">src</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-directory"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/tree/master/test" class="js-directory-link" id="098f6bcd4621d373cade4e832627b4f6-230238a2582db0fdd5b63904e434369720b02561" title="test">test</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/13c49f956755d12653c628d79dd90c75e878c1b9" class="message" data-pjax="true" title="added router.any to handle unknown request methods">added router.any to handle unknown request methods</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2013-12-29T13:31:22-08:00" title="2013-12-29 13:31:22">13 days ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-text"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/blob/master/.gitignore" class="js-directory-link" id="a084b794bc0759e7a6b77810e01874f2-1178bd2d96eb5191d5842b12d0e3adb17ad254dc" title=".gitignore">.gitignore</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/2d2b6c23b44aa14d44f8381f7aa1ffbc37a37300" class="message" data-pjax="true" title="minor works on cgi-scgi">minor works on cgi-scgi</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2013-08-20T20:57:05-07:00" title="2013-08-20 20:57:05">5 months ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-text"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/blob/master/LICENSE" class="js-directory-link" id="9879d6db96fd29134fc802214163b95a-9a8c491e9361522a825b8e2054285a1f7c4770eb" title="LICENSE">LICENSE</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/47646f8b5b6ef20005b246aa93ddafa29ecc9637" class="message" data-pjax="true" title="license file added">license file added</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2012-05-02T13:57:35-07:00" title="2012-05-02 13:57:35">2 years ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-text"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/blob/master/README.md" class="js-directory-link" id="04c6e90faac2675aa89e2176d2eec7d8-9ba254ffa446d15406ce5f05d87f9a1f38aa4857" title="README.md">README.md</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-text"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/blob/master/compile.sh" class="js-directory-link" id="0f8ed536b6067bbcef0adc6e88ab88d5-a74a65423a2e84b052447bcab59575d6551ccb14" title="compile.sh">compile.sh</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/36493850f845f6b9265c1b26df7eba4a59fb4bd2" class="message" data-pjax="true" title="v0.4.5">v0.4.5</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2013-08-05T12:49:59-07:00" title="2013-08-05 12:49:59">5 months ago</time></span></td>
+    </tr>
+    <tr>
+      <td class="icon">
+        <span class="octicon octicon-file-text"></span>
+        <img alt="Octocat-spinner-32" class="spinner" height="16" src="./sandy98_node-simple-router_files/octocat-spinner-32.gif" width="16">
+      </td>
+      <td class="content">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/blob/master/package.json" class="js-directory-link" id="b9cfc7f2cdf78a7f4b91a753d10865a2-c0a8333af69b55d1fc1a86604138ce367f52e77d" title="package.json">package.json</a></span>
+      </td>
+      <td class="message">
+        <span class="css-truncate css-truncate-target"><a href="https://github.com/sandy98/node-simple-router/commit/08105f82dd3c65f8b1f541151ff5d6270667177e" class="message" data-pjax="true" title="Improved server generated by mk-server utility.">Improved server generated by mk-server utility.</a></span>
+      </td>
+      <td class="age"><span class="css-truncate css-truncate-target"><time class="js-relative-date" datetime="2014-01-10T07:41:52-08:00" title="2014-01-10 07:41:52">a day ago</time></span></td>
+    </tr>
+</tbody>
+
+  </table>
+</div>
+
+  <div id="readme" class="clearfix announce instapaper_body md">
+    <span class="name">
+      <span class="octicon octicon-book"></span>
+      README.md
+    </span>
+
+    <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
+<a name="nodejs-simple-router" class="anchor" href="https://github.com/sandy98/node-simple-router#nodejs-simple-router"><span class="octicon octicon-link"></span></a>Node.js Simple Router</h1>
+
+<h1>
+<a name="yet-another-minimalistic-router-for-nodejs" class="anchor" href="https://github.com/sandy98/node-simple-router#yet-another-minimalistic-router-for-nodejs"><span class="octicon octicon-link"></span></a>Yet another minimalistic router for node.js</h1>
+
+<h2>
+<a name="install" class="anchor" href="https://github.com/sandy98/node-simple-router#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>From Node Package Manager:</p>
+
+<pre>  npm install node-simple-router
+</pre>
+
+<p>or from source:</p>
+
+<pre>  git clone git://github.com/sandy98/node-simple-router.git
+</pre>
+
+<h2>
+<a name="purpose" class="anchor" href="https://github.com/sandy98/node-simple-router#purpose"><span class="octicon octicon-link"></span></a>Purpose</h2>
+
+<p>Designed to provide routes to barebones node http server, Sinatra style (or Express.js router, for that matter) staying out
+of your way for the rest.</p>
+
+<p>Main target: restful APIs for single page applications.</p>
+
+<p>Source main file - router.coffee - and testing utility - test_router.coffee - are coffeescript source files. Should you prefer to
+work with javascript, just simply compile them (i.e. coffee -c router.coffee) provided you have installed coffee-script, which is as
+simple as </p><pre>sudo npm install coffee-script -g</pre>
+
+<h2>
+<a name="basic-usage" class="anchor" href="https://github.com/sandy98/node-simple-router#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h2>
+
+<div class="highlight highlight-coffeescript"><pre><span class="c1"># CoffeeScript version</span>
+<span class="c1"># Assumes usual installation through npm.</span>
+<span class="nv">Router = </span><span class="nx">require</span> <span class="s">'node-simple-router'</span>
+<span class="c1"># Alternative: assumes router.js - or router.coffee - is located at the current working directory.</span>
+<span class="c1">#Router = require('./router')</span>
+
+<span class="nx">var</span> <span class="nv">http   = </span><span class="nx">require</span><span class="p">(</span><span class="s">'http'</span><span class="p">)</span>
+
+<span class="nv">router  = </span><span class="nx">Router</span><span class="p">()</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/'</span><span class="p">,</span> <span class="nf">(request, response) -&gt;</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span> <span class="s">'Home page'</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/hello/:who'</span><span class="p">,</span> <span class="nf">(request, response) -&gt;</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span> <span class="s">"Hello, </span><span class="si">#{</span><span class="nx">request</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">who</span><span class="si">}</span><span class="s">"</span>
+
+<span class="nv">server = </span><span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span> <span class="nx">router</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="mi">3000</span>
+
+</pre></div>
+
+<p>or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// Javascript version</span>
+<span class="c1">// Assumes usual installation through npm.</span>
+<span class="kd">var</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'node-simple-router'</span><span class="p">)</span>
+<span class="c1">// Alternative: assumes router.js is located at the current working directory.</span>
+<span class="c1">//var Router = require('./router')</span>
+
+<span class="kd">var</span> <span class="nx">http</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="nx">Router</span><span class="p">();</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Home page'</span><span class="p">);})</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/hello/:who'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">"Hello, "</span> <span class="o">+</span> <span class="nx">request</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">who</span><span class="p">);})</span>
+
+<span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">router</span><span class="p">)</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">)</span>
+
+</pre></div>
+
+<h2>
+<a name="changelog" class="anchor" href="https://github.com/sandy98/node-simple-router#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<h3>
+<a name="-024-all-the-basic-stuff" class="anchor" href="https://github.com/sandy98/node-simple-router#-024-all-the-basic-stuff"><span class="octicon octicon-link"></span></a>&lt; 0.2.4 All the basic stuff</h3>
+
+<h3>
+<a name="2012-09-07-v024-added-cgi-support" class="anchor" href="https://github.com/sandy98/node-simple-router#2012-09-07-v024-added-cgi-support"><span class="octicon octicon-link"></span></a>2012-09-07: v0.2.4 Added CGI support</h3>
+
+<p>Currently the cgi dispatcher relies - as it's supposed to be - on the cgi process to provide the correct headers.
+Also, post and get - summed up in 'body' - must be readed by the cgi process via std input and converted to json 
+object by whatever means the cgi implementation provides. For instance, a python example could be implemented along 
+the lines:</p>
+
+<div class="highlight highlight-python"><pre><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">"</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">body</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</pre></div>
+
+<h3>
+<a name="2013-03-25-v025-added-mimetypes-xml-and-svg-to-the-list-of-recognized-types" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-03-25-v025-added-mimetypes-xml-and-svg-to-the-list-of-recognized-types"><span class="octicon octicon-link"></span></a>2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types</h3>
+
+<h3>
+<a name="2013-04-01-v026-added-compile-to-js-tool-compilesh" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-01-v026-added-compile-to-js-tool-compilesh"><span class="octicon octicon-link"></span></a>2013-04-01: v0.2.6 Added compile to js tool 'compile.sh'</h3>
+
+<h3>
+<a name="2013-04-02-v027-added-mk-server-to-the-bin-directory" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-02-v027-added-mk-server-to-the-bin-directory"><span class="octicon octicon-link"></span></a>2013-04-02: v0.2.7 Added mk-server to the bin directory.</h3>
+
+<p>This is a tiny tool that will create a brand new node-simple-router powered server to the working directory.
+It can be invoked with no params, producing an executable server.coffee file. Should you prefer getting a javascript version of the server, 
+you must invoke it like so: mk-server js. This will produce server.js.</p>
+
+<p>It's worth noting that in order for this to be useful, you should install node-simple-router globally <code>sudo npm install -g node-simple-router</code>       </p>
+
+<h3>
+<a name="2013-04-03-v030-node-simple-router-becomes-able-to-handle-form-uploads" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-03-v030-node-simple-router-becomes-able-to-handle-form-uploads"><span class="octicon octicon-link"></span></a>2013-04-03: v0.3.0 node-simple-router becomes able to handle form uploads.</h3>
+
+<p>Or, to be precise, <em>node-simple-router</em> aka <em>nsr</em> has earned the ability to handle multipart/form-data</p>
+
+<p>This can be seen as an important update, hence the minor version leap (0.2 to 0.3)</p>
+
+<p>There is an example of the way to use it to handle uploads that may be found in test/uploader/server.coffee (or server.js, 
+for that matter), following the route "/upload". A simplified version follows:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="nx">router</span><span class="p">.</span><span class="nx">post</span> <span class="s">"/upload"</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s">'Content-type'</span><span class="o">:</span> <span class="s">'text/html'</span><span class="p">})</span>
+  <span class="k">if</span> <span class="nx">req</span><span class="p">.</span><span class="nx">post</span><span class="p">[</span><span class="s">'multipart-data'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="nx">part</span> <span class="k">in</span> <span class="nx">req</span><span class="p">.</span><span class="nx">post</span><span class="p">[</span><span class="s">'multipart-data'</span><span class="p">]</span>
+      <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">val</span> <span class="k">of</span> <span class="nx">part</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"</span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s"> = </span><span class="si">#{</span><span class="nx">val</span><span class="si">}</span><span class="s">&lt;br/&gt;"</span> <span class="k">unless</span> <span class="p">((</span><span class="nx">key</span> <span class="o">is</span> <span class="s">'fileData'</span><span class="p">)</span> <span class="o">and</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span>
+        <span class="nv">fullname = </span><span class="s">"</span><span class="si">#{</span><span class="nx">__dirname</span><span class="si">}</span><span class="s">/public/uploads/</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="si">}</span><span class="s">"</span>
+        <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">contentType</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">'text'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+          <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span> <span class="nx">fullname</span><span class="p">,</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span>
+        <span class="k">else</span>
+          <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span> <span class="nx">fullname</span><span class="p">,</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span><span class="p">,</span> <span class="s">'binary'</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">'&lt;div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;"&gt;'</span>
+        <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">contentType</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">'image'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;img src='uploads/</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="si">}</span><span class="s">' /&gt;"</span>
+        <span class="k">else</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;pre&gt;</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span><span class="si">}</span><span class="s">&lt;/pre&gt;"</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">'&lt;/div&gt;'</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;hr/&gt;"</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span> <span class="s">""</span> 
+</pre></div>
+
+<p>Essentially, what you get is an array labeled 'multipart-data' added to the body of the request. Each of its members 
+will have some, or all of the following properties (some may lack "filename")</p>
+
+<ul>
+<li>
+<p><em>contentDisposition</em></p>
+
+<p>Just for reference. This will always be "form-data"</p>
+</li>
+<li>
+<p><em>fieldName</em></p>
+
+<p>The name of the input element that originated the current member of the array.</p>
+</li>
+<li>
+<p><em>fileName</em></p>
+
+<p>This will only exist if the originating field is &lt;input type="file"&gt;</p>
+</li>
+<li>
+<p><em>fileData</em></p>
+
+<p>This and the following may be somewhat misleading names, because as has been noted the object may not be a
+file. Regardless, it contains whatever was in the originating field. If this was a text input type, it will be
+the contents input by the user. If it was a file, it will be its contents.
+Its worth noting that in order for this to work accurately, the request input has been previously determined as
+binary by the router, like so: <code>req.setEncoding('binary')</code> </p>
+</li>
+<li>
+<p><em>fileLen</em></p>
+
+<p>Length of fileData </p>
+</li>
+<li>
+<p><em>contentType</em></p>
+
+<p>Mimetype of fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc</p>
+</li>
+</ul><h3>
+<a name="2013-07-27-v035-correction-for-paths-which-have-escaped-characters" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-07-27-v035-correction-for-paths-which-have-escaped-characters"><span class="octicon octicon-link"></span></a>2013-07-27: v0.3.5 Correction for paths which have escaped characters.</h3>
+
+<h3>
+<a name="2013-08-02-v036-added-default-favicon-fixed-cgi-bin" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-02-v036-added-default-favicon-fixed-cgi-bin"><span class="octicon octicon-link"></span></a>2013-08-02: v0.3.6 Added default favicon. Fixed cgi-bin.</h3>
+
+<h3>
+<a name="2013-08-03-v041-improved-cgi-bin-looks-like-its-now-really-usable-now-fcgi-to-come" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-03-v041-improved-cgi-bin-looks-like-its-now-really-usable-now-fcgi-to-come"><span class="octicon octicon-link"></span></a>2013-08-03: v0.4.1 Improved cgi-bin. Looks like it's now really usable. Now FCGI to come.</h3>
+
+<h3>
+<a name="2013-08-04-v045-further-improvement-for-cgi-bin-mainly-php-related-some-issues-remain-as-regards-to-php-though" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-04-v045-further-improvement-for-cgi-bin-mainly-php-related-some-issues-remain-as-regards-to-php-though"><span class="octicon octicon-link"></span></a>2013-08-04: v0.4.5 Further improvement for cgi-bin, mainly PHP related. Some issues remain as regards to PHP, though.</h3>
+
+<h3>
+<a name="2013-08-12-v047-cgi-works-smoothly-now-scgi-support---routerscgi_pass---added-and-working-fine" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-12-v047-cgi-works-smoothly-now-scgi-support---routerscgi_pass---added-and-working-fine"><span class="octicon octicon-link"></span></a>2013-08-12: v0.4.7 CGI works smoothly now. SCGI support - router.scgi_pass - added and working fine.</h3>
+
+<h3>
+<a name="2013-12-28-v049-2-fixes-nil-error-when-request-method-is-not-knownhandled" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-12-28-v049-2-fixes-nil-error-when-request-method-is-not-knownhandled"><span class="octicon octicon-link"></span></a>2013-12-28: v0.4.9-2 Fixes nil error when request method is not known/handled.</h3>
+
+<h3>
+<a name="2013-12-29-v049-3-as-a-result-of-the-former-now-nsr-handles-routerany-for-example" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-12-29-v049-3-as-a-result-of-the-former-now-nsr-handles-routerany-for-example"><span class="octicon octicon-link"></span></a>2013-12-29: v0.4.9-3 As a result of the former, now NSR handles <em>router.any</em>, for example:</h3>
+
+<p><code>router.any("/doit", function (request, response) {});</code> will handle any incoming request to "/doit" uri, regardless the request method.</p>
+
+<h3>
+<a name="2014-01-10-v049-4-improved-server-generated-by-mk-server-utility" class="anchor" href="https://github.com/sandy98/node-simple-router#2014-01-10-v049-4-improved-server-generated-by-mk-server-utility"><span class="octicon octicon-link"></span></a>2014-01-10: v0.4.9-4 Improved server generated by mk-server utility.</h3>
+
+<h2>
+<a name="complementary-topics" class="anchor" href="https://github.com/sandy98/node-simple-router#complementary-topics"><span class="octicon octicon-link"></span></a>Complementary topics</h2>
+
+<h3>
+<a name="i-default-options" class="anchor" href="https://github.com/sandy98/node-simple-router#i-default-options"><span class="octicon octicon-link"></span></a>I) Default options</h3>
+
+<ul>
+<li>
+<p><strong>logging</strong>: <em>true</em></p>
+
+<p>Turns off logging if defined false</p>
+</li>
+<li>
+<p><strong>log</strong>: <em>console.log</em></p>
+
+<p>Defines console.log as default logging output.</p>
+</li>
+<li>
+<p><strong>serve_static</strong>: <em>true</em></p>
+
+<p>Allows serving static content.</p>
+</li>
+<li>
+<p><strong>static_route</strong>: <em>"#{__dirname}/public"</em></p>
+
+<p>Defines root directory for static contents</p>
+</li>
+<li>
+<p><strong>list_dir</strong>: <em>true</em></p>
+
+<p>Allows/disallows directory listings</p>
+</li>
+</ul><p>Example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">//Disallows logging and directory listing, uses '/static' for static contents,</span>
+<span class="c1">//defaults remaining options</span>
+<span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="nx">Router</span><span class="p">({</span><span class="nx">logging</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">list_dir</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">static_route</span><span class="o">:</span> <span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">'/static'</span><span class="p">})</span>
+</pre></div>
+
+<h3>
+<a name="ii-retrieving-getpost-data" class="anchor" href="https://github.com/sandy98/node-simple-router#ii-retrieving-getpost-data"><span class="octicon octicon-link"></span></a>II) Retrieving get/post data</h3>
+
+<p>Request get data may be retrieved from <em>request.get</em>, an object in JSON format</p>
+
+<p>Request post data is included, also in JSON format, in <em>request.post</em>, although in this case, if data came in an
+unrecognized format, it will be retrieved as raw data, without any conversion.</p>
+
+<p>Finally, <em>request.get</em> and <em>request.post</em> are joined in <em>request.body</em>, so if you don't care how the data got to the
+server, you can use that.</p>
+
+<h3>
+<a name="iii-getting-parameters-from-urls" class="anchor" href="https://github.com/sandy98/node-simple-router#iii-getting-parameters-from-urls"><span class="octicon octicon-link"></span></a>III) Getting parameters from urls</h3>
+
+<p>Uses a similar convention as Express.js:  url segment preceded by a colon is treated as a parameter, as shown below</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/users/:id'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">"User: "</span> <span class="o">+</span> <span class="nx">getUserById</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">fullName</span><span class="p">);})</span>
+</pre></div>
+
+<h3>
+<a name="iv-todo-list" class="anchor" href="https://github.com/sandy98/node-simple-router#iv-todo-list"><span class="octicon octicon-link"></span></a>IV) Todo list</h3>
+
+<ul>
+<li>   Making directory listing actually work</li>
+<li>   Preparing a nice template for directory listing.</li>
+<li>   Managing file uploads.</li>
+</ul><h2>
+<a name="final-note" class="anchor" href="https://github.com/sandy98/node-simple-router#final-note"><span class="octicon octicon-link"></span></a>Final note</h2>
+
+<p>Was this necessary?</p>
+
+<p>Probably not.</p>
+
+<p>But then again, there are a couple of reasons that I think make it worth, and perhaps, useful to someone who shares these.</p>
+
+<p>For one thing, <em>reinventing the wheel is not only fun, it's frequently highly educative</em>.</p>
+
+<p>Second, there are quite a bunch of routing solutions for node.js, but I found the ones that come bundled with node frameworks,
+although in most cases high quality and performant, also in many cases just a bit too much stuffed with features that either I didn't
+need or was unable to manage/tweak to my projects needs, hence the decision to roll my own, mainly aimed to serve as a lightweight
+component for a <em>restful API</em>.</p>
+
+<p>Last but not least, I wanted to <em>share the fun</em>.</p>
+
+<p><strong>Last minute note:</strong> Guaycuru web server, initially included as a test of the static resource serving capabilities of this router,
+is no longer present in current distribution. Instead, you can get it <a href="https://github.com/sandy98/guaycuru">here</a> or install it by 
+means of <em>npm</em>  </p>
+
+<h2>
+<a name="license" class="anchor" href="https://github.com/sandy98/node-simple-router#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2012 Ernesto Savoretti <a href="mailto:esavoretti@gmail.com">esavoretti@gmail.com</a></p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p></article>
+  </div>
+
+
+        </div>
+
+      </div><!-- /.repo-container -->
+      <div class="modal-backdrop"></div>
+    </div><!-- /.container -->
+  </div><!-- /.site -->
+
+
+    </div><!-- /.wrapper -->
+
+      <div class="container">
+  <div class="site-footer">
+    <ul class="site-footer-links right">
+      <li><a href="https://status.github.com/">Status</a></li>
+      <li><a href="http://developer.github.com/">API</a></li>
+      <li><a href="http://training.github.com/">Training</a></li>
+      <li><a href="http://shop.github.com/">Shop</a></li>
+      <li><a href="https://github.com/blog">Blog</a></li>
+      <li><a href="https://github.com/about">About</a></li>
+
+    </ul>
+
+    <a href="https://github.com/">
+      <span class="mega-octicon octicon-mark-github" title="GitHub"></span>
+    </a>
+
+    <ul class="site-footer-links">
+      <li>© 2014 <span title="0.07480s from github-fe124-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+        <li><a href="https://github.com/site/terms">Terms</a></li>
+        <li><a href="https://github.com/site/privacy">Privacy</a></li>
+        <li><a href="https://github.com/security">Security</a></li>
+        <li><a href="https://github.com/contact">Contact</a></li>
+    </ul>
+  </div><!-- /.site-footer -->
+</div><!-- /.container -->
+
+
+    <div class="fullscreen-overlay js-fullscreen-overlay" id="fullscreen_overlay">
+  <div class="fullscreen-container js-fullscreen-container">
+    <div class="textarea-wrap">
+      <textarea name="fullscreen-contents" id="fullscreen-contents" class="js-fullscreen-contents" placeholder="" data-suggester="fullscreen_suggester"></textarea>
+          <div class="suggester-container">
+              <div class="suggester fullscreen-suggester js-navigation-container" id="fullscreen_suggester" data-url="/sandy98/node-simple-router/suggestions/commit">
+              </div>
+          </div>
+    </div>
+  </div>
+  <div class="fullscreen-sidebar">
+    <a href="https://github.com/sandy98/node-simple-router#" class="exit-fullscreen js-exit-fullscreen tooltipped leftwards" original-title="Exit Zen Mode">
+      <span class="mega-octicon octicon-screen-normal"></span>
+    </a>
+    <a href="https://github.com/sandy98/node-simple-router#" class="theme-switcher js-theme-switcher tooltipped leftwards" original-title="Switch themes">
+      <span class="octicon octicon-color-mode"></span>
+    </a>
+  </div>
+</div>
+
+
+
+    <div id="ajax-error-message" class="flash flash-error">
+      <span class="octicon octicon-alert"></span>
+      <a href="https://github.com/sandy98/node-simple-router#" class="octicon octicon-remove-close close ajax-error-dismiss"></a>
+      Something went wrong with that request. Please try again.
+    </div>
+
+  
+
+
+<div id="global-zeroclipboard-html-bridge" class="global-zeroclipboard-container" data-clipboard-ready="true" style="position: absolute; left: -9999px; top: -9999px; width: 15px; height: 15px; z-index: 9999;" original-title="">      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="global-zeroclipboard-flash-bridge" width="100%" height="100%">         <param name="movie" value="https://github.global.ssl.fastly.net/flash/ZeroClipboard.v1.2.1.swf?nocache=1389485398573">         <param name="allowScriptAccess" value="always">         <param name="scale" value="exactfit">         <param name="loop" value="false">         <param name="menu" value="false">         <param name="quality" value="best">         <param name="bgcolor" value="#ffffff">         <param name="wmode" value="transparent">         <param name="flashvars" value="trustedOrigins=github.com">         <embed src="https://github.global.ssl.fastly.net/flash/ZeroClipboard.v1.2.1.swf?nocache=1389485398573" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="100%" height="100%" name="global-zeroclipboard-flash-bridge" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="trustedOrigins=github.com" scale="exactfit">                </object></div></body><iframe id="evernoteFilingTools" src="./sandy98_node-simple-router_files/filing_tools.html"></iframe><iframe id="evernoteUserTools" src="./sandy98_node-simple-router_files/user_tools.html"></iframe><iframe id="evernoteShareTools" src="./sandy98_node-simple-router_files/share_tools.html"></iframe><iframe id="evernoteEmailSharing" src="./sandy98_node-simple-router_files/email_sharing.html"></iframe><iframe id="evernoteGlobalTools" src="./sandy98_node-simple-router_files/global_tools.html"></iframe></html>

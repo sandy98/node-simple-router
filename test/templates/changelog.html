@@ -1,0 +1,135 @@
+<div class="">
+    <div class="well well-lg">
+        <h1>ChangeLog</h1>
+    </div>
+    <h3>
+        <a name="-024-all-the-basic-stuff" class="anchor" href="https://github.com/sandy98/node-simple-router#-024-all-the-basic-stuff"><span class="octicon octicon-link"></span></a>&lt; 0.2.4 All the basic stuff</h3>
+
+    <h3>
+        <a name="2012-09-07-v024-added-cgi-support" class="anchor" href="https://github.com/sandy98/node-simple-router#2012-09-07-v024-added-cgi-support"><span class="octicon octicon-link"></span></a>2012-09-07: v0.2.4 Added CGI support</h3>
+
+    <p>Currently the cgi dispatcher relies - as it's supposed to be - on the cgi process to provide the correct headers.
+        Also, post and get - summed up in 'body' - must be readed by the cgi process via std input and converted to json
+        object by whatever means the cgi implementation provides. For instance, a python example could be implemented along
+        the lines:</p>
+
+    <div class="highlight highlight-python"><pre><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">"</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">body</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</pre></div>
+
+    <h3>
+        <a name="2013-03-25-v025-added-mimetypes-xml-and-svg-to-the-list-of-recognized-types" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-03-25-v025-added-mimetypes-xml-and-svg-to-the-list-of-recognized-types"><span class="octicon octicon-link"></span></a>2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types</h3>
+
+    <h3>
+        <a name="2013-04-01-v026-added-compile-to-js-tool-compilesh" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-01-v026-added-compile-to-js-tool-compilesh"><span class="octicon octicon-link"></span></a>2013-04-01: v0.2.6 Added compile to js tool 'compile.sh'</h3>
+
+    <h3>
+        <a name="2013-04-02-v027-added-mk-server-to-the-bin-directory" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-02-v027-added-mk-server-to-the-bin-directory"><span class="octicon octicon-link"></span></a>2013-04-02: v0.2.7 Added mk-server to the bin directory.</h3>
+
+    <p>This is a tiny tool that will create a brand new node-simple-router powered server to the working directory.
+        It can be invoked with no params, producing an executable server.coffee file. Should you prefer getting a javascript version of the server,
+        you must invoke it like so: mk-server js. This will produce server.js.</p>
+
+    <p>It's worth noting that in order for this to be useful, you should install node-simple-router globally <code>sudo npm install -g node-simple-router</code>       </p>
+
+    <h3>
+        <a name="2013-04-03-v030-node-simple-router-becomes-able-to-handle-form-uploads" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-04-03-v030-node-simple-router-becomes-able-to-handle-form-uploads"><span class="octicon octicon-link"></span></a>2013-04-03: v0.3.0 node-simple-router becomes able to handle form uploads.</h3>
+
+    <p>Or, to be precise, <em>node-simple-router</em> aka <em>nsr</em> has earned the ability to handle multipart/form-data</p>
+
+    <p>This can be seen as an important update, hence the minor version leap (0.2 to 0.3)</p>
+
+    <p>There is an example of the way to use it to handle uploads that may be found in test/uploader/server.coffee (or server.js,
+        for that matter), following the route "/upload". A simplified version follows:</p>
+
+    <div class="highlight highlight-coffeescript"><pre><span class="nx">router</span><span class="p">.</span><span class="nx">post</span> <span class="s">"/upload"</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s">'Content-type'</span><span class="o">:</span> <span class="s">'text/html'</span><span class="p">})</span>
+  <span class="k">if</span> <span class="nx">req</span><span class="p">.</span><span class="nx">post</span><span class="p">[</span><span class="s">'multipart-data'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="nx">part</span> <span class="k">in</span> <span class="nx">req</span><span class="p">.</span><span class="nx">post</span><span class="p">[</span><span class="s">'multipart-data'</span><span class="p">]</span>
+      <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">val</span> <span class="k">of</span> <span class="nx">part</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"</span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s"> = </span><span class="si">#{</span><span class="nx">val</span><span class="si">}</span><span class="s">&lt;br/&gt;"</span> <span class="k">unless</span> <span class="p">((</span><span class="nx">key</span> <span class="o">is</span> <span class="s">'fileData'</span><span class="p">)</span> <span class="o">and</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span>
+        <span class="nv">fullname = </span><span class="s">"</span><span class="si">#{</span><span class="nx">__dirname</span><span class="si">}</span><span class="s">/public/uploads/</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="si">}</span><span class="s">"</span>
+        <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">contentType</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">'text'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+          <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span> <span class="nx">fullname</span><span class="p">,</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span>
+        <span class="k">else</span>
+          <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span> <span class="nx">fullname</span><span class="p">,</span> <span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span><span class="p">,</span> <span class="s">'binary'</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">'&lt;div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;"&gt;'</span>
+        <span class="k">if</span> <span class="nx">part</span><span class="p">.</span><span class="nx">contentType</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">'image'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;img src='uploads/</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileName</span><span class="si">}</span><span class="s">' /&gt;"</span>
+        <span class="k">else</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;pre&gt;</span><span class="si">#{</span><span class="nx">part</span><span class="p">.</span><span class="nx">fileData</span><span class="si">}</span><span class="s">&lt;/pre&gt;"</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">'&lt;/div&gt;'</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">write</span> <span class="s">"&lt;hr/&gt;"</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span> <span class="s">""</span>
+</pre></div>
+
+    <p>Essentially, what you get is an array labeled 'multipart-data' added to the body of the request. Each of its members
+        will have some, or all of the following properties (some may lack "filename")</p>
+
+    <ul>
+        <li>
+            <p><em>contentDisposition</em></p>
+
+            <p>Just for reference. This will always be "form-data"</p>
+        </li>
+        <li>
+            <p><em>fieldName</em></p>
+
+            <p>The name of the input element that originated the current member of the array.</p>
+        </li>
+        <li>
+            <p><em>fileName</em></p>
+
+            <p>This will only exist if the originating field is &lt;input type="file"&gt;</p>
+        </li>
+        <li>
+            <p><em>fileData</em></p>
+
+            <p>This and the following may be somewhat misleading names, because as has been noted the object may not be a
+                file. Regardless, it contains whatever was in the originating field. If this was a text input type, it will be
+                the contents input by the user. If it was a file, it will be its contents.
+                Its worth noting that in order for this to work accurately, the request input has been previously determined as
+                binary by the router, like so: <code>req.setEncoding('binary')</code> </p>
+        </li>
+        <li>
+            <p><em>fileLen</em></p>
+
+            <p>Length of fileData </p>
+        </li>
+        <li>
+            <p><em>contentType</em></p>
+
+            <p>Mimetype of fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc</p>
+        </li>
+    </ul><h3>
+    <a name="2013-07-27-v035-correction-for-paths-which-have-escaped-characters" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-07-27-v035-correction-for-paths-which-have-escaped-characters"><span class="octicon octicon-link"></span></a>2013-07-27: v0.3.5 Correction for paths which have escaped characters.</h3>
+
+    <h3>
+        <a name="2013-08-02-v036-added-default-favicon-fixed-cgi-bin" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-02-v036-added-default-favicon-fixed-cgi-bin"><span class="octicon octicon-link"></span></a>2013-08-02: v0.3.6 Added default favicon. Fixed cgi-bin.</h3>
+
+    <h3>
+        <a name="2013-08-03-v041-improved-cgi-bin-looks-like-its-now-really-usable-now-fcgi-to-come" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-03-v041-improved-cgi-bin-looks-like-its-now-really-usable-now-fcgi-to-come"><span class="octicon octicon-link"></span></a>2013-08-03: v0.4.1 Improved cgi-bin. Looks like it's now really usable. Now FCGI to come.</h3>
+
+    <h3>
+        <a name="2013-08-04-v045-further-improvement-for-cgi-bin-mainly-php-related-some-issues-remain-as-regards-to-php-though" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-04-v045-further-improvement-for-cgi-bin-mainly-php-related-some-issues-remain-as-regards-to-php-though"><span class="octicon octicon-link"></span></a>2013-08-04: v0.4.5 Further improvement for cgi-bin, mainly PHP related. Some issues remain as regards to PHP, though.</h3>
+
+    <h3>
+        <a name="2013-08-12-v047-cgi-works-smoothly-now-scgi-support---routerscgi_pass---added-and-working-fine" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-08-12-v047-cgi-works-smoothly-now-scgi-support---routerscgi_pass---added-and-working-fine"><span class="octicon octicon-link"></span></a>2013-08-12: v0.4.7 CGI works smoothly now. SCGI support - router.scgi_pass - added and working fine.</h3>
+
+    <h3>
+        <a name="2013-12-28-v049-2-fixes-nil-error-when-request-method-is-not-knownhandled" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-12-28-v049-2-fixes-nil-error-when-request-method-is-not-knownhandled"><span class="octicon octicon-link"></span></a>2013-12-28: v0.4.9-2 Fixes nil error when request method is not known/handled.</h3>
+
+    <h3>
+        <a name="2013-12-29-v049-3-as-a-result-of-the-former-now-nsr-handles-routerany-for-example" class="anchor" href="https://github.com/sandy98/node-simple-router#2013-12-29-v049-3-as-a-result-of-the-former-now-nsr-handles-routerany-for-example"><span class="octicon octicon-link"></span></a>2013-12-29: v0.4.9-3 As a result of the former, now NSR handles <em>router.any</em>, for example:</h3>
+
+    <p><code>router.any("/doit", function (request, response) {});</code> will handle any incoming request to "/doit" uri, regardless the request method.</p>
+
+    <h3>
+        <a name="2014-01-10-v049-4-improved-server-generated-by-mk-server-utility" class="anchor" href="https://github.com/sandy98/node-simple-router#2014-01-10-v049-4-improved-server-generated-by-mk-server-utility"><span class="octicon octicon-link"></span></a>2014-01-10: v0.4.9-4 Improved server generated by mk-server utility.</h3>
+
+</div>

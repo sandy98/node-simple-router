@@ -19,7 +19,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.4.9-4'
+    version: '0.5.0-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -580,7 +580,7 @@ Router = (options = {}) ->
   dispatch._405 = (req, res, path, message) ->
     res.writeHead(405, {'Content-Type': 'text/html'})
     res.end("""
-                <h2>405 - Resource #{path}: #{message}</h2>
+#               <h2>405 - Resource #{path}: #{message}</h2>
                 <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
@@ -590,8 +590,23 @@ Router = (options = {}) ->
     res.end("""
                 <h2>500 - Internal server error at #{path}: #{message}</h2>
                 <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
-              <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
+                <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
+
+  dispatch.compile_template = (template_string, context) ->
+    pattern = /\{{2}(.+?)\}{2}/gi
+    placeholders = template_string.match pattern
+    return template_string if not placeholders
+    placeholder_obj = {}
+    for ph in placeholders
+      k = ph.replace(/\{/g, '').replace(/\}/g, '').trim()
+      placeholder_obj[k] = ph
+
+    ret_str = template_string
+    for key, value of context
+      ret_str = ret_str.replace new RegExp(placeholder_obj[key], 'g'), value
+
+    ret_str
 
 # End of Dispatch function properties and methods 	
 
