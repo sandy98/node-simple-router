@@ -5,10 +5,10 @@ process.chdir __dirname
 fs = require 'fs'
 
 try
-  Router = require '../../src/router'
+  Router = require '../src/router'
 catch e
   try
-    Router = require '../../lib/router'
+    Router = require '../lib/router'
   catch e2
     console.log 'node-simple-router must be installed for this to work'
     process.exit(-1)
@@ -81,18 +81,19 @@ router.get "/about", (request, response) ->
 router.get "/hello_world", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
   data = """
-     <div>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Hello, World!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Hola, Mundo!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Ciao, Mondo!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Bonjour, tout le Monde!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Ol&aacute;, Mundo!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Hallo, Welt!</p>
-         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});">Hola, M&oacute;n!</p>
+     <div style="margin-left: 2em;">
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="English">Hello, World!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="Spanish">Hola, Mundo!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="Italian">Ciao, Mondo!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="French">Bonjour, tout le Monde!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="Portuguese">Ol&aacute;, Mundo!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="German">Hallo, Welt!</p>
+         <p style="color: rgb(#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)},#{Math.floor(Math.random() * 256)});" title="Catalan">Hola, M&oacute;n!</p>
      </div>
      <hr/>
      <p><strong>Current Time:</strong>&nbsp;<span id='date-span'>#{new Date().toLocaleString().replace(/GMT.+/, '')}</span></p>
      <script type="text/javascript">
+        setTimeout(function () {try {$('p[title]').tooltip({placement: 'left'});} catch (e) {}}, 0);
         setInterval(function () {document.getElementById('date-span').innerHTML = new Date().toLocaleString().replace(/GMT.+/, '');}
         , 1000);
         setTimeout(function () {location.reload();}, 10000);
