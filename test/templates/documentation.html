@@ -1,6 +1,123 @@
-<div>
-  <div class="well well-lg">
+<div xmlns="http://www.w3.org/1999/html">
+  <div class="page-header">
     <h1>Documents</h1>
   </div>
-    <p>All the info about NSR API here ASAP.</p>
+  <div class="panel panel-primary">
+     <div class="panel-heading">
+         <h3 class="panel-title">Rationale</h3>
+     </div>
+     <div class="panel-body">
+         <p>Routing, in web app parlance, is about defining what code to execute when a given URL is invoked.</p>
+         <p>
+             NSR takes care of the necessary plumbing to make that happen,<br/>
+             freeing the programmer of the cumbersome details, allowing her to focus on the problem domain.
+         </p>
+     </div>
+  </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Options</h3>
+        </div>
+        <div class="panel-body">
+            <p>NSR sticks to some conventions ("public" as directory name for static assets, etc),</p>
+            <p>which the programmer can override when instantiating the router, for instance:</p>
+            <p><pre><code class="js">var router = new Router({static_route: __dirname + "/static"});</code></pre></p>
+            <p>to change usage of the default "public" directory for static resources</p>
+            <p>List of default options:</p>
+            <p>
+                <pre><code class="js">
+                logging: true<br/>
+                log: console.log<br/>
+                static_route: "#{process.cwd()}/public"<br/>
+                serve_static: true<br/>
+                list_dir: true<br/>
+                default_home: ['index.html', 'index.htm', 'default.htm']<br/>
+                cgi_dir: "cgi-bin"<br/>
+                serve_cgi: true<br/>
+                serve_php: true<br/>
+                php_cgi: "php-cgi"<br/>
+                served_by: 'Node Simple Router'<br/>
+                software_name: 'node-simple-router'<br/>
+                admin_user: 'admin'<br/>
+                admin_pwd: 'admin'<br/>
+                </code></pre>
+            </p>
+            <p>Most of them are self explanatory, but some deserve further comments,</p>
+            <p>which will be added on doc completion.</p>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Router API</h3>
+        </div>
+        <div class="panel-body">
+            <p>Router object supports the following methods</p>
+            <p>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>get</strong>
+                        <pre><em>Usage:</em><br/><code class="js">router.get('/users/:id', function(request, response) {
+                        response.end("User: " + getUserById(request.params.id).fullName);});</code></pre>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>post</strong>
+                        <pre><em>Usage:</em><br/><code class="js">router.post('/users', function(request, response) {
+                        insertUser(request.post.user, function(new_user_id) {
+                          request.post.user.id = new_user_id;
+                          response.end(JSON.stringify(request.post.user);});
+                        });</code></pre>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>put</strong>
+                                <pre><em>Usage:</em><br/><code class="js">router.put('/users', function(request, response) {
+                                    updateUser(request.post.user, function(updated_user_id) {
+                                    response.end(updated_user_id);})
+                                    });</code></pre>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>patch</strong>&nbsp;&nbsp;&nbsp;A variant for PUT
+                                <pre><em>Usage:</em><br/><code class="js">router.patch('/users', function(request, response) {
+                                    updateUser(request.post.user, function(updated_user_id) {
+                                    response.end(updated_user_id);});
+                                    });</code></pre>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>delete</strong>&nbsp;&nbsp;&nbsp;
+                                <pre><em>Usage:</em><br/><code class="js">router.delete('/users', function(request, response) {
+                                    deleteUser(request.post.user_id, function(user_id) {
+                                    response.end(user_id);});
+                                    });</code></pre>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>any</strong>&nbsp;&nbsp;&nbsp;To be used when the request method is not known in advance. Sort of "catch all"
+                        <pre><em>Usage:</em><br/><code class="js">router.any('/users', function(request, response) {
+                            response.end("User: " + getUserById(request.body.user_id).fullName);}); // Observe the usage of 'request.body' as the union of 'request.get' and 'request.post'</code></pre>
+                    </li>
+                    <li class="list-divider">
+
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            <strong>Complementary methods</strong>
+                        </div>
+                        <div class="list-group-item-text">
+                            Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
+                            They are what you will use 90% of the time.<br/>What follows are method loosely related to
+                            routing activity, but are the ones that give <span style="color: red;">NSR</span> some of its
+                            distinctiveness.
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>proxy_pass</strong>&nbsp;&nbsp;&nbsp;To deliver to the client the contents of an url from another server
+                        <pre><em>Usage:</em><br/><code class="js">router.get('/whatismyip', function(request, response) {
+                            router.proxy_pass('http://testing.savos.ods.org/wimi', response);});
+                         </pre>
+                    </li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
 </div>

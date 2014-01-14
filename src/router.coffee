@@ -7,7 +7,6 @@ Router = (options = {}) ->
   querystring = require('querystring')
   fs       = require('fs')
   path_tools = require('path')
-#  util      = require('util')
   spawn  = require('child_process').spawn
   domain = require 'domain'
   net = require 'net'
@@ -19,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.5.0-1'
+    version: '0.5.0-2'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -110,19 +109,26 @@ Router = (options = {}) ->
       if req.headers['content-type']
         contentType = req.headers['content-type']
       mp_index = contentType.indexOf('multipart/form-data')
-      req.setEncoding('binary') if (mp_index isnt -1)
-      req.on 'data', (chunk) ->
-        body.push chunk
-      req.on 'end', () ->
-        body = body.join ''
-        if contentType is 'text/plain'
-          body = body.replace('\r\n', '')
-        req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
-        req.body = _extend req.body, req.post
+      if req.method.toLowerCase() isnt 'get'
+        req.setEncoding('binary') if (mp_index isnt -1)
+        req.on 'data', (chunk) ->
+          body.push chunk
+        req.on 'end', () ->
+          body = body.join ''
+          if contentType is 'text/plain'
+            body = body.replace('\r\n', '')
+          req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
+          req.body = _extend req.body, req.post
+          try
+            cb(req, res)
+          catch e
+            dispatch._500 req, res, req.url, e.toString()
+      else
         try
           cb(req, res)
         catch e
           dispatch._500 req, res, req.url, e.toString()
+
     wrapper
 
 # End of Auxiliary functions.	

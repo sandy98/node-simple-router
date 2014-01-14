@@ -1,5 +1,5 @@
 <div>
-  <div class="well well-lg">
+  <div class="page-header">
     <h1>Getting started</h1>
   </div>
   <h3>
@@ -9,11 +9,11 @@
 
   <p>From Node Package Manager:</p>
 
-  <pre>npm install node-simple-router</pre>
+  <pre><code class="bg bash">npm install node-simple-router</code></pre>
 
   <p>From source:</p>
 
-  <pre>git clone https://github.com/sandy98/node-simple-router</pre>
+  <pre><code class="bg bash">git clone https://github.com/sandy98/node-simple-router</code></pre>
 
   <hr/>
 
@@ -22,5 +22,53 @@
         <span style="color: #4169e1;">Step 2: </span><span>Test</span>
     </h3>
 
-    <pre>cd to your installation directory and run <code>npm test</code><br/>then point your browser to <em>http://localhost:8000</em> and review the info<br/>and above all, try the examples.</pre>
+    <pre>cd to your installation directory and run <code class="bg bash">npm test</code><br/>then point your browser to <em>http://localhost:8000</em> and review the info<br/>and above all, try the examples.</pre>
+
+    <hr/>
+
+    <h3>
+        <a name="doit" class="anchor" href="#doit"><span class="octicon octicon-link"></span></a>
+        <span style="color: #4169e1;">Step 3: </span><span>Run your server</span>
+    </h3>
+
+    <div class="list-group">
+        <div class="list-group-item">
+            <p class="list-group-item-text">
+            You can roll your own, or use the sample server that NSR provides by means of the mk-server utility:<br/>
+            <code class="bg bash">mk-server js</code> will provide a barebones server (<em>server.js</em>)  with some example routes ready to run.<br/>
+            In order for this to work, you must have installed NSR global, like so:<br/>
+            <code class="bg bash">sudo npm install -g node-simple-router</code>, or have the .bin directory of NSR in your path by whatever means you see fit.<br/>
+            Either case, the basic steps are the same:<br/>
+            </p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Import 'http'</h4>
+            <p class="list-group-item-text"><code class="bg js">var http = require('http');</code></p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Import NSR</h4>
+            <p class="list-group-item-text"><code class="bg js">var Router = require('node-simple-router');</code></p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Instantiate the router</h4>
+            <p class="list-group-item-text"><code class="bg js">var router = Router(); // may also be router = new Router();</code></p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Add some routes</h4>
+            <p class="list-group-item-text"><code class="bg js">router.get("/hello", function(request, response) {response.end("Hello, World!"};});</code></p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Create an http server using router as the handler</h4>
+            <p class="list-group-item-text"><code class="bg js">var server = http.createServer(router);</code></p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Finally, make it listen on your chosen port and we are in business</h4>
+            <p class="list-group-item-text"><code class="bg js">server.listen(1234);</code></p>
+        </div>
+    </div>
+
+    <hr/>
+
+    <a href="/documentation">Read more...</a>
+
 </div>

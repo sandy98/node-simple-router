@@ -154,6 +154,9 @@ router.post "/teams", (request, response) ->
   site_router(context, response)
 
 
+router.get "/wimi", (request, response) ->
+  router.proxy_pass "http://testing.savos.ods.org/wimi", response
+
 #
 #End routes
 #

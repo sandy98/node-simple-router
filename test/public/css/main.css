@@ -54,4 +54,27 @@ body {
         -webkit-transform:rotate(45deg);
         box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}
 
+code.bg {
+    background-color: #ffffff;
+}
 
+code.js {
+    color: #4169e1;
+}
+
+code.coffee {
+    color: #006400;
+    }
+
+code.bash {
+    color: navy;
+    font-style: italic;
+
+}
+
+.router {
+    background-image: url('/img/router50.png');
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
