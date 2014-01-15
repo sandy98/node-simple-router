@@ -1,0 +1,57 @@
+---
+layout: page_wide
+title: Sparse thoughts
+tagline: for what it's worth
+description: "Blogging all things techies"
+---
+{% include JB/setup %}
+
+<div class="span9">
+  {% for post in site.posts %}
+    {% if forloop.index < 4  %}
+        <div class="row-fluid post-full">
+          <div class="well">
+            <div class="row-fluid"><a href="{{ BASE_PATH }}{{ post.url }}"><h5>{{post.title}}</h5></a></div>
+            <div class="row-fluid content">{{post.content | truncatewords: 50}}<br/><br/>   ... <a href="{{ BASE_PATH }}{{ post.url }}">continue reading</a></div>
+          </div>
+        </div>
+    {% elsif forloop.index == forloop.length %}
+        <div class="row-fluid post-full">
+            <div class="">
+                <a href="/archive.html">All entries ({{ forloop.length }})</a>
+            </div>
+        </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="span3">
+    <div class="row-fluid">
+        <p style="text-align: center;">
+            <img class="img-rounded" src="/img/users/sandy98.jpg" />
+        </p>
+        <h5 style="text-align: center;">{{site.author.name}}</h5>
+        <p class="well well-small">
+            I love programming computers and playing chess,
+            though I think I'm better at the former.<br/>
+            Currently busy diving into the wonderful MVC Javascript World,
+            even though I miss a bit C/C++ hacking...<br/>
+            Should you want to contact me, just drop me a line
+            <a href="mailto:esavoretti@gmail.com">here.</a><br/>
+            Also, you may review some of my <a href="public/mystuff">recent stuff</a>
+        </p>
+        <hr/>
+        <ul class="posts" style="list-style: none; margin-top: 1em; margin-bottom: 1em;">
+          {% for post in site.posts %}
+            <li style="font-size: small; margin-bottom: 0.5em;"><span>{{ post.date | date_to_string }}</span> &raquo;
+                <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
+          {% endfor %}
+        </ul>
+        <hr/>
+        {% comment %}
+        <div style="text-align: center;">
+            <a class="btn btn-mini btn-primary" href="/">Home</a>
+        </div>
+        {% endcomment %}
+    </div>
+</div>
