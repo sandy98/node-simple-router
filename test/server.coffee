@@ -155,7 +155,17 @@ router.post "/teams", (request, response) ->
 
 
 router.get "/wimi", (request, response) ->
-  router.proxy_pass "http://testing.savos.ods.org/wimi", response
+  #router.proxy_pass "http://testing.savos.ods.org/wimi", response
+  router.proxy_pass "http://sandy98-coffee-hello.herokuapp.com/wimi", response
+
+router.get "/cgitest", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/cgitest.html", encoding: "utf8", (err, data) ->
+    context = _extend(base_context, {contents: data})
+    site_router(context, response)
+
+
+
 
 #
 #End routes

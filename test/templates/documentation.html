@@ -9,7 +9,7 @@
      <div class="panel-body">
          <p>Routing, in web app parlance, is about defining what code to execute when a given URL is invoked.</p>
          <p>
-             NSR takes care of the necessary plumbing to make that happen,<br/>
+             NSR takes care of the necessary plumbing to make that happen,
              freeing the programmer of the cumbersome details, allowing her to focus on the problem domain.
          </p>
      </div>
@@ -57,12 +57,12 @@
             <p>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>get</strong>
+                        <h4><dfn>get</dfn></h4>
                         <pre><em>Usage:</em><br/><code class="js">router.get('/users/:id', function(request, response) {
                         response.end("User: " + getUserById(request.params.id).fullName);});</code></pre>
                     </li>
                     <li class="list-group-item">
-                        <strong>post</strong>
+                        <h4><dfn>post</dfn></h4>
                         <pre><em>Usage:</em><br/><code class="js">router.post('/users', function(request, response) {
                         insertUser(request.post.user, function(new_user_id) {
                           request.post.user.id = new_user_id;
@@ -70,28 +70,28 @@
                         });</code></pre>
                     </li>
                     <li class="list-group-item">
-                        <strong>put</strong>
+                        <h4><dfn>put</dfn></h4>
                                 <pre><em>Usage:</em><br/><code class="js">router.put('/users', function(request, response) {
                                     updateUser(request.post.user, function(updated_user_id) {
                                     response.end(updated_user_id);})
                                     });</code></pre>
                     </li>
                     <li class="list-group-item">
-                        <strong>patch</strong>&nbsp;&nbsp;&nbsp;A variant for PUT
+                        <h4><dfn>patch</dfn></h4>&nbsp;&nbsp;&nbsp;A variant for PUT
                                 <pre><em>Usage:</em><br/><code class="js">router.patch('/users', function(request, response) {
                                     updateUser(request.post.user, function(updated_user_id) {
                                     response.end(updated_user_id);});
                                     });</code></pre>
                     </li>
                     <li class="list-group-item">
-                        <strong>delete</strong>&nbsp;&nbsp;&nbsp;
+                        <h4><dfn>delete</dfn></h4>&nbsp;&nbsp;&nbsp;
                                 <pre><em>Usage:</em><br/><code class="js">router.delete('/users', function(request, response) {
                                     deleteUser(request.post.user_id, function(user_id) {
                                     response.end(user_id);});
                                     });</code></pre>
                     </li>
                     <li class="list-group-item">
-                        <strong>any</strong>&nbsp;&nbsp;&nbsp;To be used when the request method is not known in advance. Sort of "catch all"
+                        <h4><dfn>any</dfn></h4>&nbsp;&nbsp;&nbsp;To be used when the request method is not known in advance. Sort of "catch all"
                         <pre><em>Usage:</em><br/><code class="js">router.any('/users', function(request, response) {
                             response.end("User: " + getUserById(request.body.user_id).fullName);}); // Observe the usage of 'request.body' as the union of 'request.get' and 'request.post'</code></pre>
                     </li>
@@ -100,7 +100,7 @@
                     </li>
                     <li class="list-group-item">
                         <div class="list-group-item-heading">
-                            <strong>Complementary methods</strong>
+                            <h4><dfn>Complementary methods</dfn></h4>
                         </div>
                         <div class="list-group-item-text">
                             Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
@@ -110,10 +110,41 @@
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <strong>proxy_pass</strong>&nbsp;&nbsp;&nbsp;To deliver to the client the contents of an url from another server
+                        <h4><dfn>proxy_pass</dfn></h4>&nbsp;&nbsp;&nbsp;To deliver to the client the contents of an url from another server
                         <pre><em>Usage:</em><br/><code class="js">router.get('/whatismyip', function(request, response) {
-                            router.proxy_pass('http://testing.savos.ods.org/wimi', response);});
+                            router.proxy_pass('http://testing.savos.ods.org/wimi', response);});</code>
                          </pre>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            <p><h4><dfn><abbr title="Common Gateway Interface">cgi</abbr></dfn></h4>&nbsp;&nbsp;&nbsp;To pass the client the results of an external CGI program.</p>
+                        </div>
+                        <div class="list-group-item-text">
+                            <p>
+                                This one deserves an additional comment on its usefulness. While some - many perhaps - would argue
+                                that CGI doesn't make any sense from a Node.js development perspective, I still it's a worthy inclusion
+                                for a couple of reasons
+                                  <ul>
+                                    <li>First of all, you may have a legacy CGI module that you want/need to use in your brand new Node.js server - would you rewrite, for instance, Crafty, the chess engine, in Node? -</li>
+                                    <li>Writing programs that can talk to each other through standard means (stdin, stdout) has passed the test of time, and I think it has it niche even in the web server world.</li>
+                                    <li>If performance is a concern - and it should be - the present considerations still stand for the next item: SCGI, which NSR also supports. But there would not have been SCGI without CGI</li>
+                                    <li>Last but not least, CGI support makes the same sense in the context of a Node.js web server thant it does in Nginx, Apache, etc.. I'm not aware of anybody suggestiong CGI support should be dropped from any of them.</li>
+                                  </ul>
+                            </p>
+                            <pre>
+                                <em>Usage:</em><br/>
+                                <samp>
+                                    By default, any static resource having a path that includes the router option 'cgi-dir'
+                                    (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
+                                    as a cgi program, provided the router option 'serve_cgi' is true.<br/>
+                                    For example, the uri: <code class='js'>/cgi-bin/hello.py</code> will be handled as a CGI program.<br/>
+                                    On the other hand, you can invoke directly the cgi method of the router, like so:<br/>
+                                    <code class="js">router.cgi('/hidden-cgi-dir/mycgi.rb', request, response);</code><br/>
+                                    Nevertheless, such way of using it is discouraged as it does not follow CGI standard
+                                    guidelines.
+                                </samp>
+                             </pre>
+                        </div>
                     </li>
                 </ul>
             </p>

@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.5.0-2'
+    version: '0.5.0-3'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -537,9 +537,12 @@ Router = (options = {}) ->
 # End of SCGI support
 
   dispatch.proxy_pass = (url, response) ->
-    http.get url, (res) ->
-      res.pipe response
-  
+    try
+      http.get url, (res) ->
+        res.pipe response
+    catch e
+      dispatch._500 null, response, url, e.message
+
   dispatch.directory = (fpath, path, res) ->
     resp = _dirlist_template
     resp = resp.replace("<%= @cwd %>", path) while resp.indexOf("<%= @cwd %>") isnt -1

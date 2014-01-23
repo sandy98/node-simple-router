@@ -1,0 +1,91 @@
+    <h4><span style="color: red;">Warning:</span> keep on account that some or all of the following may or may not run on your system, depending on your configuration.</h4>
+    <hr/>
+    <form method="POST" enctype="application/x-www-form-urlencoded" action="/cgi-bin/cgistorage.py">
+      <fieldset>
+         <p>
+           <label for="txt-name">Name: </label>
+           <input type="text" size="60" id="txt-name" name="name" required="required" />
+         </p>
+         <p>
+           <label for="txt-age">Age:&nbsp;&nbsp;&nbsp; </label>
+           <input type="number" size="2" id="txt-age" name="age" />
+         </p>
+         <p>
+           <input type="submit" value="Submit to /cgi-bin/cgistorage.py (Python)" />
+           <input type="reset" value="Reset" />
+         </p>
+      </fieldset>
+    </form>
+    <hr/>
+    <h4>This assumes php-cgi is functional in your system. Right now <span style="color: red;">NSR</span> works only with that PHP variant.</h4>
+    <form method="POST" enctype="application/x-www-form-urlencoded" action="/cgi-bin/cgitest.php">
+      <fieldset>
+         <p>
+           <label for="txt-name2">Name: </label>
+           <input type="text" size="60" id="txt-name2" name="name" required="required" />
+         </p>
+         <p>
+           <label for="txt-age2">Age:&nbsp;&nbsp;&nbsp; </label>
+           <input type="number" size="2" id="txt-age2" name="age" />
+         </p>
+         <p>
+           <input type="submit" value="Submit to /cgi-bin/cgitest.php (PHP)" />
+           <input type="reset" value="Reset" />
+         </p>
+      </fieldset>
+    </form>
+    <hr/>
+    <form method="GET" enctype="application/x-www-form-urlencoded" action="/cgi-bin/hello.js">
+      <fieldset>
+         <p>
+           <label for="txt-name3">Name: </label>
+           <input type="text" size="60" id="txt-name3" name="name" required="required" />
+         </p>
+         <p>
+           <label for="txt-age3">Age:&nbsp;&nbsp;&nbsp; </label>
+           <input type="number" size="2" id="txt-age3" name="age" />
+         </p>
+         <p>
+           <input type="submit" value="Submit to /cgi-bin/hello.js (Node.js)" />
+           <input type="reset" value="Reset" />
+         </p>
+      </fieldset>
+    </form>
+    <hr/>
+    <form method="GET" enctype="application/x-www-form-urlencoded" action="/cgi-bin/hello.rb">
+      <fieldset>
+         <p>
+           <label for="txt-name4">Name: </label>
+           <input type="text" size="60" id="txt-name4" name="name" required="required" />
+         </p>
+         <p>
+           <label for="txt-age4">Age:&nbsp;&nbsp;&nbsp; </label>
+           <input type="number" size="2" id="txt-age4" name="age" />
+         </p>
+         <p>
+           <input type="submit" value="Submit to /cgi-bin/hello.rb (Ruby)" />
+           <input type="reset" value="Reset" />
+         </p>
+      </fieldset>
+    </form>
+    <hr/>
+    <form method="GET" enctype="application/x-www-form-urlencoded" action="/cgi-bin/hello.sh">
+        <fieldset>
+            <p>
+                <label for="txt-name4">Name: </label>
+                <input type="text" size="60" id="txt-name4" name="name" required="required" />
+            </p>
+            <p>
+                <label for="txt-age4">Age:&nbsp;&nbsp;&nbsp; </label>
+                <input type="number" size="2" id="txt-age4" name="age" />
+            </p>
+            <p>
+                <input type="submit" value="Submit to /cgi-bin/hello.sh (Unix Shell)" />
+                <input type="reset" value="Reset" />
+            </p>
+        </fieldset>
+    </form>
+    <hr/>
+    <h3>Other Scripts</h3>
+    <p><a href="/cgi-bin/printenv.pl">Print Environment Variables (Perl script)</a></p>
+    <p><a href="/cgi-bin/envvars.py">Print Environment Variables (Python script)</a></p>

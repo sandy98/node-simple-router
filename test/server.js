@@ -207,7 +207,22 @@
   });
 
   router.get("/wimi", function(request, response) {
-    return router.proxy_pass("http://testing.savos.ods.org/wimi", response);
+    return router.proxy_pass("http://sandy98-coffee-hello.herokuapp.com/wimi", response);
+  });
+
+  router.get("/cgitest", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/cgitest.html", {
+      encoding: "utf8"
+    }, function(err, data) {
+      var context;
+      context = _extend(base_context, {
+        contents: data
+      });
+      return site_router(context, response);
+    });
   });
 
   argv = process.argv.slice(2);
