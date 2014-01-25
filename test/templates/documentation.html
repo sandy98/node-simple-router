@@ -146,6 +146,29 @@
                              </pre>
                         </div>
                     </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            <h4><dfn>scgi_pass</dfn></h4>
+                            <p>To pass the client the results of an external program running under the <a target="_blank" href="http://en.wikipedia.org/wiki/SCGI">SCGI</a> protocol.</p>
+                        </div>
+                        <div class="list-group-item-text">
+                           <p>Same considerations as those pertaining to CGI, with the added benefit of not having to spawn a new process each time.</p>
+                           <p>Why SCGI and not <dfn title="Fast CGI">FCGI</dfn>? Well, SCGI protocol was far easier to implement, and I really couldn't find significant performance differences between the two. FCGI may be implenented in future versions.</p>
+                           <p>
+                               <pre>
+                                  <em>Usage:</em><br/>
+                                  <code class="js">
+                                  //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
+                                  router.post("/scgi", function(request, response) {
+                                    router.scgi_pass(26000, request, response);
+                                  }
+                                  </code><br/>
+                                  The first parameter for scgi_pass is the port number (for tcp sockets)
+                                  or the socket name (for unix sockets) at which the SCGI process is listening.
+                               </pre>
+                           </p>
+                        </div>
+                    </li>
                 </ul>
             </p>
         </div>

@@ -225,6 +225,29 @@
     });
   });
 
+  router.get("/scgitest", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/scgiform.html", {
+      encoding: "utf8"
+    }, function(err, data) {
+      var context;
+      context = _extend(base_context, {
+        contents: data
+      });
+      return site_router(context, response);
+    });
+  });
+
+  router.post("/scgi/:prog_id", function(request, response) {
+    if (request.params.prog_id === 'hello_scgi_py') {
+      return router.scgi_pass(26000, request, response);
+    } else {
+      return router._404(request, response, request.url);
+    }
+  });
+
   argv = process.argv.slice(2);
 
   server = http.createServer(router);

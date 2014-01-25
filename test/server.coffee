@@ -164,8 +164,17 @@ router.get "/cgitest", (request, response) ->
     context = _extend(base_context, {contents: data})
     site_router(context, response)
 
+router.get "/scgitest", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/scgiform.html", encoding: "utf8", (err, data) ->
+    context = _extend(base_context, {contents: data})
+    site_router(context, response)
 
-
+router.post "/scgi/:prog_id", (request, response) ->
+  if request.params.prog_id is 'hello_scgi_py'
+    router.scgi_pass(26000, request, response)
+  else
+    router._404 request, response, request.url
 
 #
 #End routes
