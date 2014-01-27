@@ -248,6 +248,61 @@
     }
   });
 
+  router.get("/uploads_form", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/uploadsform.html", {
+      encoding: "utf8"
+    }, function(err, data) {
+      var context;
+      context = _extend(base_context, {
+        contents: data
+      });
+      return site_router(context, response);
+    });
+  });
+
+  router.post("/handle_upload", function(request, response) {
+    var fullname, key, part, val, _i, _len, _ref;
+    response.writeHead(200, {
+      'Content-type': 'text/html'
+    });
+    if (request.post['multipart-data']) {
+      response.write("<h2>Multipart Data</h2>");
+      _ref = request.post['multipart-data'];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        part = _ref[_i];
+        for (key in part) {
+          val = part[key];
+          if (!((key === 'fileData') && part.fileName)) {
+            response.write("" + key + " = " + val + "<br/>");
+          }
+        }
+        if (part.fileName) {
+          fullname = "" + __dirname + "/public/uploads/" + part.fileName;
+          if (part.contentType.indexOf('text') >= 0) {
+            fs.writeFileSync(fullname, part.fileData);
+          } else {
+            fs.writeFileSync(fullname, part.fileData, 'binary');
+          }
+          response.write('<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">');
+          if (part.contentType.indexOf('image') >= 0) {
+            response.write("<img src='/uploads/" + part.fileName + "' />");
+          } else {
+            response.write("<pre>" + part.fileData + "</pre>");
+          }
+          response.write('</div>');
+        }
+        response.write("<hr/>");
+      }
+    } else {
+      response.write("<h2>Form Data</h2>");
+      response.write("" + (JSON.stringify(request.post)) + "<br/><hr/>");
+    }
+    return response.end("<div style=\"text-align: center;\"><button onclick=\"history.back();\">Back</button></div>");
+  });
+
   argv = process.argv.slice(2);
 
   server = http.createServer(router);

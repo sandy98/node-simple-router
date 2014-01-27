@@ -68,6 +68,35 @@
                           request.post.user.id = new_user_id;
                           response.end(JSON.stringify(request.post.user);});
                         });</code></pre>
+                        <h4>Handling file uploads</h4>
+                        <p>
+                            <span style="color: red;">NSR</span> handles 'multipart/form-data' out of the box.
+                            You just need to be aware of the conventions involved, which are depicted in the
+                            following usage example.
+                        </p>
+                        <p>
+                            <pre><em>Usage:</em><br/>
+                              <code class="js">
+                                  router.post('/upload_handler', function(request, response) {
+                                      if (request.post['multipart-data']) {
+                                        response.write("Multipart Data/n");
+                                        for (var index in request.post['multipart-data']) {
+                                          if (request.post['multipart-data'][index].fileName) {
+                                            var fullname = __dirname + "/public/uploads/" + request.post['multipart-data'][index].fileName;
+                                            if (request.post['multipart-data'][index].contentType.indexOf('text') >= 0)
+                                                fs.writeFileSync(fullname, part.fileData);
+                                            else
+                                                fs.writeFileSync(fullname, part.fileData, 'binary');
+                                            response.end("File " + request.post['multipart-data'][index].fileName + "successfully saved.");
+                                            break;
+                                          }
+                                      }
+                                      else
+                                        response.end("Sorry, no multipart data, so no upload...\n");
+                                  });
+                              </code>
+                            </pre>
+                        </p>
                     </li>
                     <li class="list-group-item">
                         <h4><dfn>put</dfn></h4>

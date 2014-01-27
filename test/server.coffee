@@ -176,6 +176,47 @@ router.post "/scgi/:prog_id", (request, response) ->
   else
     router._404 request, response, request.url
 
+router.get "/uploads_form", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/uploadsform.html", encoding: "utf8", (err, data) ->
+    context = _extend(base_context, {contents: data})
+    site_router(context, response)
+
+
+router.post "/handle_upload", (request, response) ->
+  response.writeHead(200, {'Content-type': 'text/html'})
+  if request.post['multipart-data']
+    response.write "<h2>Multipart Data</h2>"
+    for part in request.post['multipart-data']
+      for key, val of part
+        response.write "#{key} = #{val}<br/>" unless ((key is 'fileData') and part.fileName)
+      if part.fileName
+        fullname = "#{__dirname}/public/uploads/#{part.fileName}"
+        #router.log "BUFFER:", part.fileData
+        #router.log "First char (hex):", new Buffer(part.fileData)[0]
+        if part.contentType.indexOf('text') >= 0
+          fs.writeFileSync fullname, part.fileData
+        else
+          #buffer = new Buffer(part.fileData, 'binary')
+          #fs.writeFileSync fullname, buffer, 'binary'
+          fs.writeFileSync fullname, part.fileData, 'binary'
+        response.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
+        if part.contentType.indexOf('image') >= 0
+          response.write "<img src='/uploads/#{part.fileName}' />"
+        else
+          response.write "<pre>#{part.fileData}</pre>"
+        response.write '</div>'
+      response.write "<hr/>"
+  else
+    response.write "<h2>Form Data</h2>"
+    response.write "#{JSON.stringify(request.post)}<br/><hr/>"
+
+  response.end """
+            <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
+            """
+
+
+
 #
 #End routes
 #
