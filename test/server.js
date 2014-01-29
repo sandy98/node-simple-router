@@ -264,43 +264,42 @@
   });
 
   router.post("/handle_upload", function(request, response) {
-    var fullname, key, part, val, _i, _len, _ref;
+    var encoding, fullname;
     response.writeHead(200, {
       'Content-type': 'text/html'
     });
-    if (request.post['multipart-data']) {
-      response.write("<h2>Multipart Data</h2>");
-      _ref = request.post['multipart-data'];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        part = _ref[_i];
-        for (key in part) {
-          val = part[key];
-          if (!((key === 'fileData') && part.fileName)) {
-            response.write("" + key + " = " + val + "<br/>");
-          }
-        }
-        if (part.fileName) {
-          fullname = "" + __dirname + "/public/uploads/" + part.fileName;
-          if (part.contentType.indexOf('text') >= 0) {
-            fs.writeFileSync(fullname, part.fileData);
-          } else {
-            fs.writeFileSync(fullname, part.fileData, 'binary');
-          }
+    if (request.fileName) {
+      response.write("<h2>Uploaded File Data</h2>");
+      response.write("File name = " + request.fileName + "<br/>");
+      response.write("File length = " + request.fileLen + " bytes<br/>");
+      response.write("File type = " + request.fileType + "<br/>");
+      fullname = "" + __dirname + "/public/uploads/" + request.fileName;
+      if (request.fileType.indexOf('text') >= 0) {
+        encoding = 'utf8';
+      } else {
+        encoding = 'binary';
+      }
+      return fs.writeFile(fullname, request.fileData, {
+        encoding: encoding
+      }, function(err) {
+        if (err) {
+          response.write("<p style='color: red;'>Something went wrong, uploaded file could not be saved.</p>");
+        } else {
           response.write('<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">');
-          if (part.contentType.indexOf('image') >= 0) {
-            response.write("<img src='/uploads/" + part.fileName + "' />");
+          if (request.fileType.indexOf('image') >= 0) {
+            response.write("<img src='/uploads/" + request.fileName + "' />");
           } else {
-            response.write("<pre>" + part.fileData + "</pre>");
+            response.write("<pre>" + request.fileData + "</pre>");
           }
-          response.write('</div>');
+          response.write("</div>");
         }
         response.write("<hr/>");
-      }
+        return response.end("<div style=\"text-align: center;\"><button onclick=\"history.back();\">Back</button></div>");
+      });
     } else {
-      response.write("<h2>Form Data</h2>");
-      response.write("" + (JSON.stringify(request.post)) + "<br/><hr/>");
+      response.write("<p style='color: red;'>Something went wrong, looks like nothing was uploaded.</p>");
+      return response.end("<div style=\"text-align: center;\"><button onclick=\"history.back();\">Back</button></div>");
     }
-    return response.end("<div style=\"text-align: center;\"><button onclick=\"history.back();\">Back</button></div>");
   });
 
   argv = process.argv.slice(2);

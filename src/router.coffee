@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.5.0-5'
+    version: '0.6.0-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -117,7 +117,15 @@ Router = (options = {}) ->
           body = body.join ''
           if contentType is 'text/plain'
             body = body.replace('\r\n', '')
-          req.post = if mp_index is -1 then _bodyparser(body) else _multipartparser(body, contentType)
+          if mp_index is -1
+            req.post = _bodyparser(body)
+          else
+            req.post = _multipartparser(body, contentType)
+            for obj in req.post['multipart-data']
+              req.fileName = obj.fileName if obj.fileName
+              req.fileLen = obj.fileLen if obj.fileLen
+              req.fileData = obj.fileData if obj.fileData
+              req.fileType = obj.fileType if obj.fileType
           req.body = _extend req.body, req.post
           try
             cb(req, res)
@@ -248,9 +256,9 @@ Router = (options = {}) ->
           obj.fileName = m[1]
         m = part.match(/Content-Type:\s+(.+?)\s/i)
         if m
-          obj.contentType = m[1]
+          obj.fileType = m[1]
         else
-          obj.contentType = 'text/plain'
+          obj.fileType = 'text/plain'
         m = part.match(/Content-Length:\s+(\d+?)/i)
         if m
           obj.contentLength = m[1]

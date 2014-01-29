@@ -185,35 +185,35 @@ router.get "/uploads_form", (request, response) ->
 
 router.post "/handle_upload", (request, response) ->
   response.writeHead(200, {'Content-type': 'text/html'})
-  if request.post['multipart-data']
-    response.write "<h2>Multipart Data</h2>"
-    for part in request.post['multipart-data']
-      for key, val of part
-        response.write "#{key} = #{val}<br/>" unless ((key is 'fileData') and part.fileName)
-      if part.fileName
-        fullname = "#{__dirname}/public/uploads/#{part.fileName}"
-        #router.log "BUFFER:", part.fileData
-        #router.log "First char (hex):", new Buffer(part.fileData)[0]
-        if part.contentType.indexOf('text') >= 0
-          fs.writeFileSync fullname, part.fileData
-        else
-          #buffer = new Buffer(part.fileData, 'binary')
-          #fs.writeFileSync fullname, buffer, 'binary'
-          fs.writeFileSync fullname, part.fileData, 'binary'
+  if request.fileName
+    response.write "<h2>Uploaded File Data</h2>"
+    response.write "File name = #{request.fileName}<br/>"
+    response.write "File length = #{request.fileLen} bytes<br/>"
+    response.write "File type = #{request.fileType}<br/>"
+    fullname = "#{__dirname}/public/uploads/#{request.fileName}"
+    if request.fileType.indexOf('text') >= 0
+      encoding = 'utf8'
+    else
+      encoding = 'binary'
+    fs.writeFile fullname, request.fileData, encoding: encoding, (err) ->
+      if err
+        response.write "<p style='color: red;'>Something went wrong, uploaded file could not be saved.</p>"
+      else
         response.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
-        if part.contentType.indexOf('image') >= 0
-          response.write "<img src='/uploads/#{part.fileName}' />"
+        if request.fileType.indexOf('image') >= 0
+          response.write "<img src='/uploads/#{request.fileName}' />"
         else
-          response.write "<pre>#{part.fileData}</pre>"
-        response.write '</div>'
+          response.write "<pre>#{request.fileData}</pre>"
+        response.write "</div>"
       response.write "<hr/>"
+      response.end """
+                   <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
+                   """
   else
-    response.write "<h2>Form Data</h2>"
-    response.write "#{JSON.stringify(request.post)}<br/><hr/>"
-
-  response.end """
-            <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
-            """
+    response.write "<p style='color: red;'>Something went wrong, looks like nothing was uploaded.</p>"
+    response.end """
+              <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
+              """
 
 
 
