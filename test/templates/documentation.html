@@ -1,4 +1,4 @@
-<div xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
   <div class="page-header">
     <h1>Documents</h1>
   </div>
@@ -212,17 +212,17 @@
                                   </ul>
                             </p>
                             <pre>
-                                <em>Usage:</em><br/>
-                                <samp>
-                                    By default, any static resource having a path that includes the router option 'cgi-dir'
-                                    (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
-                                    as a cgi program, provided the router option 'serve_cgi' is true.<br/>
-                                    For example, the uri: <code class='js'>/cgi-bin/hello.py</code> will be handled as a CGI program.<br/>
-                                    On the other hand, you can invoke directly the cgi method of the router, like so:<br/>
-                                    <code class="js">router.cgi('/hidden-cgi-dir/mycgi.rb', request, response);</code><br/>
-                                    Nevertheless, such way of using it is discouraged as it does not follow CGI standard
-                                    guidelines.
-                                </samp>
+<em>Usage:</em><br/>
+<samp>
+    By default, any static resource having a path that includes the router option 'cgi-dir'
+    (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
+    as a cgi program, provided the router option 'serve_cgi' is true.<br/>
+    For example, the uri: <code class='js'>/cgi-bin/hello.py</code> will be handled as a CGI program.<br/>
+    On the other hand, you can invoke directly the cgi method of the router, like so:<br/>
+    <code class="js">router.cgi('/hidden-cgi-dir/mycgi.rb', request, response);</code><br/>
+    Nevertheless, such way of using it is discouraged as it does not follow CGI standard
+    guidelines.
+</samp>
                              </pre>
                         </div>
                     </li>
@@ -236,17 +236,46 @@
                            <p>Why SCGI and not <dfn title="Fast CGI">FCGI</dfn>? Well, SCGI protocol was far easier to implement, and I really couldn't find significant performance differences between the two. FCGI may be implenented in future versions.</p>
                            <p>
                                <pre>
-                                  <em>Usage:</em><br/>
-                                  <code class="js">
-                                  //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
-                                  router.post("/scgi", function(request, response) {
-                                    router.scgi_pass(26000, request, response);
-                                  }
-                                  </code><br/>
-                                  The first parameter for scgi_pass is the port number (for tcp sockets)
-                                  or the socket name (for unix sockets) at which the SCGI process is listening.
+  <em>Usage:</em><br/>
+  <code class="js">
+  //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
+  router.post("/scgi", function(request, response) {
+    router.scgi_pass(26000, request, response);
+  });
+  </code><br/>
+  The first parameter for scgi_pass is the port number (for tcp sockets)
+  or the socket name (for unix sockets) at which the SCGI process is listening.
                                </pre>
                            </p>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            <h4><dfn>compile_template</dfn></h4>
+                            <p>To provide rudimentary template handling without compromising the goal of keeping <span style="color: red;">NSR</span> lean and simple.</p>
+                        </div>
+                        <div class="list-group-item-text">
+                            <p>
+                                Even though templating is not related to routing, having at hand a micro-templating utility, very
+                                rudimentary for now, was considered useful.<br/>
+                                At its current stage of development it doesn't do a lot, just spots <em>mustache-like</em>
+                                placeholders and replaces them with the corresponding property of the context object provided,
+                                as shown in the following example.
+                            </p>
+                            <p>
+                               <pre>
+<em>Usage:</em><br/>
+<code class="js">
+  router.get("/greet_user/:user_id", function(request, response) {
+    get_user_by_id(request.params.user_id, function (user) {
+      template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
+      compiled_str = router.compile_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
+      response.end(compiled_str);
+    }
+  });
+</code><br/>
+                               </pre>
+                            </p>
                         </div>
                     </li>
                 </ul>

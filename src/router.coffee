@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.6.0-2'
+    version: '0.6.0-3'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
