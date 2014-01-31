@@ -3,6 +3,7 @@
 process.chdir __dirname
 
 fs = require 'fs'
+spawn = require('child_process').spawn
 
 try
   Router = require '../src/router'
@@ -202,6 +203,8 @@ router.post "/handle_upload", (request, response) ->
         response.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
         if request.fileType.indexOf('image') >= 0
           response.write "<img src='/uploads/#{request.fileName}' />"
+        else if request.fileType.indexOf('video') >= 0
+          response.write "<video src='/uploads/#{request.fileName}'></video>"
         else
           response.write "<pre>#{request.fileData}</pre>"
         response.write "</div>"
@@ -228,6 +231,13 @@ argv = process.argv.slice 2
 
 server = http.createServer router
 
+try
+  scgi_child = spawn "#{__dirname}/public/scgi/python/hello_scgi.py", [], cwd: "#{__dirname}/public/scgi/python"
+catch e
+  scgi_child = kill: (signal) ->
+    console.log "'Killing' mock child with signal: #{signal}"
+  console.log "Couldn't spawn real child process because of: #{e.message}\nUsing a mock one."
+
 server.on 'listening', ->
   addr = server.address() or {address: '0.0.0.0', port: argv[0] or 8000}
   router.log "Serving web content at " + addr.address + ":" + addr.port  + " - PID: " + process.pid + " from directory: " + process.cwd()
@@ -237,6 +247,7 @@ clean_up = ->
   router.log "Server shutting up..."
   router.log ' '
   server.close()
+  scgi_child.kill('SIGTERM')
   process.exit 0
 
 process.on 'SIGINT', clean_up
