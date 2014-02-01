@@ -96,7 +96,7 @@
     response.writeHead(200, {
       'Content-Type': 'text/html'
     });
-    return fs.readFile("" + __dirname + "/templates/documentation.html", {
+    return fs.readFile("" + __dirname + "/templates/documents.html", {
       encoding: "utf8"
     }, function(err, data) {
       var context;

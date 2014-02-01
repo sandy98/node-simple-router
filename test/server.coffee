@@ -55,7 +55,7 @@ router.get "/getting_started", (request, response) ->
 
 router.get "/documentation", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
-  fs.readFile "#{__dirname}/templates/documentation.html", encoding: "utf8", (err, data) ->
+  fs.readFile "#{__dirname}/templates/documents.html", encoding: "utf8", (err, data) ->
     context = _extend(base_context, {contents: data, documentation_active: 'active'})
     site_router(context, response)
 
