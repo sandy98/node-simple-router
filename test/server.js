@@ -52,11 +52,14 @@
     about_active: ''
   };
 
-  site_router = function(context, response) {
+  site_router = function(context, response, keep_tokens) {
+    if (keep_tokens == null) {
+      keep_tokens = false;
+    }
     return fs.readFile("" + __dirname + "/templates/layout.html", {
       encoding: "utf8"
     }, function(err, layout_data) {
-      return response.end(router.compile_template(layout_data, context));
+      return response.end(router.compile_template(layout_data, context, keep_tokens));
     });
   };
 
@@ -104,7 +107,7 @@
         contents: data,
         documentation_active: 'active'
       });
-      return site_router(context, response);
+      return site_router(context, response, true);
     });
   });
 

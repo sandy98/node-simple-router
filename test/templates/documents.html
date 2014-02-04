@@ -256,11 +256,8 @@
                         </div>
                         <div class="list-group-item-text">
                             <p>
-                                Even though templating is not related to routing, having at hand a micro-templating utility, very
-                                rudimentary for now, was considered useful.<br/>
-                                At its current stage of development it doesn't do a lot, just spots <em>mustache-like</em>
-                                placeholders and replaces them with the corresponding property of the context object provided,
-                                as shown in the following example.
+                                Even though templating is not directly related to routing, having a micro-templating utility was considered handy.<br/>
+                                It is basically a naive implementation of <a target= "_blank" href="http://mustache.github.io/">mustache.js</a>, which tries to follow the <a target="_blank" href="http://mustache.github.io/mustache.5.html">spec</a>, but at its present stage lacks partials, lambdas and returns unescaped html (soon to be fixed). Template handling as you would with any mustache template, as shown in the following example.
                             </p>
                             <p>
                                <pre>

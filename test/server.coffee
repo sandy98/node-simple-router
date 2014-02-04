@@ -37,9 +37,9 @@ base_context =
 #Routes
 #
 
-site_router = (context, response) ->
+site_router = (context, response, keep_tokens = false) ->
   fs.readFile "#{__dirname}/templates/layout.html", encoding: "utf8", (err, layout_data) ->
-    response.end router.compile_template(layout_data, context)
+    response.end router.compile_template(layout_data, context, keep_tokens)
 
 router.get "/", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
@@ -57,7 +57,7 @@ router.get "/documentation", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
   fs.readFile "#{__dirname}/templates/documents.html", encoding: "utf8", (err, data) ->
     context = _extend(base_context, {contents: data, documentation_active: 'active'})
-    site_router(context, response)
+    site_router(context, response, true)
 
 router.get "/changelog", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})

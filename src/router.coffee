@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.6.0-4'
+    version: '0.6.0-5'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -609,22 +609,84 @@ Router = (options = {}) ->
                 <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
-
+  ###
   dispatch.compile_template = (template_string, context) ->
-    pattern = /\{{2}(.+?)\}{2}/gi
-    placeholders = template_string.match pattern
-    return template_string if not placeholders
-    placeholder_obj = {}
-    for ph in placeholders
-      k = ph.replace(/\{/g, '').replace(/\}/g, '').trim()
-      placeholder_obj[k] = ph
+    section_pattern = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/
+    section_pattern_global = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/g
+    variable_pattern = /\{{2}([\w\W]+?)\}{2}/
+    variable_pattern_global = /\{{2}([\w\W]+?)\}{2}/g
+    tokens = template_string.match variable_pattern_global
+    return template_string if not tokens
+    token_obj = {}
+    for token in tokens
+      k = token.replace(/\{/g, '').replace(/\}/g, '').trim()
+      token_obj[k] = token
 
     ret_str = template_string
     for key, value of context
-      ret_str = ret_str.replace new RegExp(placeholder_obj[key], 'g'), value
-
+      ret_str = ret_str.replace new RegExp(token_obj[key], 'g'), value
+    #Erase unmatched mustaches
+    ret_str = ret_str.replace variable_pattern_global, ''
     ret_str
+  ###
+  
+  dispatch.compile_template = (template_string, context, keep_tokens = false) ->
+    "Naive regex based implementation of mustache.js spec"
+    
+    section_pattern = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/
+    section_pattern_global = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/g
+    variable_pattern = /\{{2}([\w\W]+?)\}{2}/    
+    variable_pattern_global = /\{{2}([\w\W]+?)\}{2}/g
 
+    section_tokens = []
+    text_tokens = []
+    
+    stripped_string = template_string
+    sections = template_string.match section_pattern_global
+    if sections
+      for section in sections
+        stripped_string = stripped_string.replace(section, '\n@@@\n')
+        section_tokens.push(section.match(section_pattern))
+      text_tokens = stripped_string.split /\n@@@\n/g
+    else
+      text_tokens.push template_string
+      
+    for text_token, index in text_tokens            
+      variable_tokens = text_token.match variable_pattern_global
+      token_obj = {}
+      if variable_tokens
+        for token in variable_tokens
+          k = token.replace(/\{/g, '').replace(/\}/g, '').trim()
+          token_obj[k] = token
+      new_str = text_token
+      for key, value of context
+        if token_obj[key]
+          new_str = new_str.replace new RegExp(token_obj[key], 'g'), value
+      #Erase unmatched mustaches
+      new_str = new_str.replace variable_pattern_global, '' unless keep_tokens
+      text_tokens[index] = new_str
+
+    ret_arr = []
+    for text, index in text_tokens
+      ret_arr.push text
+      if section_tokens[index]
+        property = context[section_tokens[index][2].trim()]
+        full_text = section_tokens[index][0]
+        section_type = if section_tokens[index][1] is "#" then true else false
+        section_inner_text = section_tokens[index][3]
+
+        if section_type is false
+          ret_arr.push(dispatch.compile_template(section_inner_text, context)) if not property
+        else
+          if property?.length? and (property?.constructor.name isnt "String")
+            for item in property
+              ret_arr.push(dispatch.compile_template(section_inner_text, item))
+          else
+            ret_arr.push(dispatch.compile_template(section_inner_text, context)) if property
+    
+    ret_arr.join '\n'
+    
+    
 # End of Dispatch function properties and methods 	
 
 
