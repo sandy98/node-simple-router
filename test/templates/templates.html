@@ -1,0 +1,42 @@
+<div class="row" style="margin-top: 3em;">
+    <div class="col-xs-5" style="padding: 0.5em; margin: 0.5em; background: #ededed; border-radius: 7px; border: solid 1px;">
+        <h3 style="text-align: center;">Template Settings</h3>
+        <form class="form" method="post">
+            <label for="txt-context">Context Object</label><br>
+            <textarea rows="7" cols="75" id="txt-context" name="txt_context">
+{name: "Sandy",
+hasHobbies: true,
+hobbies: [{title: "Playing Chess"},{title: "Programming computers"},{title: "Riding my bike"}],
+bg: '#cceaff', pad: 1.5, radius: 10}
+            </textarea>
+            <hr/>
+            <label for="txt-template">Template Text</label><br>
+            <textarea rows="8" cols="75" id="txt-template" name="txt_template">
+<div style="background: {{bg}}; padding: {{pad}}em; border-radius: {{radius}}px;">
+  <h3>Hi, I am <span style="color: red;">{{name}}</span></h3>
+  {{#hasHobbies}}
+    <p>and my hobbies are:</p>
+    <ul class="list-group">
+        {{#hobbies}}
+        <li class="list-group-item">{{title}}</li>
+        {{/hobbies}}
+    </ul>
+  {{/hasHobbies}}
+  {{^hasHobbies}}
+    <p>Regretably, no hobbies... :-(</p>
+  {{/hasHobbies}}
+</div>
+            </textarea>
+            <hr/>
+            <button class="btn" type="submit">Show Result</button>
+        </form>
+    </div>
+
+    <div class="col-xs-6" style="padding: 0.5em; margin: 0.5em; border-radius: 7px; border: solid 1px;">
+        <h3 style="text-align: center;">Template Result</h3>
+        <hr/>
+        <div id="template-result">
+
+        </div>
+    </div>
+</div>

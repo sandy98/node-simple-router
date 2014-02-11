@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.6.0-5'
+    version: '0.6.0-6'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -632,7 +632,10 @@ Router = (options = {}) ->
   
   dispatch.compile_template = (template_string, context, keep_tokens = false) ->
     "Naive regex based implementation of mustache.js spec"
-    
+
+    html_encode = (stri) ->
+      String(stri).replace /[<>&'\/"]/g, (m) -> {"<": "&lt;", ">": "&gt;","&": "&amp;","'": "&#39;","/": "&#x2F;","\"": "&quot;"}[m]
+
     section_pattern = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/
     section_pattern_global = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/g
     variable_pattern = /\{{2}([\w\W]+?)\}{2}/    
@@ -657,11 +660,16 @@ Router = (options = {}) ->
       if variable_tokens
         for token in variable_tokens
           k = token.replace(/\{/g, '').replace(/\}/g, '').trim()
-          token_obj[k] = token
+          dont_encode = false
+          if k[0] is "&"
+            k = k.substring(1).trim()
+            dont_encode = true
+          token_obj[k] = {token: token, dont_encode: dont_encode}
+
       new_str = text_token
       for key, value of context
         if token_obj[key]
-          new_str = new_str.replace new RegExp(token_obj[key], 'g'), value
+          new_str = new_str.replace new RegExp(token_obj[key].token, 'g'), if token_obj[key].dont_encode then value else html_encode(value)
       #Erase unmatched mustaches
       new_str = new_str.replace variable_pattern_global, '' unless keep_tokens
       text_tokens[index] = new_str

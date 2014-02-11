@@ -95,7 +95,7 @@
     });
   });
 
-  router.get("/documentation", function(request, response) {
+  router.get("/documents", function(request, response) {
     response.writeHead(200, {
       'Content-Type': 'text/html'
     });
@@ -251,6 +251,36 @@
     } else {
       return router._404(request, response, request.url);
     }
+  });
+
+  router.any("/templates", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/layout.html", {
+      encoding: "utf8"
+    }, function(err, layout) {
+      return fs.readFile("" + __dirname + "/templates/templates.html", {
+        encoding: "utf8"
+      }, function(err, data) {
+        var compiled, script, str_to_replace, template, tpl_obj;
+        if (request.method.match(/post/i)) {
+          try {
+            tpl_obj = eval("(" + request.post.txt_context + ")");
+          } catch (_error) {
+            e = _error;
+            tpl_obj = {};
+          }
+          template = request.post.txt_template;
+          compiled = router.compile_template(template, tpl_obj);
+          str_to_replace = "<div id=\"template-result\">";
+          data = data.replace(str_to_replace, "" + str_to_replace + compiled);
+          script = "<script type=\"text/javascript\">\n var setValues = function () {\n //document.getElementById('txt-context').value = 'CONTEXT';\n //document.getElementById('txt-template').value = 'TEMPLATE';\n   var context = '" + (escape(request.post.txt_context)) + "';\n   var template = '" + (escape(request.post.txt_template)) + "';\n   document.getElementById('txt-context').value = unescape(context);\n   document.getElementById('txt-template').value = unescape(template);\n  };\n  document.body.onload = function() {setTimeout(setValues, 100);};\n </script>\n</body>";
+          layout = layout.replace('</body>', script);
+        }
+        return response.end(layout.replace("{{& contents }}", data));
+      });
+    });
   });
 
   router.get("/uploads_form", function(request, response) {

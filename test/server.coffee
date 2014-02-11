@@ -53,7 +53,7 @@ router.get "/getting_started", (request, response) ->
     context = _extend(base_context, {contents: data, getting_started_active: 'active'})
     site_router(context, response)
 
-router.get "/documentation", (request, response) ->
+router.get "/documents", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
   fs.readFile "#{__dirname}/templates/documents.html", encoding: "utf8", (err, data) ->
     context = _extend(base_context, {contents: data, documentation_active: 'active'})
@@ -176,6 +176,38 @@ router.post "/scgi/:prog_id", (request, response) ->
     router.scgi_pass(26000, request, response)
   else
     router._404 request, response, request.url
+
+router.any "/templates", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/layout.html", encoding: "utf8", (err, layout) ->
+    fs.readFile "#{__dirname}/templates/templates.html", encoding: "utf8", (err, data) ->
+      if request.method.match /post/i
+        try
+          tpl_obj = eval("(#{request.post.txt_context})")
+        catch e
+          tpl_obj = {}
+        #router.log tpl_obj
+        template = request.post.txt_template
+        #router.log template
+        compiled = router.compile_template(template, tpl_obj)
+        str_to_replace = """<div id="template-result">"""
+        data = data.replace str_to_replace, "#{str_to_replace}#{compiled}"
+        script = """
+                 <script type="text/javascript">
+                  var setValues = function () {
+                  //document.getElementById('txt-context').value = 'CONTEXT';
+                  //document.getElementById('txt-template').value = 'TEMPLATE';
+                    var context = '#{escape(request.post.txt_context)}';
+                    var template = '#{escape(request.post.txt_template)}';
+                    document.getElementById('txt-context').value = unescape(context);
+                    document.getElementById('txt-template').value = unescape(template);
+                   };
+                   document.body.onload = function() {setTimeout(setValues, 100);};
+                  </script>
+                 </body>
+                 """
+        layout = layout.replace('</body>', script)
+      response.end layout.replace("{{& contents }}", data)
 
 router.get "/uploads_form", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
