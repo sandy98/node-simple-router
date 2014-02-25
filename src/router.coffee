@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.6.0-6'
+    version: '0.6.0-7'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -609,28 +609,8 @@ Router = (options = {}) ->
                 <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
                 <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
             """)
-  ###
-  dispatch.compile_template = (template_string, context) ->
-    section_pattern = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/
-    section_pattern_global = /\{\{(\#|\^)\s*([\w\W]+?)\}\}\n?([\w\W]*?)\n?\{\{\/\s*\2\}\}/g
-    variable_pattern = /\{{2}([\w\W]+?)\}{2}/
-    variable_pattern_global = /\{{2}([\w\W]+?)\}{2}/g
-    tokens = template_string.match variable_pattern_global
-    return template_string if not tokens
-    token_obj = {}
-    for token in tokens
-      k = token.replace(/\{/g, '').replace(/\}/g, '').trim()
-      token_obj[k] = token
 
-    ret_str = template_string
-    for key, value of context
-      ret_str = ret_str.replace new RegExp(token_obj[key], 'g'), value
-    #Erase unmatched mustaches
-    ret_str = ret_str.replace variable_pattern_global, ''
-    ret_str
-  ###
-  
-  dispatch.compile_template = (template_string, context, keep_tokens = false) ->
+  dispatch.render_template = (template_string, context, keep_tokens = false) ->
     "Naive regex based implementation of mustache.js spec"
 
     html_encode = (stri) ->
@@ -684,13 +664,13 @@ Router = (options = {}) ->
         section_inner_text = section_tokens[index][3]
 
         if section_type is false
-          ret_arr.push(dispatch.compile_template(section_inner_text, context)) if not property
+          ret_arr.push(dispatch.render_template(section_inner_text, context)) if not property
         else
           if property?.length? and (property?.constructor.name isnt "String")
             for item in property
-              ret_arr.push(dispatch.compile_template(section_inner_text, item))
+              ret_arr.push(dispatch.render_template(section_inner_text, item))
           else
-            ret_arr.push(dispatch.compile_template(section_inner_text, context)) if property
+            ret_arr.push(dispatch.render_template(section_inner_text, context)) if property
     
     ret_arr.join '\n'
     

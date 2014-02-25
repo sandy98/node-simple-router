@@ -1,4 +1,4 @@
-<div xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div>
   <div class="page-header">
     <h1>Documents</h1>
   </div>
@@ -79,8 +79,10 @@
                 admin_pwd: 'admin'<br/>
                 </code></pre>
             </p>
-            <p>Most of them are self explanatory, but some deserve further comments,</p>
-            <p>which will be added on doc completion.</p>
+            <p>
+                Most of them are self explanatory, but some deserve further comments,
+                which will be added on doc completion.
+            </p>
         </div>
     </div>
 
@@ -251,7 +253,7 @@
                     </li>
                     <li class="list-group-item">
                         <div class="list-group-item-heading">
-                            <h4><dfn>compile_template</dfn></h4>
+                            <h4><dfn>render_template</dfn></h4>
                             <p>To provide rudimentary template handling without compromising the goal of keeping <span style="color: red;">NSR</span> lean and simple.</p>
                         </div>
                         <div class="list-group-item-text">
@@ -266,7 +268,7 @@
   router.get("/greet_user/:user_id", function(request, response) {
     get_user_by_id(request.params.user_id, function (user) {
       template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
-      compiled_str = router.compile_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
+      compiled_str = router.render_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
       response.end(compiled_str);
     }
   });

@@ -39,7 +39,7 @@ base_context =
 
 site_router = (context, response, keep_tokens = false) ->
   fs.readFile "#{__dirname}/templates/layout.html", encoding: "utf8", (err, layout_data) ->
-    response.end router.compile_template(layout_data, context, keep_tokens)
+    response.end router.render_template(layout_data, context, keep_tokens)
 
 router.get "/", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
@@ -76,7 +76,7 @@ router.get "/about", (request, response) ->
   fs.readFile "#{__dirname}/templates/about.html", encoding: "utf8", (err, data) ->
     context = _extend(
       base_context
-      contents: router.compile_template(data, current_version: router.version), about_active: 'active')
+      contents: router.render_template(data, current_version: router.version), about_active: 'active')
     site_router(context, response)
 
 router.get "/hello_world", (request, response) ->
@@ -149,7 +149,7 @@ router.post "/teams", (request, response) ->
   """
   context = _extend(
     base_context
-    contents: router.compile_template(
+    contents: router.render_template(
       data
       _extend(request.post, is_plural: if request.post.titles_won is "1" then '' else 's')))
   site_router(context, response)
@@ -189,7 +189,7 @@ router.any "/templates", (request, response) ->
         #router.log tpl_obj
         template = request.post.txt_template
         #router.log template
-        compiled = router.compile_template(template, tpl_obj)
+        compiled = router.render_template(template, tpl_obj)
         str_to_replace = """<div id="template-result">"""
         data = data.replace str_to_replace, "#{str_to_replace}#{compiled}"
         script = """
