@@ -1,260 +1,381 @@
-# Node.js Simple Router
-# Yet another minimalistic router for node.js
+# Node Simple Router <img src="test/public/img/router50.png" />
+### Yet another minimalistic router for node.js 
 
-## Install
+# Getting started
+
+## 
+**Step 1: Install**
 
 From Node Package Manager:
 
-<pre>
-  npm install node-simple-router
-</pre>
+    npm install node-simple-router`</pre>
 
-or from source:
+From source:
 
-<pre>
-  git clone git://github.com/sandy98/node-simple-router.git
-</pre>
+    git clone https://github.com/sandy98/node-simple-router
 
-## Purpose
-Designed to provide routes to barebones node http server, Sinatra style (or Express.js router, for that matter) staying out
-of your way for the rest.
 
-Main target: restful APIs for single page applications.
+## 
+**Step 2: Test**
 
-Source main file - router.coffee - and testing utility - test_router.coffee - are coffeescript source files. Should you prefer to
-work with javascript, just simply compile them (i.e. coffee -c router.coffee) provided you have installed coffee-script, which is as
-simple as <pre>sudo npm install coffee-script -g</pre>
-
-## Basic Usage
-```coffeescript
-# CoffeeScript version
-# Assumes usual installation through npm.
-Router = require 'node-simple-router'
-# Alternative: assumes router.js - or router.coffee - is located at the current working directory.
-#Router = require('./router')
-
-var http   = require('http')
-
-router  = Router()
-
-router.get '/', (request, response) ->
-  response.end 'Home page'
-
-router.get '/hello/:who', (request, response) ->
-  response.end "Hello, #{request.params.who}"
-
-server = http.createServer router
+    cd to your installation directory and run `npm test`
+then point your browser to _http://localhost:8000_ and review the info
+and above all, try the examples.
 
-server.listen 3000
-
-```
-or, for the unlikely case you didn't yet discover/fall in love with coffeescript, the javascript version:
 
-```javascript
-// Javascript version
-// Assumes usual installation through npm.
-var Router = require('node-simple-router')
-// Alternative: assumes router.js is located at the current working directory.
-//var Router = require('./router')
+## 
+**Step 3: Run your server**
 
-var http   = require('http')
+You can roll your own, or use the sample server that NSR provides by means of the mk-server utility:
 
-var router = Router();
+`mk-server js` will provide a barebones server (_server.js_)  with some example routes ready to run.
 
-router.get('/', function (request, response) {
-  response.end('Home page');})
+In order for this to work, you must have installed NSR global, like so:
 
-router.get('/hello/:who', function(request, response) {
-  response.end("Hello, " + request.params.who);})
-
-server = http.createServer(router)
+   `sudo npm install -g node-simple-router`, or have the .bin directory of NSR in your path by whatever means you see fit.
 
-server.listen(3000)
+Either case, the basic steps are the same:
 
-```
-## Changelog
-### < 0.2.4 All the basic stuff
-### 2012-09-07: v0.2.4 Added CGI support
-Currently the cgi dispatcher relies - as it's supposed to be - on the cgi process to provide the correct headers.
-Also, post and get - summed up in 'body' - must be readed by the cgi process via std input and converted to json 
-object by whatever means the cgi implementation provides. For instance, a python example could be implemented along 
-the lines:
-```python   
-    
-import json, sys
-    
-body = json.loads(sys.stdin.readline())
-for key in body:
-    print "%s = %s" % (key, body[key])
-```
+#### Import 'http'
 
-### 2013-03-25: v0.2.5 Added mimetypes xml and svg to the list of recognized types      
+`var http = require('http');`
 
-### 2013-04-01: v0.2.6 Added compile to js tool 'compile.sh'      
+#### Import NSR
 
-### 2013-04-02: v0.2.7 Added mk-server to the bin directory. 
-This is a tiny tool that will create a brand new node-simple-router powered server to the working directory.
-It can be invoked with no params, producing an executable server.coffee file. Should you prefer getting a javascript version of the server, 
-you must invoke it like so: mk-server js. This will produce server.js.
+`var Router = require('node-simple-router');`
 
-It's worth noting that in order for this to be useful, you should install node-simple-router globally <code>sudo npm install -g node-simple-router</code>       
+#### Instantiate the router
 
-### 2013-04-03: v0.3.0 node-simple-router becomes able to handle form uploads.
-Or, to be precise, *node-simple-router* aka *nsr* has earned the ability to handle multipart/form-data
+`var router = Router(); // may also be router = new Router();`
 
-This can be seen as an important update, hence the minor version leap (0.2 to 0.3)
+#### Create an http server using router as the handler
 
-There is an example of the way to use it to handle uploads that may be found in test/uploader/server.coffee (or server.js, 
-for that matter), following the route "/upload". A simplified version follows:
+`var server = http.createServer(router);`
 
-```coffeescript   
-router.post "/upload", (req, res) ->
-  res.writeHead(200, {'Content-type': 'text/html'})
-  if req.post['multipart-data']
-    for part in req.post['multipart-data']
-      for key, val of part
-          res.write "#{key} = #{val}<br/>" unless ((key is 'fileData') and part.fileName)
-      if part.fileName
-        fullname = "#{__dirname}/public/uploads/#{part.fileName}"
-        if part.contentType.indexOf('text') >= 0
-          fs.writeFileSync fullname, part.fileData
-        else
-          fs.writeFileSync fullname, part.fileData, 'binary'
-        res.write '<div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;">'
-        if part.contentType.indexOf('image') >= 0
-          res.write "<img src='uploads/#{part.fileName}' />"
-        else
-          res.write "<pre>#{part.fileData}</pre>"
-        res.write '</div>'
-      res.write "<hr/>"
+#### Finally, make it listen on your chosen port and you're in business
 
-  res.end "" 
-```   
-Essentially, what you get is an array labeled 'multipart-data' added to the body of the request. Each of its members 
-will have some, or all of the following properties (some may lack "filename")
+`server.listen(1234);`
 
--   *contentDisposition*
 
-    Just for reference. This will always be "form-data"
-   
--   *fieldName*
+# Documents
 
-    The name of the input element that originated the current member of the array.
+### Rationale
 
--   *fileName*
-
-    This will only exist if the originating field is &lt;input type="file"&gt;
-   
--   *fileData*
-
-    This and the following may be somewhat misleading names, because as has been noted the object may not be a
-    file. Regardless, it contains whatever was in the originating field. If this was a text input type, it will be
-    the contents input by the user. If it was a file, it will be its contents.
-    Its worth noting that in order for this to work accurately, the request input has been previously determined as
-    binary by the router, like so: ``` req.setEncoding('binary') ``` 
-
--   *fileLen*
-
-    Length of fileData 
-
--   *contentType*
-
-    Mimetype of fileData, as sent by the browser. Things like 'text/plain', 'image/jpeg', etc
-    
-### 2013-07-27: v0.3.5 Correction for paths which have escaped characters.
-    
-### 2013-08-02: v0.3.6 Added default favicon. Fixed cgi-bin.
-    
-### 2013-08-03: v0.4.1 Improved cgi-bin. Looks like it's now really usable. Now FCGI to come.
-
-### 2013-08-04: v0.4.5 Further improvement for cgi-bin, mainly PHP related. Some issues remain as regards to PHP, though.
-
-### 2013-08-12: v0.4.7 CGI works smoothly now. SCGI support - router.scgi_pass - added and working fine.
-
-### 2013-12-28: v0.4.9-2 Fixes nil error when request method is not known/handled.
-
-### 2013-12-29: v0.4.9-3 As a result of the former, now NSR handles <em>router.any</em>, for example: 
-
-<code>router.any("/doit", function (request, response) {});</code> will handle any incoming request to "/doit" uri, regardless the request method.
-
-
-### 2014-01-10: v0.4.9-4 Improved server generated by mk-server utility.
-
-## Complementary topics
-###I) Default options
-
--    **logging**: *true*
-
-     Turns off logging if defined false
-
--    **log**: *console.log*
-
-     Defines console.log as default logging output.
-
--    **serve_static**: *true*
-
-     Allows serving static content.
-
--    **static_route**: *"#{__dirname}/public"*
-
-     Defines root directory for static contents
-
--    **list_dir**: *true*
-
-     Allows/disallows directory listings
-
-Example:
-```javascript
-//Disallows logging and directory listing, uses '/static' for static contents,
-//defaults remaining options
-var router = Router({logging: false, list_dir: false, static_route: __dirname + '/static'})
-```
-###II) Retrieving get/post data
-
-Request get data may be retrieved from *request.get*, an object in JSON format
-
-Request post data is included, also in JSON format, in *request.post*, although in this case, if data came in an
-unrecognized format, it will be retrieved as raw data, without any conversion.
-
-Finally, *request.get* and *request.post* are joined in *request.body*, so if you don't care how the data got to the
-server, you can use that.
-
-###III) Getting parameters from urls
-
-Uses a similar convention as Express.js:  url segment preceded by a colon is treated as a parameter, as shown below
-
-```javascript
-router.get('/users/:id', function(request, response) {
-  response.end("User: " + getUserById(request.params.id).fullName);})
-```
-
-
-###IV) Todo list
--    Making directory listing actually work
--    Preparing a nice template for directory listing.
--    Managing file uploads.
-
-
-## Final note
-Was this necessary?
-
-Probably not.
-
-But then again, there are a couple of reasons that I think make it worth, and perhaps, useful to someone who shares these.
-
-For one thing, *reinventing the wheel is not only fun, it's frequently highly educative*.
-
-Second, there are quite a bunch of routing solutions for node.js, but I found the ones that come bundled with node frameworks,
-although in most cases high quality and performant, also in many cases just a bit too much stuffed with features that either I didn't
-need or was unable to manage/tweak to my projects needs, hence the decision to roll my own, mainly aimed to serve as a lightweight
-component for a *restful API*.
-
-Last but not least, I wanted to *share the fun*.
-
-**Last minute note:** Guaycuru web server, initially included as a test of the static resource serving capabilities of this router,
-is no longer present in current distribution. Instead, you can get it [here](https://github.com/sandy98/guaycuru) or install it by 
-means of *npm*  
-
+Routing, in web app parlance, is about defining what code to execute when a given URL is invoked.
+NSR takes care of the necessary plumbing to make that happen,
+freeing the programmer of the cumbersome details, allowing her to focus on the problem domain.
+#### How does it work?
+As was stated in the lines above, it's not necessary to know <span style="color: red;">NSR</span>
+inner workings in order to be productive using it. Having said that, it is nevertheless useful to
+have some insight on a couple of key aspects, fundamentally what could be called the <em>"request wrapping
+mechanism"</em>.
+
+When you feed <span style="color: #ff0000;">NSR</span> with a url handling function, i.e. <code class="js">
+router.get("/answertoall", function(request, response) {response.end("42");});</code>
+
+what <span style="color: red;">NSR</span>
+does is to wrap that function into another, unnamed one, which has the primary mission of _"augmenting"_ the request
+object and it stores said function in an array of url-handling functions, thus acting as a _middleware_ piece of code.
+At run time, when a client invokes the matching URL, the "middleware" function will be called, which, after doing its trickery to "dress" the request object, will ultimately call the original url-handling function that was provided.
+            
+What does _"augmenting-dressing"_  the request object mean?
+
+Well, basically, <span style="color: red;">NSR</span> provides the request object with 3 properties:
+            <ul>
+              <li>**request.get** which is an object representation of the <dfn>query string</dfn></li>
+              <li>**request.post** an object representation of what was posted, if anything</li>
+              <li>**request.body** is the union of the two previous items</li>
+            </ul>
+            It should be pointed down that regardless the transmission method, <span style="color: red;">NSR</span>
+            takes the necessary steps to make all 3 of them true javascript objects with all that implies, JSON and all.
+            Worst case is an empty object **{}**, no errors.
+            So, you can use `request.get.whatever` for `router.get`,
+            `request.post.whatever` for `router.post`, but in any case, if you don't care about request method,
+            using `request.body.whatever` is a safe bet, most obviously useful if you do not know in advance
+            the request method, for example: <code class="js">router.any("/threefold", function(request, response)
+            {response.end((parseInt(request.body.number) * 3).toString();});</code>
+         </p>
+         <p>
+             Wrapping up, you just got to remember **request.get, request.post** and **request.body**
+             
+And that's all there is about it.
+
+### Options
+
+NSR sticks to some conventions ("public" as directory name for static assets, etc),
+which the programmer can override when instantiating the router, for instance:
+
+    var router = new Router({static_route: __dirname + "/static"});
+to change usage of the default "public" directory for static resources
+            
+
+List of default options:
+            <p>
+                <pre><code class="js">
+                logging: true
+                log: console.log
+                static_route: "#{process.cwd()}/public"
+                serve_static: true
+                list_dir: true
+                default_home: ['index.html', 'index.htm', 'default.htm']
+                cgi_dir: "cgi-bin"
+                serve_cgi: true
+                serve_php: true
+                php_cgi: "php-cgi"
+                served_by: 'Node Simple Router'
+                software_name: 'node-simple-router'
+                admin_user: 'admin'
+                admin_pwd: 'admin'
+                </code></pre>
+            </p>
+            <p>
+                Most of them are self explanatory, but some deserve further comments,
+                which will be added on doc completion.
+            </p>
+ 
+## Router API
+
+Router object supports the following methods
+#### <dfn>get</dfn>
+_Usage:_
+
+      router.get('/users/:id', function(request, response) {
+        response.end("User: " + getUserById(request.params.id).fullName);});
+          
+#### <dfn>post</dfn>
+_Usage:_
+
+    router.post('/users', function(request, response) {
+                        insertUser(request.post.user, function(new_user_id) {
+                          request.post.user.id = new_user_id;
+                          response.end(JSON.stringify(request.post.user);});
+                        });</code></pre>
+
+#### Handling file uploads
+<span style="color: red;">NSR</span> handles 'multipart/form-data' out of the box.
+When <span style="color: red;">NSR</span> detects a post having enctype="multipart/form-data" it
+adds to the _request_ object the properties: <em>fileName, fileLen, fileData and
+fileType</em>, which client code (your server) can handle as shown in the following usage example.
+
+_Usage:_
+<code class="js">router.post("/handle_upload", function(request, response) {
+        var encoding, fullname;
+        response.writeHead(200, {'Content-type': 'text/html'});
+        if (request.fileName) {
+           response.write("&lt;h2&gt;Uploaded File Data&lt;/h2&g");
+           response.write("File name = " + request.fileName + "&lt;br/&gt;");
+           response.write("File length = " + request.fileLen + " bytes&lt;br/&gt;");
+           response.write("File type = " + request.fileType + "&lt;br/&gt;");
+           fullname = "" + __dirname + "/public/uploads/" + request.fileName;
+           if (request.fileType.indexOf('text') &gt;= 0) {
+              encoding = 'utf8';
+           }
+           else {
+             encoding = 'binary';
+           }
+           return fs.writeFile(fullname, request.fileData, {encoding: encoding}, function(err) {
+             if (err) {
+               response.write("&lt;p style='color: red;'&gt;Something went wrong, uploaded file could not be saved.&lt;/p&gt;");
+             }
+             else {
+               response.write('&lt;div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;"&gt;');
+               if (request.fileType.indexOf('image') &gt;= 0) {
+                 response.write("&lt;img src='/uploads/" + request.fileName + "' /&gt;");
+               }
+               else {
+                 response.write("&lt;pre&gt;" + request.fileData + "&lt;/pre&gt;");
+               }
+               response.write("&lt;/div&gt;");
+             }
+             response.write("&lt;hr/&gt;");
+             return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
+           });
+         }
+         else {
+           response.write("&lt;p style='color: red;'&gt;Something went wrong, looks like nothing was uploaded.&lt;/p&gt;");
+           return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
+         }
+      });</code>
+      
+#### <dfn>put</dfn>
+_Usage:_
+<code class="js">router.put('/users', function(request, response) {
+                                    updateUser(request.post.user, function(updated_user_id) {
+                                    response.end(updated_user_id);})
+                                    });</code></pre>
+
+#### <dfn>patch</dfn>
+A variant for PUT
+
+_Usage:_
+<code class="js">router.patch('/users', function(request, response) {
+                                    updateUser(request.post.user, function(updated_user_id) {
+                                    response.end(updated_user_id);});
+                                    });</code></pre>
+
+#### <dfn>delete</dfn>
+
+_Usage:_
+<code class="js">router.delete('/users', function(request, response) {
+                                    deleteUser(request.post.user_id, function(user_id) {
+                                    response.end(user_id);});
+                                    });</code></pre>
+
+#### <dfn>any</dfn>
+To be used when the request method is not known in advance. Sort of "catch all"
+
+_Usage:_
+<code class="js">router.any('/users', function(request, response) {
+                            response.end("User: " + getUserById(request.body.user_id).fullName);}); // Observe the usage of 'request.body' as the union of 'request.get' and 'request.post'</code></pre>
+                    </li>
+                    <li class="list-divider">
+
+***
+
+#### <dfn>Complementary methods</dfn>
+                        </div>
+                        <div class="list-group-item-text">
+                            Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
+                            They are what you will use 90% of the time.
+What follows are method loosely related to
+                            routing activity, but are the ones that give <span style="color: red;">NSR</span> some of its
+                            distinctiveness.
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        
+
+#### <dfn>proxy_pass</dfn>
+&nbsp;&nbsp;&nbsp;To deliver to the client the contents of an url from another server
+                        <pre>_Usage:_
+<code class="js">router.get('/whatismyip', function(request, response) {
+                            router.proxy_pass('http://testing.savos.ods.org/wimi', response);});</code>
+                         </pre>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            
+
+#### <dfn><abbr title="Common Gateway Interface">cgi</abbr></dfn>
+&nbsp;&nbsp;&nbsp;To pass the client the results of an external CGI program.
+                        </div>
+                        <div class="list-group-item-text">
+                            <p>
+                                This one deserves an additional comment on its usefulness. While some - many perhaps - would argue
+                                that CGI doesn't make any sense from a Node.js development perspective, I still it's a worthy inclusion
+                                for a couple of reasons
+                                  <ul>
+                                    <li>First of all, you may have a legacy CGI module that you want/need to use in your brand new Node.js server - would you rewrite, for instance, Crafty, the chess engine, in Node? -</li>
+                                    <li>Writing programs that can talk to each other through standard means (stdin, stdout) has passed the test of time, and I think it has it niche even in the web server world.</li>
+                                    <li>If performance is a concern - and it should be - the present considerations still stand for the next item: SCGI, which NSR also supports. But there would not have been SCGI without CGI</li>
+                                    <li>Last but not least, CGI support makes the same sense in the context of a Node.js web server thant it does in Nginx, Apache, etc.. I'm not aware of anybody suggestiong CGI support should be dropped from any of them.</li>
+                                  </ul>
+                            </p>
+                            <pre>
+_Usage:_
+<samp>
+    By default, any static resource having a path that includes the router option 'cgi-dir'
+    (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
+    as a cgi program, provided the router option 'serve_cgi' is true.
+    For example, the uri: `/cgi-bin/hello.py` will be handled as a CGI program.
+    On the other hand, you can invoke directly the cgi method of the router, like so:
+    `router.cgi('/hidden-cgi-dir/mycgi.rb', request, response);`
+    Nevertheless, such way of using it is discouraged as it does not follow CGI standard
+    guidelines.
+</samp>
+                             </pre>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            
+
+#### <dfn>scgi_pass</dfn>
+                            
+
+To pass the client the results of an external program running under the [SCGI](http://en.wikipedia.org/wiki/SCGI) protocol.
+                        </div>
+                        <div class="list-group-item-text">
+                           
+
+Same considerations as those pertaining to CGI, with the added benefit of not having to spawn a new process each time.
+                           
+
+Why SCGI and not <dfn title="Fast CGI">FCGI</dfn>? Well, SCGI protocol was far easier to implement, and I really couldn't find significant performance differences between the two. FCGI may be implenented in future versions.
+                           <p>
+                               <pre>
+  _Usage:_
+  <code class="js">
+  //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
+  router.post("/scgi", function(request, response) {
+    router.scgi_pass(26000, request, response);
+  });
+  </code>
+  The first parameter for scgi_pass is the port number (for tcp sockets)
+  or the socket name (for unix sockets) at which the SCGI process is listening.
+                               </pre>
+                           </p>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="list-group-item-heading">
+                            
+
+#### <dfn>render_template</dfn>
+                            
+
+To provide rudimentary template handling without compromising the goal of keeping <span style="color: red;">NSR</span> lean and simple.
+                        </div>
+                        <div class="list-group-item-text">
+                            <p>
+                                Even though templating is not directly related to routing, having a micro-templating utility was considered handy.
+                                It is basically a naive implementation of [mustache.js](http://mustache.github.io/), which tries to follow the [spec](http://mustache.github.io/mustache.5.html), but at its current stage lacks partials and lambdas. Template handling as you would with any mustache template, as shown in the following example.
+                            </p>
+                            <p>
+                               <pre>
+_Usage:_
+<code class="js">
+  router.get("/greet_user/:user_id", function(request, response) {
+    get_user_by_id(request.params.user_id, function (user) {
+      template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
+      compiled_str = router.render_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
+      response.end(compiled_str);
+    }
+  });
+</code>
+                               </pre>
+                              Give it a test ride [here](/templates)
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            
+
+### Added goodies
+        </div>
+        <div class="panel-body">
+        <p>
+           Really? Need more goodies?
+           Ok, here we go...
+           <ul>
+              <li>
+                **Default favicon** If your app doesn't have a favicon, <span style="color: red;">NSR</span> provides one for you.
+                I _REALLY_ suggest you provide yours...
+              </li>
+              <li>**Default '404 - Not found' page.** Once again, you're advised to provide your own.</li>
+              <li>**Default '500 - Server Error' page.** Same applies here.</li>
+           </ul>
+        </p>
+        </div>
+    </div>
+
+</div>
 ## License
 
 (The MIT License)
