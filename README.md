@@ -1,4 +1,4 @@
-# Node Simple Router <img src="test/public/img/router50.png" />
+# Node Simple Router <img src="https://raw.github.com/sandy98/node-simple-router/master/test/public/img/router50.png" />
 ### Yet another minimalistic router for node.js 
 
 # Getting started
