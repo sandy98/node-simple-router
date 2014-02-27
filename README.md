@@ -48,6 +48,10 @@ Either case, the basic steps are the same:
 
 `var router = Router(); // may also be router = new Router();`
 
+#### Add some routes
+
+`router.get("/hello", function(request, response) {response.end("Hello, World!"};});`
+
 #### Create an http server using router as the handler
 
 `var server = http.createServer(router);`
@@ -158,7 +162,8 @@ adds to the _request_ object the properties: <em>fileName, fileLen, fileData and
 fileType</em>, which client code (your server) can handle as shown in the following usage example.
 
 _Usage:_
-<code class="js">router.post("/handle_upload", function(request, response) {
+
+        router.post("/handle_upload", function(request, response) {
         var encoding, fullname;
         response.writeHead(200, {'Content-type': 'text/html'});
         if (request.fileName) {
@@ -195,84 +200,74 @@ _Usage:_
            response.write("&lt;p style='color: red;'&gt;Something went wrong, looks like nothing was uploaded.&lt;/p&gt;");
            return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
          }
-      });</code>
+      });
       
 #### <dfn>put</dfn>
 _Usage:_
-<code class="js">router.put('/users', function(request, response) {
-                                    updateUser(request.post.user, function(updated_user_id) {
-                                    response.end(updated_user_id);})
-                                    });</code></pre>
+
+    router.put('/users', function(request, response) {
+        updateUser(request.post.user, function(updated_user_id) {
+        response.end(updated_user_id);})
+    });
 
 #### <dfn>patch</dfn>
 A variant for PUT
 
 _Usage:_
-<code class="js">router.patch('/users', function(request, response) {
-                                    updateUser(request.post.user, function(updated_user_id) {
-                                    response.end(updated_user_id);});
-                                    });</code></pre>
+
+    router.patch('/users', function(request, response) {
+        updateUser(request.post.user, function(updated_user_id) {
+        response.end(updated_user_id);});
+    });
 
 #### <dfn>delete</dfn>
 
 _Usage:_
-<code class="js">router.delete('/users', function(request, response) {
-                                    deleteUser(request.post.user_id, function(user_id) {
-                                    response.end(user_id);});
-                                    });</code></pre>
+
+    router.delete('/users', function(request, response) {
+        deleteUser(request.post.user_id, function(user_id) {
+        response.end(user_id);});
+    });
 
 #### <dfn>any</dfn>
 To be used when the request method is not known in advance. Sort of "catch all"
 
 _Usage:_
-<code class="js">router.any('/users', function(request, response) {
-                            response.end("User: " + getUserById(request.body.user_id).fullName);}); // Observe the usage of 'request.body' as the union of 'request.get' and 'request.post'</code></pre>
-                    </li>
-                    <li class="list-divider">
 
-***
+    // Observe usage of 'request.body' as the union of 'request.get' and 'request.post'
+    router.any('/users', function(request, response) {
+        response.end("User: " + getUserById(request.body.user_id).fullName);}); 
 
-#### <dfn>Complementary methods</dfn>
-                        </div>
-                        <div class="list-group-item-text">
-                            Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
-                            They are what you will use 90% of the time.
-What follows are method loosely related to
-                            routing activity, but are the ones that give <span style="color: red;">NSR</span> some of its
-                            distinctiveness.
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        
+
+### <dfn>Complementary methods</dfn>
+ 
+Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
+
+They are what you will use 90% of the time.
+
+What follows are method loosely related to routing activity, but are the ones that give <span style="color: red;">NSR</span> some of its distinctiveness.
 
 #### <dfn>proxy_pass</dfn>
-&nbsp;&nbsp;&nbsp;To deliver to the client the contents of an url from another server
-                        <pre>_Usage:_
-<code class="js">router.get('/whatismyip', function(request, response) {
-                            router.proxy_pass('http://testing.savos.ods.org/wimi', response);});</code>
-                         </pre>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="list-group-item-heading">
-                            
+
+To deliver to the client the contents of an url from another server
+
+_Usage:_
+
+    router.get('/whatismyip', function(request, response) {
+        router.proxy_pass('http://testing.savos.ods.org/wimi', response);});
 
 #### <dfn><abbr title="Common Gateway Interface">cgi</abbr></dfn>
-&nbsp;&nbsp;&nbsp;To pass the client the results of an external CGI program.
-                        </div>
-                        <div class="list-group-item-text">
-                            <p>
-                                This one deserves an additional comment on its usefulness. While some - many perhaps - would argue
-                                that CGI doesn't make any sense from a Node.js development perspective, I still it's a worthy inclusion
-                                for a couple of reasons
-                                  <ul>
-                                    <li>First of all, you may have a legacy CGI module that you want/need to use in your brand new Node.js server - would you rewrite, for instance, Crafty, the chess engine, in Node? -</li>
-                                    <li>Writing programs that can talk to each other through standard means (stdin, stdout) has passed the test of time, and I think it has it niche even in the web server world.</li>
-                                    <li>If performance is a concern - and it should be - the present considerations still stand for the next item: SCGI, which NSR also supports. But there would not have been SCGI without CGI</li>
-                                    <li>Last but not least, CGI support makes the same sense in the context of a Node.js web server thant it does in Nginx, Apache, etc.. I'm not aware of anybody suggestiong CGI support should be dropped from any of them.</li>
-                                  </ul>
-                            </p>
-                            <pre>
+
+To pass the client the results of an external CGI program.
+
+This one deserves an additional comment on its usefulness. While some - many perhaps - would argue that CGI doesn't make any sense from a Node.js development perspective, I still it's a worthy inclusion for a couple of reasons
+ - First of all, you may have a legacy CGI module that you want/need to use in your brand new Node.js server - would you rewrite, for instance, Crafty, the chess engine, in Node?
+ - Writing programs that can talk to each other through standard means (stdin, stdout) has passed the test of time, and I think it has it niche even in the web server world.
+ - If performance is a concern - and it should be - the present considerations still stand for the next item: SCGI, which NSR also supports. But there would not have been SCGI without CGI
+ - Last but not least, CGI support makes the same sense in the context of a Node.js web server thant it does in Nginx, Apache, etc.. I'm not aware of anybody suggestiong CGI support should be dropped from any of them.
+
 _Usage:_
+
 <samp>
     By default, any static resource having a path that includes the router option 'cgi-dir'
     (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
@@ -283,99 +278,54 @@ _Usage:_
     Nevertheless, such way of using it is discouraged as it does not follow CGI standard
     guidelines.
 </samp>
-                             </pre>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="list-group-item-heading">
-                            
 
 #### <dfn>scgi_pass</dfn>
                             
 
 To pass the client the results of an external program running under the [SCGI](http://en.wikipedia.org/wiki/SCGI) protocol.
-                        </div>
-                        <div class="list-group-item-text">
-                           
 
 Same considerations as those pertaining to CGI, with the added benefit of not having to spawn a new process each time.
-                           
 
 Why SCGI and not <dfn title="Fast CGI">FCGI</dfn>? Well, SCGI protocol was far easier to implement, and I really couldn't find significant performance differences between the two. FCGI may be implenented in future versions.
-                           <p>
-                               <pre>
-  _Usage:_
-  <code class="js">
-  //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
-  router.post("/scgi", function(request, response) {
-    router.scgi_pass(26000, request, response);
-  });
-  </code>
-  The first parameter for scgi_pass is the port number (for tcp sockets)
-  or the socket name (for unix sockets) at which the SCGI process is listening.
-                               </pre>
-                           </p>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="list-group-item-heading">
-                            
+
+_Usage:_
+
+    //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
+    router.post("/scgi", function(request, response) {
+      router.scgi_pass(26000, request, response);
+    });
+
+The first parameter for scgi_pass is the port number (for tcp sockets)
+or the socket name (for unix sockets) at which the SCGI process is listening.
 
 #### <dfn>render_template</dfn>
                             
 
 To provide rudimentary template handling without compromising the goal of keeping <span style="color: red;">NSR</span> lean and simple.
-                        </div>
-                        <div class="list-group-item-text">
-                            <p>
-                                Even though templating is not directly related to routing, having a micro-templating utility was considered handy.
-                                It is basically a naive implementation of [mustache.js](http://mustache.github.io/), which tries to follow the [spec](http://mustache.github.io/mustache.5.html), but at its current stage lacks partials and lambdas. Template handling as you would with any mustache template, as shown in the following example.
-                            </p>
-                            <p>
-                               <pre>
-_Usage:_
-<code class="js">
-  router.get("/greet_user/:user_id", function(request, response) {
-    get_user_by_id(request.params.user_id, function (user) {
-      template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
-      compiled_str = router.render_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
-      response.end(compiled_str);
-    }
-  });
-</code>
-                               </pre>
-                              Give it a test ride [here](/templates)
-                            </p>
-                        </div>
-                    </li>
-                </ul>
-            </p>
-        </div>
-    </div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            
+Even though templating is not directly related to routing, having a micro-templating utility was considered handy.
+
+It is basically a naive implementation of [mustache.js](http://mustache.github.io/), which tries to follow the [spec](http://mustache.github.io/mustache.5.html), but at its current stage lacks partials and lambdas. Template handling as you would with any mustache template, as shown in the following example.
+
+_Usage:_
+
+    router.get("/greet_user/:user_id", function(request, response) {
+      get_user_by_id(request.params.user_id, function (user) {
+        template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
+        compiled_str = router.render_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
+        response.end(compiled_str);
+      }
+    });
 
 ### Added goodies
-        </div>
-        <div class="panel-body">
-        <p>
-           Really? Need more goodies?
-           Ok, here we go...
-           <ul>
-              <li>
-                **Default favicon** If your app doesn't have a favicon, <span style="color: red;">NSR</span> provides one for you.
-                I _REALLY_ suggest you provide yours...
-              </li>
-              <li>**Default '404 - Not found' page.** Once again, you're advised to provide your own.</li>
-              <li>**Default '500 - Server Error' page.** Same applies here.</li>
-           </ul>
-        </p>
-        </div>
-    </div>
 
-</div>
+Really? Need more goodies?
+
+Ok, here we go...
+ -  **Default favicon** If your app doesn't have a favicon, <span style="color: red;">NSR</span> provides one for you. I _REALLY_ suggest you provide yours...
+ -  **Default '404 - Not found' page.** Once again, you're advised to provide your own.
+ -  **Default '500 - Server Error' page.** Same applies here.
+
 ## License
 
 (The MIT License)
