@@ -153,7 +153,7 @@ _Usage:_
                         insertUser(request.post.user, function(new_user_id) {
                           request.post.user.id = new_user_id;
                           response.end(JSON.stringify(request.post.user);});
-                        });</code></pre>
+                        });
 
 #### Handling file uploads
 <span style="color: red;">NSR</span> handles 'multipart/form-data' out of the box.
