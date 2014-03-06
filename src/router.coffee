@@ -18,7 +18,7 @@ Router = (options = {}) ->
 # Constants.	
 
   default_options =
-    version: '0.7.0-2'
+    version: '0.7.1-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -647,9 +647,10 @@ Router = (options = {}) ->
           token_obj[k] = {token: token, dont_encode: dont_encode}
 
       new_str = text_token
-      for key, value of context
-        if token_obj[key]
-          new_str = new_str.replace new RegExp(token_obj[key].token, 'g'), if token_obj[key].dont_encode then value else html_encode(value)
+      for key, value of token_obj
+        replacement = eval "context.#{key}"
+        if replacement
+          new_str = new_str.replace new RegExp(token_obj[key].token, 'g'), if token_obj[key].dont_encode then replacemente else html_encode(replacement)
       #Erase unmatched mustaches
       new_str = new_str.replace variable_pattern_global, '' unless keep_tokens
       text_tokens[index] = new_str
