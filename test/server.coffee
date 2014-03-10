@@ -277,10 +277,18 @@ router.get '/setcookie' , (request, response)  ->
 router.get "/uuid", (request, response) ->
   response.end(router.getUUID())
 
+router.get "/sethandler/:funcname", (request, response) ->
+  router.setSessionHandler request.params.funcname
+  response.end("Session handler set to '#{router.nsr_session_handler}' function")
+
 #
 #End routes
 #
 
+router.fakehandler = ->
+  username: 'cacarulo', time: new Date().toISOString()
+
+router.avail_nsr_session_handlers.push 'dispatch.fakehandler'
 
 #Ok, just start the server!
 
