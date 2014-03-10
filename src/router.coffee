@@ -14,8 +14,103 @@ Router = (options = {}) ->
       
 # End of required modules
 
+#In-memory stores and other variables
 
-# Constants.	
+  nsr_sessions = {}
+
+#End of In-memory stores and other variables
+
+# Auxiliary functions.
+
+  memory_store = (request, sid, opcode = 'init', sessobj = {},  cb = ->) ->
+    switch opcode
+      when 'init', 'set'
+        nsr_sessions[sid] = sessobj
+      when 'get'
+        if (not sid in nsr_sessions) or (not nsr_sessions[sid])
+          nsr_sessions[sid] = sessobj
+
+    console.log "sessobj: #{JSON.stringify(sessobj)}"
+    console.log "nsr_sessions[#{sid}]: #{JSON.stringify(nsr_sessions[sid])}"
+    request.nsr_session = nsr_sessions[sid]
+    cb() if cb
+    nsr_sessions[sid]
+
+
+  text_store = (req, res, sid, op = 'init',  sessobj = {}, cb = ((id) -> id). fileName) ->
+    dispatch.log "text_store session handling not implemented yet." if dispatch.logging
+    cb(req, res) if cb
+    sid
+
+  uuid = ->
+    d = new Date().getTime()
+    guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) ->
+      r = (d + Math.random() * 16) % 16 | 0
+      d = Math.floor(d / 16)
+      ((if c is "x" then r else (r & 0x7 | 0x8))).toString 16
+    )
+    guid
+
+  _isEmpty = (obj) ->
+    Object.keys(obj).length is 0
+
+  _extend = (obj_destiny, obj_src) ->
+    for key, val of obj_src
+      obj_destiny[key] = val
+    obj_destiny
+
+  _parsePattern = (pat) ->
+    re = /\/:([A-Za-z0-9_]+)+/g
+    m = pat.match(re)
+    if m
+      pars = (x.slice(2) for x in m)
+      retpat = pat.replace(re, "/([A-Za-z0-9_\-]+)")
+    else
+      retpat = pat
+      pars = null
+    {pattern: retpat, params: pars}
+
+  _make_request_wrapper = (cb) ->
+    wrapper = (req, res) ->
+      body = []
+      contentType = 'application/x-www-form-urlencoded'
+      if req.headers['content-type']
+        contentType = req.headers['content-type']
+      mp_index = contentType.indexOf('multipart/form-data')
+      if req.method.toLowerCase() isnt 'get'
+        req.setEncoding('binary') if (mp_index isnt -1)
+        req.on 'data', (chunk) ->
+          body.push chunk
+        req.on 'end', () ->
+          body = body.join ''
+          if contentType is 'text/plain'
+            body = body.replace('\r\n', '')
+          if mp_index is -1
+            req.post = _bodyparser(body)
+          else
+            req.post = _multipartparser(body, contentType)
+            for obj in req.post['multipart-data']
+              req.fileName = obj.fileName if obj.fileName
+              req.fileLen = obj.fileLen if obj.fileLen
+              req.fileData = obj.fileData if obj.fileData
+              req.fileType = obj.fileType if obj.fileType
+          req.body = _extend req.body, req.post
+          try
+            cb(req, res)
+          catch e
+            dispatch._500 req, res, req.url, e.toString()
+      else
+        try
+          cb(req, res)
+        catch e
+          dispatch._500 req, res, req.url, e.toString()
+
+    wrapper
+
+# End of Auxiliary functions.
+
+
+# Constants.
 
   default_options =
     version: '0.7.1-4'
@@ -33,6 +128,9 @@ Router = (options = {}) ->
     software_name: 'node-simple-router'
     admin_user: 'admin'
     admin_pwd: 'admin'
+    use_nsr_session: true
+    avail_nsr_session_handlers: [memory_store, text_store]
+    default_nsr_session_handler: eval memory_store
 
   mime_types =
     '':      'application/octet-stream'
@@ -84,109 +182,63 @@ Router = (options = {}) ->
 # End of Constants.
 
 
-# Auxiliary functions.	
-
-  _extend = (obj_destiny, obj_src) ->
-    for key, val of obj_src
-      obj_destiny[key] = val
-    obj_destiny
-
-  _parsePattern = (pat) ->
-    re = /\/:([A-Za-z0-9_]+)+/g
-    m = pat.match(re)
-    if m
-      pars = (x.slice(2) for x in m)
-      retpat = pat.replace(re, "/([A-Za-z0-9_\-]+)")
-    else
-      retpat = pat
-      pars = null
-    {pattern: retpat, params: pars}
-  
-  _make_request_wrapper = (cb) ->
-    wrapper = (req, res) ->
-      body = []
-      contentType = 'application/x-www-form-urlencoded'
-      if req.headers['content-type']
-        contentType = req.headers['content-type']
-      mp_index = contentType.indexOf('multipart/form-data')
-      if req.method.toLowerCase() isnt 'get'
-        req.setEncoding('binary') if (mp_index isnt -1)
-        req.on 'data', (chunk) ->
-          body.push chunk
-        req.on 'end', () ->
-          body = body.join ''
-          if contentType is 'text/plain'
-            body = body.replace('\r\n', '')
-          if mp_index is -1
-            req.post = _bodyparser(body)
-          else
-            req.post = _multipartparser(body, contentType)
-            for obj in req.post['multipart-data']
-              req.fileName = obj.fileName if obj.fileName
-              req.fileLen = obj.fileLen if obj.fileLen
-              req.fileData = obj.fileData if obj.fileData
-              req.fileType = obj.fileType if obj.fileType
-          req.body = _extend req.body, req.post
-          try
-            cb(req, res)
-          catch e
-            dispatch._500 req, res, req.url, e.toString()
-      else
-        try
-          cb(req, res)
-        catch e
-          dispatch._500 req, res, req.url, e.toString()
-
-    wrapper
-
-# End of Auxiliary functions.	
-
-
 # Dispatcher (router) function.	
 
   dispatch = (req, res) ->
-    parsed = urlparse(req.url)
-    pathname = parsed.pathname
-    pathname = pathname.replace /\/$/, "" if (pathname.split '/') .length > 2
-    req.get = if parsed.query? then querystring.parse(parsed.query) else {}
-    req.body = _extend {}, req.get
-    method = req.method.toLowerCase()
-    if dispatch.logging
-      dispatch.log "#{req.client.remoteAddress} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
 
-    #selected_method = dispatch.routes[method] or dispatch.routes['any']
-    if dispatch.routes[method]
-      selected_method = dispatch.routes[method].concat dispatch.routes['any']
-    else
-      selected_method = dispatch.routes['any']
+    final_dispatch = (req, res) ->
+      parsed = urlparse(req.url)
+      pathname = parsed.pathname
+      pathname = pathname.replace /\/$/, "" if (pathname.split '/') .length > 2
+
+      req.get = if parsed.query? then querystring.parse(parsed.query) else {}
+      req.body = _extend {}, req.get
+      method = req.method.toLowerCase()
+      if dispatch.logging
+        dispatch.log "#{req.client.remoteAddress} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
+
+      if dispatch.routes[method]
+        selected_method = dispatch.routes[method].concat dispatch.routes['any']
+      else
+        selected_method = dispatch.routes['any']
       
-    for route in selected_method
-      m = pathname.match(route.pattern)
-      if m isnt null
-        if route.params
-          req.params = {}
-          args = m.slice(1)
-          for param, index in route.params
-            req.params[param] = args[index]
-        return route.handler(req, res)
+      for route in selected_method
+        m = pathname.match(route.pattern)
+        if m isnt null
+          if route.params
+            req.params = {}
+            args = m.slice(1)
+            for param, index in route.params
+              req.params[param] = args[index]
+          return route.handler(req, res)
 
-    if pathname is "/"
-      for home_page in dispatch.default_home
-        full_path = "#{dispatch.static_route}/#{home_page}"
-        try
-          if fs.existsSync full_path
-            return dispatch.static "/#{home_page}", req, res
-        catch error
-          dispatch.log error.toString() unless not dispatch.logging
-      if dispatch.list_dir
-        return dispatch.directory dispatch.static_route, '.', res
+      if pathname is "/"
+        for home_page in dispatch.default_home
+          full_path = "#{dispatch.static_route}/#{home_page}"
+          try
+            if fs.existsSync full_path
+              return dispatch.static "/#{home_page}", req, res
+          catch error
+            dispatch.log error.toString() unless not dispatch.logging
+        if dispatch.list_dir
+          return dispatch.directory dispatch.static_route, '.', res
+        else
+          return dispatch._404 req, res, pathname
+
+      if dispatch.serve_static
+        return dispatch.static pathname, req, res
       else
         return dispatch._404 req, res, pathname
 
-    if dispatch.serve_static
-      return dispatch.static pathname, req, res
-    else
-      return dispatch._404 req, res, pathname
+    nsr_sid = dispatch.getCookie(req, 'nsr_sid')['nsr_sid']
+    if not nsr_sid
+      nsr_sid = uuid()
+      dispatch.setCookie(res, {nsr_sid: nsr_sid})
+
+    if dispatch.use_nsr_session
+      dispatch.default_nsr_session_handler req, nsr_sid, 'get'
+
+    final_dispatch req, res
 
 # End of Dispatcher (router) function.	
 
@@ -287,6 +339,58 @@ Router = (options = {}) ->
 
 
 # Dispatch function properties and methods 	
+
+  dispatch.getUUID = () -> uuid()
+
+  dispatch.cookie2obj = (cookie_str) ->
+    ret = {}
+    cookiePairs = (pair.trim() for pair in cookie_str.split(/;/))
+
+    for pair in cookiePairs
+      eqIndex = pair.indexOf('=')
+      if eqIndex isnt -1
+        key = pair.substring(0, eqIndex)
+        value = pair.substring(eqIndex + 1)
+        ret[key] = value
+    ret
+
+  dispatch.obj2cookie  = (obj) ->
+    ("#{key}=#{val}" for key, val of obj).join "; "
+
+  dispatch.getCookie = (request, cookie_name) ->
+    ret = {}
+    return ret unless request.headers.cookie?
+    obj = dispatch.cookie2obj(request.headers.cookie)
+    return obj unless cookie_name
+    if obj[cookie_name]
+      ret[cookie_name] = obj[cookie_name]
+    ret
+
+  dispatch.setCookie = (response, cookie_obj, max_age) ->
+    arr = []
+    for key, value of cookie_obj
+      arr.push "#{key}=#{value}#{if max_age then ('; max-age=' + max_age) else ''}"
+    response.setHeader 'Set-Cookie', arr if arr.length isnt 0
+    dispatch.obj2cookie(cookie_obj)
+
+  dispatch.getSession = (request) ->
+    return null unless dispatch.use_nsr_session
+    sess_id = dispatch.getCookie(request, 'nsr_sid')
+    return null unless sess_id.nsr_sid
+    dispatch.default_nsr_session_handler request, sess_id.nsr_sid, 'get'
+
+  dispatch.setSession = (request, sessionObj) ->
+    return unless dispatch.use_nsr_session
+    sess_id = dispatch.getCookie(request, 'nsr_sid')
+    return null unless sess_id.nsr_sid
+    dispatch.default_nsr_session_handler request, sess_id.nsr_sid, 'set', sessionObj
+
+  dispatch.updateSession = (request, sessionObj) ->
+    return unless dispatch.use_nsr_session
+    sess_id = dispatch.getCookie(request, 'nsr_sid')
+    return null unless sess_id.nsr_sid
+    curr_sessionObj = _extend(dispatch.getSession(request), sessionObj)
+    dispatch.setSession(request, curr_sessionObj)
 
   dispatch.routes =
     get:  []
@@ -683,6 +787,10 @@ Router = (options = {}) ->
 
 
 # Returns dispatch (router function)	    
+  #console.log "default_options.:", default_options
+  #console.log "default_options.default_nsr_session_handler:", default_options.default_nsr_session_handler
+  #console.log "default_options.default_nsr_session_handler CONSTRUCTOR:", default_options.default_nsr_session_handler.constructor.name
+
   dispatch
 
 

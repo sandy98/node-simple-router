@@ -250,7 +250,32 @@ router.post "/handle_upload", (request, response) ->
               <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
               """
 
+router.get '/getsession' , (request, response)  ->
+  response.end(JSON.stringify router.getSession(request))
 
+router.get '/setsession' , (request, response)  ->
+  router.setSession(request, request.get)
+  response.writeHead(307, 'Location': "/getsession")
+  response.end("Session updated with #{JSON.stringify(request.get)}")
+
+router.get '/updatesession' , (request, response)  ->
+  router.updateSession(request, request.get)
+  response.writeHead(307, 'Location': "/getsession")
+  response.end("Session updated with #{JSON.stringify(request.get)}")
+
+router.get '/getcookie/:cookiename', (request, response) ->
+  response.end JSON.stringify(router.getCookie(request, request.params.cookiename))
+
+router.get '/getcookie', (request, response) ->
+  response.end JSON.stringify(router.getCookie(request))
+
+router.get '/setcookie' , (request, response)  ->
+  router.setCookie(response, request.get)
+  response.end("Cookie updated with #{JSON.stringify(request.get)}")
+
+
+router.get "/uuid", (request, response) ->
+  response.end(router.getUUID())
 
 #
 #End routes
