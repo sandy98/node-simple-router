@@ -2,5 +2,6 @@
 
 .idea/*
 tmp/*
-test/uploader/public/uploads/*
+test/public/uploads/*
 npm-debug.log
+test/sessions/ 

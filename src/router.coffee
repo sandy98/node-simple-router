@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.7.1-4'
+    version: '0.8.0-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -193,22 +193,28 @@ Router = (options = {}) ->
           return route.handler(req, res)
 
       if pathname is "/"
-        for home_page in dispatch.default_home
-          full_path = "#{dispatch.static_route}/#{home_page}"
-          try
-            if fs.existsSync full_path
-              return dispatch.static "/#{home_page}", req, res
-          catch error
-            dispatch.log error.toString() unless not dispatch.logging
-        if dispatch.list_dir
-          return dispatch.directory dispatch.static_route, '.', res
+        homes = ("#{dispatch.static_route}#{path_tools.sep}#{home_page}" for home_page in dispatch.default_home)
+        send_static_home = (candidates) ->
+          if candidates.length is 0
+            if dispatch.list_dir
+              return dispatch.directory dispatch.static_route, '.', res
+            else
+              return dispatch._404 req, res, pathname
+          else
+            fs.exists candidates[0], (exists) ->
+              if exists
+                return dispatch.static "/#{path_tools.basename candidates[0]}", req, res
+              else
+                send_static_home(candidates.slice(1))
+
+        send_static_home homes
+
+      if pathname isnt "/"
+        if dispatch.serve_static
+          return dispatch.static pathname, req, res
         else
           return dispatch._404 req, res, pathname
 
-      if dispatch.serve_static
-        return dispatch.static pathname, req, res
-      else
-        return dispatch._404 req, res, pathname
 
     nsr_sid = dispatch.getCookie(req, 'nsr_sid')['nsr_sid']
     if not nsr_sid
@@ -216,7 +222,7 @@ Router = (options = {}) ->
       dispatch.setCookie(res, {nsr_sid: nsr_sid})
 
     if dispatch.use_nsr_session
-      _getSessionHandler() req, nsr_sid, 'get'
+      dispatch.getSession(req)
 
     final_dispatch req, res
 
@@ -232,23 +238,52 @@ Router = (options = {}) ->
 
 # Directory listing template	
 
-  _dirlist_template = """
+  dispatch._dirlist_template = """
       <!DOCTYPE  html>
       <html>
         <head>
             <title>Directory listing for <%= @cwd %></title>
             <style type="text/css" media="screen">
-
+              *, *:before, *:after {
+                -moz-box-sizing: border-box;
+              }
+              html {
+              padding: 30px 10px;
+              font-size: 16px;
+              line-height: 1.3;
+              color: #737373;
+              background: #fafafa;
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+              }
+              body {
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+              }
+              a {
+                  color: rgb(66, 139, 202);
+                  text-decoration: none;
+                }
+              a:hover {text-decoration: underline;}
+              ul {
+                list-style-type: none;
+              }
+              hr {
+                height: 1px;
+                color: #eee;
+                background-color: #eee;
+              }
             </style>
         </head>
         <body>
-            <h2>Directory listing for <%= @cwd %></h2>
-            <hr/>
-            <ul id="dircontents">
-              <%= @cwd_contents %>
-            </ul>
-            <hr/>
-            <p><strong>Served by #{dispatch.served_by} v#{dispatch.version}</strong></p>
+            <h2 style="text-align: center;">Directory listing for <em><%= @cwd %></em></h2>
+            <!--<hr/>-->
+            <div style="background: #fff; border: solid 1px; padding: 0.5em; border-radius: 7px; width: 90%; margin: 0 auto;">
+              <ul id="dircontents">
+                <%= @cwd_contents %>
+              </ul>
+            </div>
+            <!--<hr/>-->
+            <p style="text-align: right; width: 90%; margin: 0 auto; margin-top: 0.5em;"><strong>Served by <span style="color: #8f0000;">#{dispatch.served_by}</span> <span style="color: #00008f;">v#{dispatch.version}</span></strong></p>
         </body>
       </html>
       """
@@ -319,8 +354,6 @@ Router = (options = {}) ->
      if handler.constructor.name isnt "Function"
        console.log "Handler is not a function, using default 'memory_store'"
        handler = dispatch.memory_store
-     else
-       console.log "All well with handler"
     catch e
       console.log "Error: #{e.message}\n Using default 'memory_store'"
       handler = dispatch.memory_store
@@ -386,15 +419,22 @@ Router = (options = {}) ->
     sid = sid_obj.nsr_sid
     return cb(null) if not sid
     #dispatch.log "text_store session handling not implemented yet." if dispatch.logging
-    filename = "#{process.cwd()}/SID_#{sid}"
-    dispatch.log "SESSION FILENAME: #{filename}"
+    filename = "#{process.cwd()}#{path_tools.sep}sessions#{path_tools.sep}SID_#{sid}"
 
     set_func = ->
-      file = fs.createWriteStream filename, encoding: 'utf8'
-      file.write JSON.stringify(sessobj)
-      file.end()
-      request.nsr_session = sessobj
-      return cb(sessobj)
+      fs.exists path_tools.dirname(filename), (exists) ->
+        if not exists
+          fs.mkdir path_tools.dirname(filename), (err) ->
+            if err
+              return cb(err)
+            else
+              set_func()
+        else
+          file = fs.createWriteStream filename, encoding: 'utf8'
+          file.write JSON.stringify(sessobj)
+          file.end()
+          request.nsr_session = sessobj
+          return cb(sessobj)
 
     get_func = ->
       fs.exists filename, (exists) ->
@@ -721,13 +761,15 @@ Router = (options = {}) ->
       dispatch._500 null, response, url, e.message
 
   dispatch.directory = (fpath, path, res) ->
-    resp = _dirlist_template
-    resp = resp.replace("<%= @cwd %>", path) while resp.indexOf("<%= @cwd %>") isnt -1
+    resp = dispatch._dirlist_template
+    resp = resp.replace("<%= @cwd %>", if path is "." then "/" else path) while resp.indexOf("<%= @cwd %>") isnt -1
     fs.readdir fpath, (err, files) ->
       if err
         return dispatch._404(null, res, path)
       else
         links = ("<li><a href='#{path}/#{querystring.escape(file)}'>#{file}</a></li>" for file in files).join('')
+        if path isnt "."
+          links = "<li title='Parent directory' style='margin-bottom: 5px; font-weight: bold;'><a style='color: #aa0000;' href=\"#{path_tools.dirname(path)}\">..</a></li>#{links}"
         resp = resp.replace("<%= @cwd_contents %>", links)
       res.writeHead 200, {'Content-type': 'text/html'}
       res.end resp
@@ -757,11 +799,20 @@ Router = (options = {}) ->
 
   dispatch._404 = (req, res, path) ->
     res.writeHead(404, {'Content-Type': 'text/html'})
-    res.end("""
-            <h2>404 - Resource #{path} not found at this server</h2>
-            <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
-            <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
-        """)
+    default_resp = """
+                   <h2>404 - Resource #{path} not found at this server</h2>
+                   <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
+                   <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
+                   """
+    fs.exists "#{dispatch.static_route}#{path_tools.sep}404.html", (exists) ->
+      if not exists
+        res.end default_resp
+      else
+        fs.readFile "#{dispatch.static_route}#{path_tools.sep}404.html", encoding: 'utf8', (err, data) ->
+          if err
+            res.end default_resp
+          else
+            res.end data
 
   dispatch._405 = (req, res, path, message) ->
     res.writeHead(405, {'Content-Type': 'text/html'})
