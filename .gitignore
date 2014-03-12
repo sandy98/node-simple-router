@@ -4,4 +4,4 @@
 tmp/*
 test/public/uploads/*
 npm-debug.log
-test/sessions/ 
+test/sessions 

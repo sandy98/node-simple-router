@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.0-1'
+    version: '0.8.0-2'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -216,12 +216,12 @@ Router = (options = {}) ->
           return dispatch._404 req, res, pathname
 
 
-    nsr_sid = dispatch.getCookie(req, 'nsr_sid')['nsr_sid']
-    if not nsr_sid
-      nsr_sid = uuid()
-      dispatch.setCookie(res, {nsr_sid: nsr_sid})
-
     if dispatch.use_nsr_session
+      nsr_sid = dispatch.getCookie(req, 'nsr_sid')['nsr_sid']
+      if not nsr_sid
+        nsr_sid = uuid()
+        dispatch.setCookie(res, {nsr_sid: nsr_sid})
+
       dispatch.getSession(req)
 
     final_dispatch req, res
