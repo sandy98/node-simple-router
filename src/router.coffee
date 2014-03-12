@@ -368,38 +368,70 @@ Router = (options = {}) ->
   dispatch.memory_store = (request, opcode = 'get', sessobj = {},  cb = ->) ->
     sid_obj = dispatch.getCookie(request, 'nsr_sid')
     sid = sid_obj.nsr_sid
-    return null if not sid
+    return cb(null) if not sid
     switch opcode
       when 'set'
         nsr_sessions[sid] = sessobj
       when 'get'
         if (not sid in nsr_sessions) or (not nsr_sessions[sid])
           nsr_sessions[sid] = sessobj
-
-    #console.log "sessobj: #{JSON.stringify(sessobj)}"
-    #console.log "nsr_sessions[#{sid}]: #{JSON.stringify(nsr_sessions[sid])}"
+      else
+        return cb(null)
     request.nsr_session = nsr_sessions[sid]
-    cb() if cb
-    nsr_sessions[sid]
+    cb(request.nsr_session)
 
 
-  dispatch.text_store = (req, sid, op = 'get',  sessobj = {}, cb = ((id) -> id). fileName) ->
-    dispatch.log "text_store session handling not implemented yet." if dispatch.logging
-    cb() if cb
-    null
+  dispatch.text_store = (request, opcode = 'get', sessobj = {},  cb = ->) ->
+    sid_obj = dispatch.getCookie(request, 'nsr_sid')
+    sid = sid_obj.nsr_sid
+    return cb(null) if not sid
+    #dispatch.log "text_store session handling not implemented yet." if dispatch.logging
+    filename = "#{process.cwd()}/SID_#{sid}"
+    dispatch.log "SESSION FILENAME: #{filename}"
 
-  dispatch.getSession = (request) ->
+    set_func = ->
+      file = fs.createWriteStream filename, encoding: 'utf8'
+      file.write JSON.stringify(sessobj)
+      file.end()
+      request.nsr_session = sessobj
+      return cb(sessobj)
+
+    get_func = ->
+      fs.exists filename, (exists) ->
+        if not exists
+          return set_func()
+        else
+          fs.readFile filename, encoding: 'utf8', (err, data) ->
+            if err
+              return cb(err)
+            else
+              sessobj = JSON.parse(data)
+              request.nsr_session = sessobj
+              return cb(sessobj)
+
+    switch opcode
+      when 'set'
+        return set_func()
+      when 'get'
+        return get_func()
+      else
+        return cb(null)
+
+  dispatch.getSession = (request, cb = ((id) -> id)) ->
     return null unless dispatch.use_nsr_session
-    _getSessionHandler() request, 'get'
+    _getSessionHandler() request, 'get', {}, cb
 
-  dispatch.setSession = (request, sessionObj) ->
+  dispatch.setSession = (request, sessionObj, cb = ((id) -> id)) ->
     return null unless dispatch.use_nsr_session
-    _getSessionHandler() request, 'set', sessionObj
+    _getSessionHandler() request, 'set', sessionObj, cb
 
-  dispatch.updateSession = (request, sessionObj) ->
+  dispatch.updateSession = (request, sessionObj, cb = ((id) -> id)) ->
     return null unless dispatch.use_nsr_session
-    curr_sessionObj = _extend(dispatch.getSession(request), sessionObj)
-    dispatch.setSession(request, curr_sessionObj)
+    #new_sessionObj = _extend(dispatch.getSession(request), sessionObj)
+    #dispatch.setSession(request, new_sessionObj)
+    dispatch.getSession request, (curr_session_obj) ->
+      if curr_session_obj
+         dispatch.setSession request, _extend(curr_session_obj, sessionObj), cb
 
   dispatch.setSessionHandler = (func_name) ->
     num = parseInt(func_name)
@@ -408,8 +440,22 @@ Router = (options = {}) ->
         dispatch.nsr_session_handler = dispatch.avail_nsr_session_handlers[num]
     else
       dispatch.nsr_session_handler = func_name
-    console.log dispatch.nsr_session_handler
     dispatch.nsr_session_handler
+
+  dispatch.addSessionHandler = (func_name, func) ->
+    try
+      if func.constructor.name isnt "Function"
+        dispatch.log "'#{func_name}' doesn't evaluate to a function."
+        return null
+      else
+        dispatch[func_name] = func
+        dispatch.avail_nsr_session_handlers.push "dispatch.#{func_name}"
+        return func
+    catch e
+      dispatch.log "ERROR trying to add session handler '#{func_name}': #{e.message}"
+      return null
+
+#
 
   dispatch.routes =
     get:  []

@@ -251,10 +251,11 @@ router.post "/handle_upload", (request, response) ->
               """
 
 router.get '/getsession' , (request, response)  ->
-  response.end(JSON.stringify router.getSession(request))
+  router.getSession request, (sess_obj) ->
+    response.end(JSON.stringify sess_obj)
 
 router.get '/setsession' , (request, response)  ->
-  router.setSession(request, request.get)
+  router.setSession request, request.get
   response.writeHead(307, 'Location': "/getsession")
   response.end("Session updated with #{JSON.stringify(request.get)}")
 
@@ -270,7 +271,13 @@ router.get '/getcookie', (request, response) ->
   response.end JSON.stringify(router.getCookie(request))
 
 router.get '/setcookie' , (request, response)  ->
-  router.setCookie(response, request.get)
+  if request.get.max_age
+    max_age = request.get.max_age
+    delete request.get.max_age
+    router.setCookie(response, request.get, max_age)
+  else
+    router.setCookie(response, request.get)
+  response.writeHead(307, 'Location': "/getcookie")
   response.end("Cookie updated with #{JSON.stringify(request.get)}")
 
 
@@ -285,10 +292,15 @@ router.get "/sethandler/:funcname", (request, response) ->
 #End routes
 #
 
-router.fakehandler = ->
-  username: 'cacarulo', time: new Date().toISOString()
+fakehandler = (request, opcode = 'get', sessObj = {}, cb = ((id) -> id)) ->
+  cb username: 'cacarulo', time: new Date().toISOString()
+  "Narizota"
 
-router.avail_nsr_session_handlers.push 'dispatch.fakehandler'
+func = router.addSessionHandler('fakehandler', fakehandler)
+if not func
+  router.log "adding 'fakehandler' failed, going to try manually"
+  router.fakehandler = fakehandler
+  router.avail_nsr_session_handlers.push 'dispatch.fakehandler'
 
 #Ok, just start the server!
 
