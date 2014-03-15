@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.0-2'
+    version: '0.8.1-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"

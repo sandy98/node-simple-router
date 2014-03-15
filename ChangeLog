@@ -104,6 +104,10 @@
 
         * v0.8.0-1 Polishing directory listings, eliminated last remnants of sync functions and added session handling.
 
+2014-03-13  Domingo E. Savoretti <esavoretti@gmail.com>
+
+        * v0.8.1-* Fully documenting session handling.
+
 * * *
 
 
