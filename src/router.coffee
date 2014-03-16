@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.1-1'
+    version: '0.8.2-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -232,6 +232,7 @@ Router = (options = {}) ->
 
   _extend(default_options, options)
   _extend(dispatch, default_options)
+  dispatch.mime_types = mime_types
 
 # End of Extends default options with client provided ones, and then using that extends dispatcher function itself.	
 

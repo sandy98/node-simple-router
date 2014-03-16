@@ -1,0 +1,62 @@
+<div>
+  <div class="page-header">
+    <h1>Session Handling</h1>
+  </div>
+  <div>
+      <h4>Session ID: {{sid}}</h4>
+  </div>
+  <div>
+      <table class="table table-bordered table-responsive">
+          <thead>
+            <tr>
+                <th>Keys</th><th>Values</th>
+            </tr>
+          </thead>
+          <tbody>
+             {{# session }}
+               <tr>
+                   <td>{{key}}</td>
+                   <td>{{value}}</td>
+               </tr>
+             {{/ session }}
+          </tbody>
+      </table>
+  </div>
+  <hr/>
+  <form id="set-handler" method="post">
+      <label for="nsr-handlers">Select Session Handler</label>
+      <select id="nsr-handlers" name="nsr-handlers">
+          {{# handlers}}
+            <option {{selected}} value="{{name}}">{{name}}</option>
+          {{/ handlers}}
+      </select>
+      <button type="submit">Set Handler</button>
+  </form>
+  <hr/>
+  <form id="set-session" method="post">
+    <div style="margin-bottom: 0.5em;">
+      <label for="key-text">Key&nbsp;&nbsp;</label>
+      <input type="text" id="key-text" name="key-text" required="required" />&nbsp;&nbsp;&nbsp;
+      <label for="value-text">Value&nbsp;&nbsp;</label>
+      <input type="text" size="50" id="value-text" name="value-text" />
+    </div>
+    <div style="margin-bottom: 0.5em;">
+      <strong>Select action:&nbsp;&nbsp;</strong>
+      <label class="radio-inline"><input type="radio" name="radio-action" value="set" />Set session with this key/value</label>
+      <label class="radio-inline"><input type="radio" name="radio-action" checked value="update" />Update session with this key/value</label>
+      <label class="radio-inline"><input type="radio" name="radio-action" value="delete" />Delete this key from the session</label>
+    </div>
+    <div style="margin-bottom: 0.5em;">
+      <button type="submit">Send session data</button>
+      <button type="Reset">Reset</button>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("nsr-handlers").onchange, function(evt){
+            document.getElementById("set-handler").submit();
+        }
+    }
+</script>

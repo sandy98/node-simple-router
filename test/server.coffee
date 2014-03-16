@@ -257,12 +257,12 @@ router.get '/getsession' , (request, response)  ->
 
 router.get '/setsession' , (request, response)  ->
   router.setSession request, request.get
-  response.writeHead(307, 'Location': "/getsession")
+  response.writeHead(307, 'Location': "/session")
   response.end("Session updated with #{JSON.stringify(request.get)}")
 
 router.get '/updatesession' , (request, response)  ->
   router.updateSession(request, request.get)
-  response.writeHead(307, 'Location': "/getsession")
+  response.writeHead(307, 'Location': "/session")
   response.end("Session updated with #{JSON.stringify(request.get)}")
 
 router.get '/getcookie/:cookiename', (request, response) ->
@@ -287,9 +287,56 @@ router.get "/uuid", (request, response) ->
 
 router.get "/sethandler/:funcname", (request, response) ->
   router.setSessionHandler request.params.funcname
+  response.writeHead 307, "Location": "/session"
   response.end("Session handler set to '#{router.nsr_session_handler}' function")
 
-#
+router.any "/session", (request, response) ->
+  set_sess = false
+  update_sess = false
+  delete_sess = false
+  obj = null
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/session.html", encoding: "utf8", (err, data) ->
+    if request.method.toLowerCase() is 'post'
+      #router.log request.post
+      if 'nsr-handlers' of request.post
+        router.setSessionHandler(request.post['nsr-handlers'])
+      if 'key-text' of request.post
+        key = request.post['key-text']
+        value = request.post['value-text']
+        obj = {}
+        obj[key] = value
+        switch request.post['radio-action']
+          when 'set'
+            set_sess = true
+          when 'update'
+            update_sess = true
+          when 'delete'
+            delete_sess = true
+
+    router.getSession request, (sess) ->
+      if set_sess
+        sess = obj
+        router.setSession(request, sess)
+      if update_sess
+        router.updateSession(request, obj)
+        sess[k] = v for k, v of obj
+      if delete_sess
+         for k of obj
+           delete sess[k]
+         router.setSession request, sess
+
+      sess_array = ({key: k, value: v} for k, v of sess)
+      #router.log sess
+      obj = session: sess_array, sid: router.getCookie(request, 'nsr_sid').nsr_sid
+      obj.selected_handler = router.nsr_session_handler
+      obj.handlers = ({name: handler, selected: if handler is router.nsr_session_handler then 'selected' else ''} for handler in router.avail_nsr_session_handlers)
+      #router.log obj
+      context = _extend(
+        base_context
+        contents: router.render_template(data, obj))
+      site_router(context, response)
+
 #End routes
 #
 
@@ -298,10 +345,12 @@ fakehandler = (request, opcode = 'get', sessObj = {}, cb = ((id) -> id)) ->
   "Narizota"
 
 func = router.addSessionHandler('fakehandler', fakehandler)
+###
 if not func
   router.log "adding 'fakehandler' failed, going to try manually"
   router.fakehandler = fakehandler
   router.avail_nsr_session_handlers.push 'dispatch.fakehandler'
+###
 
 #Ok, just start the server!
 
