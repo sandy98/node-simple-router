@@ -2,7 +2,7 @@
 , "description" : "Yet another minimalistic router for node.js"
 , "tags" : ["http", "simple", "routing", "router", "utils"]
 , "keywords": ["http", "url", "dispatch", "router", "request handler", "middleware" ]
-, "version" : "0.8.2-3"
+, "version" : "0.8.2-4"
 , "homepage": "http://node-simple-router.herokuapp.com"
 , "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
 , "repository" :
