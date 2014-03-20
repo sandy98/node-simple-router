@@ -232,7 +232,9 @@ Router = (options = {}) ->
 
   _extend(default_options, options)
   _extend(dispatch, default_options)
-  dispatch.mime_types = mime_types
+
+  dispath.utils = {}
+  dispatch.utils.mime_types = mime_types
 
 # End of Extends default options with client provided ones, and then using that extends dispatcher function itself.	
 

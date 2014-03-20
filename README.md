@@ -317,6 +317,61 @@ _Usage:_
       }
     });
 
+#### <dfn>Session handling</dfn>
+
+
+This section deals with session handling utilities built in with NSR.
+
+<p>
+    <span style="color: red;">NSR</span> augments the request object with a <em>nsr_session</em> object
+    unless the option <em>use_nsr_session</em> is set to a falsy value (defaults to true).<br/>
+    <strong><em>nsr_session</em></strong> is a javascript object that holds the session keys and values
+    defined by the application. Incidentally, the reason <span style="color: red;">NSR</span> uses
+    <em>request.nsr_session</em> and not <em>request.session</em> is to avoid name collision in case
+    that a separate session handling mechanism is used.
+</p>
+
+<p>
+    Options related to session handling:
+    <ul style="list-style-type: none;">
+       <li><strong>use_nsr_session</strong> Set <em>nsr_session</em> on or off</li>
+       <li><strong>avail_nsr_session_handlers</strong> Low level functions that perform the real action. See below for details</li>
+       <li><strong>nsr_session_handler</strong> The one handler currently selected</li>
+    </ul>
+</p>
+
+<p>
+    Methods related to session handling:
+    <ul style="list-style-type: none;">
+        <li><code>addSessionHandler(function, function_name)</code> Add your own function to the list of session handlers</li>
+        <li style="margin-bottom: 1em;"><code>setSessionHandler(func_name_or_ordinal)</code> Tell <span style="color: red;">NSR</span> which of the available handlers to use (defaults to 0, 'memory_store').</li>
+        <li><code>getSession(request, callback)</code> Get the current <em>request.nsr_session</em>.</li>
+        <li><code>setSession(request, session_object, callback)</code> Set the current <em>request.nsr_session</em> with the provided session_object.</li>
+        <li><code>updateSession(request, session_object, callback)</code> Update the current <em>request.nsr_session</em> with the provided session_object, keeping not included keys and adding-updating keys present in session_object.</li>
+    </ul>
+    <div style="margin-top: 1em;">
+        The three latter methods are convenience wrappers to access the low level method that handles <em>nsr_session</em>
+        which is responsible for the real implementation of the session mechanism.<br/>
+        The 3 are asynchronous, having the<em>nsr_session</em> returned as the only argument to the callback function.<br/>
+        Two low level handlers are provided built in: <em>memory_store</em> (default) and <em>text_store</em> (serializes each session to a file named by the session ID)<br/>
+        If you don't need/want to construct your own implementation, you don't need to know a thing
+        about it, but if you want to roll your own (for instance, if you want to save sessions to a database or a remote server)
+        here are a couple of things that you should keey in mind:
+    </div>
+    <div style="margin-top: 1em;">
+      <span style="1em; padding-left: 3em;">Function signature: <code>var db_store = function(request, opcode, sess_obj, callback);</code></span><br/>
+      <span style="1em; padding-left: 3em;">Having a look at the source code used in <em>memory_store</em> and <em>text_store</em> should provide a fairly good idea of how things should work</span><br/>
+      <span style="1em; padding-left: 3em;">In order to put your brand new session handler to work, you have to</span><br/>
+      <span style="1em; padding-left: 4em;">1) Register it with <span style="color: red;">NSR</span> by means of <em>addSessionHandler</em></span><br/>
+      <span style="1em; padding-left: 4em;">2) Put it to use with <em>setSessionHandler</em></span><br/>
+    </div>
+</p>
+
+<p>
+    You can see the session machinery in action in the <a href="/session">Session Handling</a> section of this demo site.<br/>
+    By all means, review the code that makes it work in <em>test/server.js</em> or <em>test/server.coffee</em> if you are so inclined.
+</p>
+
 ### Added goodies
 
 Really? Need more goodies?
