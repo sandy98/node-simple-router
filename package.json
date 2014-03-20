@@ -2,7 +2,7 @@
 , "description" : "Yet another minimalistic router for node.js"
 , "tags" : ["http", "simple", "routing", "router", "utils"]
 , "keywords": ["http", "url", "dispatch", "router", "request handler", "middleware" ]
-, "version" : "0.8.2-5"
+, "version" : "0.8.2-6"
 , "homepage": "http://node-simple-router.herokuapp.com"
 , "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
 , "repository" :
@@ -11,10 +11,13 @@
   }
 , "bugs" :
   { "url" : "http://github.com/sandy98/node-simple-router/issues" }
-, "engines" : ["node >= 0.8", "coffee-script >= 1.2"]
+, "engines" : ["node >= 0.8"]
+,  "devDependencies": {
+        "coffee-script": "latest"
+    }
 , "main" : "./lib/router.js"
 , "bin"  : {"mk-server": "./bin/mk-server"}
-, "scripts": { "test": "if [ ! -f test/server.js ]; then scripts/compile.sh; fi && test/server.js",
-    "prepublish": "scripts/compile.sh"
+, "scripts": { "test": "if [ ! -f test/server.js ] || [ test/server.js -ot test/server.coffee ]; then scripts/compile_test.sh; fi && test/server.js"
+  ,"prepublish": "scripts/compile.sh"
   }
 }

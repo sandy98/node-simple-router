@@ -5,4 +5,6 @@ tmp/*
 test/public/uploads/*
 npm-debug.log
 test/sessions
-test/sessions/* 
+test/sessions/*
+node_modules
+node_modules/* 

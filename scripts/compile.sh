@@ -1,23 +1,14 @@
 #!/bin/sh
 
-echo "Compiling source/s"
+echo "Compiling src"
 coffee -c -o lib/ src/
 
-echo "Compiling test"
-coffee -c test/
-
-echo "Generating test/server.js"
-echo "#!/usr/bin/env node" > test/server.tmp
-echo " " >> test/server.tmp
-cat test/server.js >> test/server.tmp
-mv test/server.tmp test/server.js
-chmod +x test/server.js
+scripts/compile_test.sh
 
 echo "Generating mk-server"
 echo "#!/usr/bin/env node" > bin/mk-server
 echo " " >> bin/mk-server
 cat lib/mk-server.js >> bin/mk-server
 chmod +x bin/mk-server
-
 rm lib/mk-server.js
 
