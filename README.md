@@ -352,7 +352,7 @@ This section deals with session handling utilities built in with NSR.
     <div style="margin-top: 1em;">
         The three latter methods are convenience wrappers to access the low level method that handles <em>nsr_session</em>
         which is responsible for the real implementation of the session mechanism.<br/>
-        The 3 are asynchronous, having the<em>nsr_session</em> returned as the only argument to the callback function.<br/>
+        The 3 are asynchronous, having the <em>nsr_session</em> returned as the only argument to the callback function.<br/>
         Two low level handlers are provided built in: <em>memory_store</em> (default) and <em>text_store</em> (serializes each session to a file named by the session ID)<br/>
         If you don't need/want to construct your own implementation, you don't need to know a thing
         about it, but if you want to roll your own (for instance, if you want to save sessions to a database or a remote server)
@@ -368,7 +368,7 @@ This section deals with session handling utilities built in with NSR.
 </p>
 
 <p>
-    You can see the session machinery in action in the <a href="/session">Session Handling</a> section of this demo site.<br/>
+    You can see the session machinery in action in the <a href="http://node-simple-router.herokuapp.com/session">Session Handling</a> section of the demo site.<br/>
     By all means, review the code that makes it work in <em>test/server.js</em> or <em>test/server.coffee</em> if you are so inclined.
 </p>
 
