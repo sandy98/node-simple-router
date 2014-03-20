@@ -1,5 +1,9 @@
 #!/bin/sh
+
+echo "Compiling source/s"
 coffee -c -o lib/ src/
+
+echo "Compiling test"
 coffee -c test/
 
 echo "Generating test/server.js"
