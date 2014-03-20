@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.2-6'
+    version: '0.8.3-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -233,12 +233,7 @@ Router = (options = {}) ->
   _extend(default_options, options)
   _extend(dispatch, default_options)
 
-  dispatch.utils = {}
-  dispatch.utils.mime_types = mime_types
-  dispatch.utils
-
-# End of Extends default options with client provided ones, and then using that extends dispatcher function itself.	
-
+# End of Extends default options with client provided ones, and then using that extends dispatcher function itself.
 
 # Directory listing template	
 
@@ -901,15 +896,16 @@ Router = (options = {}) ->
             ret_arr.push(dispatch.render_template(section_inner_text, context)) if property
     
     ret_arr.join '\n'
-    
-    
-# End of Dispatch function properties and methods 	
 
 
-# Returns dispatch (router function)	    
-  #console.log "default_options.:", default_options
-  #console.log "default_options.nsr_session_handler:", default_options.nsr_session_handler
-  #console.log "default_options.nsr_session_handler CONSTRUCTOR:", default_options.nsr_session_handler.constructor.name
+  dispatch.utils = {}
+  dispatch.utils.mime_types = mime_types
+  dispatch.utils.async = require './async'
+
+  # End of Dispatch function properties and methods
+
+
+  # Returns dispatch (router function)
 
   dispatch
 
