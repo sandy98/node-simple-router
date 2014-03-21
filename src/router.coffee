@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.3-3'
+    version: '0.8.3-4'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -351,10 +351,10 @@ Router = (options = {}) ->
     try
      handler = eval("(#{dispatch.nsr_session_handler})")
      if handler.constructor.name isnt "Function"
-       console.log "Handler is not a function, using default 'memory_store'"
+       dispatch.log "Handler is not a function, using default 'memory_store'"
        handler = dispatch.memory_store
     catch e
-      console.log "Error: #{e.message}\n Using default 'memory_store'"
+      dispatch.log "Error: #{e.message}\n Using default 'memory_store'"
       handler = dispatch.memory_store
 
     handler
@@ -899,7 +899,17 @@ Router = (options = {}) ->
 
 
   dispatch.utils = {}
+  dispatch.utils.uuid = uuid
+  dispatch.utils.isEmptyObj = _isEmpty
+  dispatch.utils.extendObj = _extend
+  dispatch.utils.parsePattern = _parsePattern
   dispatch.utils.mime_types = mime_types
+  dispatch.utils.favicon = escaped_icon
+  dispatch.utils.cookie2obj = dispatch.cookie2obj
+  dispatch.utils.obj2cookie = dispatch.obj2cookie
+  dispatch.utils.getCookie = dispatch.getCookie
+  dispatch.utils.setCookie = dispatch.setCookie
+  dispathc.utils.getEnv = dispatch.getEnv
   dispatch.utils.async = require './async'
 
   # End of Dispatch function properties and methods
