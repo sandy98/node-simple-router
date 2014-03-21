@@ -130,6 +130,9 @@ List of default options:
                 software_name: 'node-simple-router'
                 admin_user: 'admin'
                 admin_pwd: 'admin'
+                use_nsr_session: true
+                avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']
+                nsr_session_handler: 'dispatch.memory_store'
                 </code></pre>
             </p>
             <p>
@@ -208,7 +211,10 @@ _Usage:_
     router.put('/users', function(request, response) {
         updateUser(request.post.user, function(updated_user_id) {
         response.end(updated_user_id);})
-    });
+    });                use_nsr_session: true<br/>
+                avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']<br/>
+                nsr_session_handler: 'dispatch.memory_store'<br/>
+
 
 #### <dfn>patch</dfn>
 A variant for PUT
