@@ -2,20 +2,20 @@ require 'coffee-script/register'
 fs = require 'fs'
 path = require 'path'
 {print} = require 'sys'
-{exec} = require 'child_process'
+{spawn} = require 'child_process'
 #utils = require("#{__dirname}#{path.sep}src#{path.sep}router")().utils
 async = require("#{__dirname}#{path.sep}src#{path.sep}async")
 
 
 run = (command, cb) ->
-  exec command, (err, stdout, stderr) ->
-    stdout?.pipe?(process.stdout)
-    stderr?.pipe?(process.stderr)
-    if err
-      return cb?(err, null)
-    else
-      return cb?(null, "OK")
-
+  args = command.split /\s+/g
+  child = spawn args[0], args[1..]
+  child.on 'error', (error) -> cb?(err, null)
+  child.on 'exit', (code) ->
+    print "Child process exiting with code: #{code}\n"
+    cb?(null, code)
+  child.stdout?.pipe? process.stdout
+  child.stderr?.pipe? process.stderr
 
 build = ->
   print "Building app\n"
@@ -43,7 +43,7 @@ build_test = (cb) ->
     fs.unlinkSync "#{__dirname}#{path.sep}test#{path.sep}server.js"
     fs.renameSync "#{__dirname}#{path.sep}test#{path.sep}server.tmp", "#{__dirname}#{path.sep}test#{path.sep}server.js"
     fs.chmodSync "#{__dirname}#{path.sep}test#{path.sep}server.js", 0o755
-    cb?()
+    cb?(null, "test/server.js built")
 
 build_mk_server = (cb) ->
   print "Building bin/mk-server\n"
@@ -53,26 +53,29 @@ build_mk_server = (cb) ->
   mk_server.end()
   fs.chmodSync "#{__dirname}#{path.sep}bin#{path.sep}mk-server", 0o755
   fs.unlinkSync "#{__dirname}#{path.sep}lib#{path.sep}mk-server.js"
-  cb?()
+  cb?(null, "mk-server built")
 
 test = (cb) ->
   print "Trying test/server.js\n"
   f1 = (cb) ->
     build_test cb
   f2 = (cb) ->
-    run "test/server.js", cb
+    #console.log "CONSOLE: Going to run test/server.js"
+    run "node test/server.js", cb
 
-  if not fs.existsSync('test/server.js')
+  if (not fs.existsSync('test/server.js'))
     print "test/server.js does not exist, going to create it...\n"
-    return async.series [f1, f2], ->
+    return async.series [f1, f2], (err, results) -> print "RESULTS: #{err or results}\n"
   else
+    #console.log "CONSOLE: comparing test/server.coffee and test/server.js"
     statCoffee = fs.statSync 'test/server.coffee'
     statJs = fs.statSync 'test/server.js'
     timeCoffee = statCoffee.mtime.getTime()
     timeJs = statJs.mtime.getTime()
-    if timeJs <= timeCoffee
+    #console.log "CONSOLE: coffee millis: #{timeCoffee}. js millis: #{timeJs}. Dif: #{timeJs - timeCoffee}"
+    if (timeJs <= timeCoffee)
       print "test/server.js is old, recompiling...\n"
-      return async.series [f1, f2], ->
+      return async.series [f1, f2], (err, results) -> print "RESULTS: #{err or results}\n"
     else
       return f2()
 

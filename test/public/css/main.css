@@ -78,3 +78,9 @@ code.bash {
     background-repeat: no-repeat;
     background-origin: content-box;
 }
+
+
+.nsr {
+    color: #ff0000;
+    font-weight: bolder;
+}

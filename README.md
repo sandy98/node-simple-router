@@ -69,28 +69,28 @@ Routing, in web app parlance, is about defining what code to execute when a give
 NSR takes care of the necessary plumbing to make that happen,
 freeing the programmer of the cumbersome details, allowing her to focus on the problem domain.
 #### How does it work?
-As was stated in the lines above, it's not necessary to know <span style="color: red;">NSR</span>
+As was stated in the lines above, it's not necessary to know <span class="nsr">NSR</span>
 inner workings in order to be productive using it. Having said that, it is nevertheless useful to
 have some insight on a couple of key aspects, fundamentally what could be called the <em>"request wrapping
 mechanism"</em>.
 
-When you feed <span style="color: #ff0000;">NSR</span> with a url handling function, i.e. <code class="js">
+When you feed <span class="nsr">NSR</span> with a url handling function, i.e. <code class="js">
 router.get("/answertoall", function(request, response) {response.end("42");});</code>
 
-what <span style="color: red;">NSR</span>
+what <span class="nsr">NSR</span>
 does is to wrap that function into another, unnamed one, which has the primary mission of _"augmenting"_ the request
 object and it stores said function in an array of url-handling functions, thus acting as a _middleware_ piece of code.
 At run time, when a client invokes the matching URL, the "middleware" function will be called, which, after doing its trickery to "dress" the request object, will ultimately call the original url-handling function that was provided.
             
 What does _"augmenting-dressing"_  the request object mean?
 
-Well, basically, <span style="color: red;">NSR</span> provides the request object with 3 properties:
+Well, basically, <span class="nsr">NSR</span> provides the request object with 3 properties:
             <ul>
               <li>**request.get** which is an object representation of the <dfn>query string</dfn></li>
               <li>**request.post** an object representation of what was posted, if anything</li>
               <li>**request.body** is the union of the two previous items</li>
             </ul>
-            It should be pointed down that regardless the transmission method, <span style="color: red;">NSR</span>
+            It should be pointed down that regardless the transmission method, <span class="nsr">NSR</span>
             takes the necessary steps to make all 3 of them true javascript objects with all that implies, JSON and all.
             Worst case is an empty object **{}**, no errors.
             So, you can use `request.get.whatever` for `router.get`,
@@ -156,8 +156,8 @@ _Usage:_
                         });
 
 #### Handling file uploads
-<span style="color: red;">NSR</span> handles 'multipart/form-data' out of the box.
-When <span style="color: red;">NSR</span> detects a post having enctype="multipart/form-data" it
+<span class="nsr">NSR</span> handles 'multipart/form-data' out of the box.
+When <span class="nsr">NSR</span> detects a post having enctype="multipart/form-data" it
 adds to the _request_ object the properties: <em>fileName, fileLen, fileData and
 fileType</em>, which client code (your server) can handle as shown in the following usage example.
 
@@ -241,11 +241,11 @@ _Usage:_
 
 ### <dfn>Complementary methods</dfn>
  
-Up to here, all the enumerated methods are directly related to <span style="color: red;">NSR</span> primary activity: routing.
+Up to here, all the enumerated methods are directly related to <span class="nsr">NSR</span> primary activity: routing.
 
 They are what you will use 90% of the time.
 
-What follows are method loosely related to routing activity, but are the ones that give <span style="color: red;">NSR</span> some of its distinctiveness.
+What follows are method loosely related to routing activity, but are the ones that give <span class="nsr">NSR</span> some of its distinctiveness.
 
 #### <dfn>proxy_pass</dfn>
 
@@ -270,7 +270,7 @@ _Usage:_
 
 <samp>
     By default, any static resource having a path that includes the router option 'cgi-dir'
-    (which defaults to "cgi-bin") will be treated by <span style="color: red;">NSR</span>
+    (which defaults to "cgi-bin") will be treated by <span class="nsr">NSR</span>
     as a cgi program, provided the router option 'serve_cgi' is true.
     For example, the uri: `/cgi-bin/hello.py` will be handled as a CGI program.
     On the other hand, you can invoke directly the cgi method of the router, like so:
@@ -301,7 +301,7 @@ or the socket name (for unix sockets) at which the SCGI process is listening.
 #### <dfn>render_template</dfn>
                             
 
-To provide rudimentary template handling without compromising the goal of keeping <span style="color: red;">NSR</span> lean and simple.
+To provide rudimentary template handling without compromising the goal of keeping <span class="nsr">NSR</span> lean and simple.
 
 Even though templating is not directly related to routing, having a micro-templating utility was considered handy.
 
@@ -323,10 +323,10 @@ _Usage:_
 This section deals with session handling utilities built in with NSR.
 
 <p>
-    <span style="color: red;">NSR</span> augments the request object with a <em>nsr_session</em> object
+    <span class="nsr">NSR</span> augments the request object with a <em>nsr_session</em> object
     unless the option <em>use_nsr_session</em> is set to a falsy value (defaults to true).<br/>
     <strong><em>nsr_session</em></strong> is a javascript object that holds the session keys and values
-    defined by the application. Incidentally, the reason <span style="color: red;">NSR</span> uses
+    defined by the application. Incidentally, the reason <span class="nsr">NSR</span> uses
     <em>request.nsr_session</em> and not <em>request.session</em> is to avoid name collision in case
     that a separate session handling mechanism is used.
 </p>
@@ -344,7 +344,7 @@ This section deals with session handling utilities built in with NSR.
     Methods related to session handling:
     <ul style="list-style-type: none;">
         <li><code>addSessionHandler(function, function_name)</code> Add your own function to the list of session handlers</li>
-        <li style="margin-bottom: 1em;"><code>setSessionHandler(func_name_or_ordinal)</code> Tell <span style="color: red;">NSR</span> which of the available handlers to use (defaults to 0, 'memory_store').</li>
+        <li style="margin-bottom: 1em;"><code>setSessionHandler(func_name_or_ordinal)</code> Tell <span class="nsr">NSR</span> which of the available handlers to use (defaults to 0, 'memory_store').</li>
         <li><code>getSession(request, callback)</code> Get the current <em>request.nsr_session</em>.</li>
         <li><code>setSession(request, session_object, callback)</code> Set the current <em>request.nsr_session</em> with the provided session_object.</li>
         <li><code>updateSession(request, session_object, callback)</code> Update the current <em>request.nsr_session</em> with the provided session_object, keeping not included keys and adding-updating keys present in session_object.</li>
@@ -362,7 +362,7 @@ This section deals with session handling utilities built in with NSR.
       <span style="1em; padding-left: 3em;">Function signature: <code>var db_store = function(request, opcode, sess_obj, callback);</code></span><br/>
       <span style="1em; padding-left: 3em;">Having a look at the source code used in <em>memory_store</em> and <em>text_store</em> should provide a fairly good idea of how things should work</span><br/>
       <span style="1em; padding-left: 3em;">In order to put your brand new session handler to work, you have to</span><br/>
-      <span style="1em; padding-left: 4em;">1) Register it with <span style="color: red;">NSR</span> by means of <em>addSessionHandler</em></span><br/>
+      <span style="1em; padding-left: 4em;">1) Register it with <span class="nsr">NSR</span> by means of <em>addSessionHandler</em></span><br/>
       <span style="1em; padding-left: 4em;">2) Put it to use with <em>setSessionHandler</em></span><br/>
     </div>
 </p>
@@ -372,12 +372,27 @@ This section deals with session handling utilities built in with NSR.
     By all means, review the code that makes it work in <em>test/server.js</em> or <em>test/server.coffee</em> if you are so inclined.
 </p>
 
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Utilities</h3>
+    </div>
+    <div class="panel-body">
+        <p>
+            There are a bunch of utilities that can make your job easier, such as mk-server, the standalone tool
+            that will generate a <span class="nsr">NSR</span> driven web server ready to go, cookie handling, uuid
+            generation, built-in async (flow-control routines), but these are - rather, will be - fully commented in
+            <a target="_blank" href="https://github.com/sandy98/node-simple-router/wiki/Utils">utilities section of
+            NSR wiki</a>
+        </p>
+    </div>
+</div>
+
 ### Added goodies
 
 Really? Need more goodies?
 
 Ok, here we go...
- -  **Default favicon** If your app doesn't have a favicon, <span style="color: red;">NSR</span> provides one for you. I _REALLY_ suggest you provide yours...
+ -  **Default favicon** If your app doesn't have a favicon, <span class="nsr">NSR</span> provides one for you. I _REALLY_ suggest you provide yours...
  -  **Default '404 - Not found' page.** Once again, you're advised to provide your own.
  -  **Default '500 - Server Error' page.** Same applies here.
 

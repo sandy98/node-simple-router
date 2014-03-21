@@ -1,9 +1,5 @@
 #!/usr/bin/env coffee
 
-#
-#
-#
-
 process.chdir __dirname
 
 fs = require 'fs'
@@ -19,6 +15,7 @@ catch e
     process.exit(-1)
 
 http = require 'http'
+https = require 'https'
 router = Router(list_dir: true)
 
 _extend = (base, extender) ->
@@ -35,6 +32,7 @@ base_context =
   documentation_active: ''
   changelog_active: ''
   license_active: ''
+  wiki_active: ''
   about_active: ''
 
 #
@@ -76,6 +74,27 @@ router.get "/license", (request, response) ->
     context = _extend(base_context, {contents: data, license_active: 'active'})
     site_router(context, response)
 
+router.get "/wiki", (request, response) ->
+  get_wiki request, response, "Home"
+
+router.get "/wiki/:page", (request, response) ->
+  get_wiki request, response, request.params.page
+
+get_wiki = (request, response, destination) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/wiki.html", encoding: "utf8", (err, data) ->
+    https.get "https://github.com/sandy98/node-simple-router/wiki/#{destination}", (resp) ->
+      chunks = []
+      resp.on 'error', (err) -> router._500 request, response, request.url, err.message
+      resp.on 'data', (chunk) -> chunks.push chunk
+      resp.on 'end', () ->
+        #remote_data = chunks.join('').replace(/\/sandy98\/node-simple-router\/wiki/g, '/wiki')
+        remote_data = chunks.join('')
+        context = _extend(
+          base_context
+          contents: router.render_template(data, wiki_content: remote_data), wiki_active: 'active')
+        site_router(context, response)
+
 router.get "/about", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
   fs.readFile "#{__dirname}/templates/about.html", encoding: "utf8", (err, data) ->
@@ -116,7 +135,7 @@ router.any "/agents/:number", (request, response) ->
    <div>
      <h1>
        <span>Super Agent No:&nbsp;</span>
-       <span style="color: red;">#{request.params.number}</span>
+       <span class="nsr">#{request.params.number}</span>
      </h1>
    </div>
   """
