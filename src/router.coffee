@@ -137,7 +137,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.3-5'
+    version: '0.8.3-6'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -909,7 +909,7 @@ Router = (options = {}) ->
   dispatch.utils.obj2cookie = dispatch.obj2cookie
   dispatch.utils.getCookie = dispatch.getCookie
   dispatch.utils.setCookie = dispatch.setCookie
-  dispathc.utils.getEnv = dispatch.getEnv
+  dispatch.utils.getEnv = dispatch.getEnv
   dispatch.utils.async = require './async'
 
   # End of Dispatch function properties and methods
