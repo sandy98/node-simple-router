@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.4-6'
+    version: '0.8.4-7'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -290,20 +290,6 @@ Router = (options = {}) ->
               a.directory {
                 font-weight: bold;
               }
-              img.directory, img.file {
-                height: 32px;
-                width: 32px;
-                background-image: url("icons.png");
-                background-repeat: no-repeat;
-                vertical-align: middle;
-              }
-              img.directory {
-                background-position: -160 -160;
-              }
-              img.file {
-              background-position: -320 -320;
-              }
-
             </style>
         </head>
         <body>
@@ -312,10 +298,10 @@ Router = (options = {}) ->
             <div style="background: #fff; border: solid 1px; padding: 0.5em; padding-right: 3em; border-radius: 7px; width: 90%; margin: 0 auto;">
               <ul id="dircontents">
                 {{^ isRoot }}
-                  <li title='Parent directory' style='margin-bottom: 5px; font-weight: bold;'><a class="directory" style='color: #aa0000;' href="{{parent}}">..</a></li>
+                  <li title='Parent directory' style='height: 30px; margin-bottom: 5px; font-weight: bold;'>{{& icondir}}&nbsp;<a class="directory" style='color: #aa0000;' href="{{parent}}">..</a></li>
                 {{/ isRoot }}
                 {{# cwd_contents }}
-                  <li><a class="{{class}}" href='{{path}}/{{querystring_escaped_file}}'>{{file}}</a><span style="float: right;">{{ size }} bytes</span></li>
+                  <li style="height: 30px;">{{& icon}}&nbsp;<a class="{{class}}" href='{{path}}/{{querystring_escaped_file}}'>{{file}}</a><span style="float: right;">{{ size }} bytes</span></li>
                 {{/ cwd_contents }}
               </ul>
             </div>
@@ -821,6 +807,8 @@ Router = (options = {}) ->
     context = cwd: if path is "." then "/" else path
     context.isRoot = path is "."
     context.parent = path_tools.dirname(path)
+    context.icondir = dispatch.stock_icons.directory()
+
     d = dispatch.utils.defer()
     p = d.promise()
 
@@ -861,6 +849,7 @@ Router = (options = {}) ->
           obj.size = thousandSep(stats[index].size)
           obj.class = if stats[index].isDirectory() then "directory" else "file"
           obj.order = if stats[index].isDirectory() then 1 else 0
+          obj.icon = if stats[index].isDirectory() then dispatch.stock_icons.directory() else dispatch.stock_icons.file()
           context.cwd_contents.push obj
         context.cwd_contents.sort (o1, o2) -> o2.order - o1.order
         resp = dispatch.render_template dispatch._dirlist_template, context
