@@ -386,7 +386,7 @@ This section deals with session handling utilities built in with NSR.
         <p>
             There are a bunch of utilities that can make your job easier, such as mk-server, the standalone tool
             that will generate a <span class="nsr">NSR</span> driven web server ready to go, cookie handling, uuid
-            generation, built-in async (flow-control routines), but these are - rather, will be - fully commented in
+            generation, built-in async or promises (flow-control routines), but these are - rather, will be - fully commented in
             <a target="_blank" href="https://github.com/sandy98/node-simple-router/wiki/Utils">utilities section of
             NSR wiki</a>
         </p>
