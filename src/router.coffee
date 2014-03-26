@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.4-5'
+    version: '0.8.4-6'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -401,6 +401,20 @@ Router = (options = {}) ->
 
 
 # Dispatch function properties and methods 	
+
+  dispatch.get_icon = (x, y) ->
+    template = """
+               <img src="pixel.gif" style="width: 30px; height: 30px; vertical-align: middle; background-image: url(icons.png); background-position: {{x}}px {{y}}px;" />
+               """
+    offsetY = 8
+    offsetX = 5
+
+    context = x: (x * 30 + offsetX) * -1, y: (y * 30 + offsetY) * -1
+    return dispatch.render_template(template, context)
+
+  dispatch.stock_icons =
+    directory: -> dispatch.get_icon 13, 3
+    file: -> dispatch.get_icon 20, 3
 
   dispatch.getUUID = () -> uuid()
 
@@ -996,6 +1010,8 @@ Router = (options = {}) ->
   dispatch.utils.getEnv = dispatch.getEnv
   dispatch.utils.async = require './async'
   dispatch.utils.defer = require('./promises').defer
+  dispatch.utils.get_icon = dispatch.get_icon
+  dispatch.utils.stock_icons = dispatch.stock_icons
 
 
   # End of Dispatch function properties and methods

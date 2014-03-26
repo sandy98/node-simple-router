@@ -529,6 +529,27 @@
     });
   });
 
+  router.get("/icon/:x/:y", function(request, response) {
+    var x, y;
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    x = parseInt(request.params.x) || 0;
+    y = parseInt(request.params.y) || 0;
+    return response.end(router.get_icon(x, y));
+  });
+
+  router.get("/stockicon/:which", function(request, response) {
+    if (router.stock_icons[request.params.which]) {
+      response.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      return response.end(router.stock_icons[request.params.which]());
+    } else {
+      return router._404(request, response, request.url);
+    }
+  });
+
   fakehandler = function(request, opcode, sessObj, cb) {
     if (opcode == null) {
       opcode = 'get';

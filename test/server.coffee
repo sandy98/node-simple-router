@@ -360,6 +360,19 @@ router.any "/session", (request, response) ->
         contents: router.render_template(data, obj))
       site_router(context, response)
 
+router.get "/icon/:x/:y", (request, response) ->
+  response.writeHead(200, 'Content-Type': 'text/html')
+  x = parseInt(request.params.x) or 0
+  y = parseInt(request.params.y) or 0
+  response.end router.get_icon(x, y)
+
+router.get "/stockicon/:which", (request, response) ->
+  if router.stock_icons[request.params.which]
+    response.writeHead(200, 'Content-Type': 'text/html')
+    response.end router.stock_icons[request.params.which]()
+  else
+    router._404(request, response, request.url)
+
 #End routes
 #
 
