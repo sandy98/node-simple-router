@@ -81,7 +81,7 @@
               try
                 result = handler what
                 #console.log "Result of handler invocation is #{result}"
-                if promise._state is Promises.states.fullfilled
+                if promise._state is Promise.states.fullfilled
                   resolve cascade_promise, result
                 else
                   reject cascade_promise, result
@@ -89,7 +89,7 @@
                 reject cascade_promise, e
           else
             #console.log "Resolving cascade promise with received argument (named what)"
-            if promise._state is Promises.states.fullfilled
+            if promise._state is Promise.states.fullfilled
               resolve cascade_promise, what
             else
               reject cascade_promise, what
