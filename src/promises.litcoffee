@@ -209,9 +209,9 @@
 
     if not module?.parent
 
-      thousand_sep = (num) ->
+      thousand_sep = (num, sep = ",") ->
         return num.toString() unless num.toString().length > 3
-        num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1.").split('').reverse().join('')
+        num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1#{sep}").split('').reverse().join('')
 
       pad = (stri, quantity, direction = "r", padchar = " ") ->
         stri = stri.toString() if stri.constructor.name is "Number"
