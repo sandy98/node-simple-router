@@ -81,13 +81,18 @@
               try
                 result = handler what
                 #console.log "Result of handler invocation is #{result}"
-                resolve cascade_promise, result
+                if promise._state is Promises.states.fullfilled
+                  resolve cascade_promise, result
+                else
+                  reject cascade_promise, result
               catch e
                 reject cascade_promise, e
           else
             #console.log "Resolving cascade promise with received argument (named what)"
-            resolve cascade_promise, what
-
+            if promise._state is Promises.states.fullfilled
+              resolve cascade_promise, what
+            else
+              reject cascade_promise, what
         promise
 
 ########################################################################################################################################
