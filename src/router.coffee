@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.4-7'
+    version: '0.8.5-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -803,12 +803,8 @@ Router = (options = {}) ->
     catch e
       dispatch._500 null, response, url, e.message
 
-  dispatch.directory = (fpath, path, res) ->
-    context = cwd: if path is "." then "/" else path
-    context.isRoot = path is "."
-    context.parent = path_tools.dirname(path)
-    context.icondir = dispatch.stock_icons.directory()
-
+  dispatch.dir_list = (fpath, path) ->
+    "Returns a promise that will resolve to a couple of arrays: filenames and stats"
     d = dispatch.utils.defer()
     p = d.promise()
 
@@ -818,10 +814,7 @@ Router = (options = {}) ->
       else
         d.resolve files
 
-    p.fail ->
-      return dispatch._404(null, res, path)
-
-    p.done(
+    p.then(
       (files) ->
         stats = []
         d = dispatch.utils.defer()
@@ -836,7 +829,17 @@ Router = (options = {}) ->
               if index is len
                 d.resolve [files, stats]
         d.promise()
+      (err) ->
+        dispatch.log "Error reading directory: #{err.message}" if dispatch.logging
     )
+
+  dispatch.directory = (fpath, path, res) ->
+    context = cwd: if path is "." then "/" else path
+    context.isRoot = path is "."
+    context.parent = path_tools.dirname(path)
+    context.icondir = dispatch.stock_icons.directory()
+
+    dispatch.dir_list(fpath, path)
     .then(
       (arrs) ->
         [files, stats] = arrs
