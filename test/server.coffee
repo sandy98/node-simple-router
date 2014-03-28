@@ -373,6 +373,11 @@ router.get "/stockicon/:which", (request, response) ->
   else
     router._404(request, response, request.url)
 
+router.get "/gallery", (request, response) ->
+  fpath = "#{router.static_route}/img"
+  #router.log fpath
+  router.gallery fpath, '/img', response
+
 #End routes
 #
 

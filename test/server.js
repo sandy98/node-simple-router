@@ -550,6 +550,12 @@
     }
   });
 
+  router.get("/gallery", function(request, response) {
+    var fpath;
+    fpath = "" + router.static_route + "/img";
+    return router.gallery(fpath, '/img', response);
+  });
+
   fakehandler = function(request, opcode, sessObj, cb) {
     if (opcode == null) {
       opcode = 'get';

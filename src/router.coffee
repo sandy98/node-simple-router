@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.5-1'
+    version: '0.8.6-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -252,12 +252,58 @@ Router = (options = {}) ->
 # End of Extends default options with client provided ones, and then using that extends dispatcher function itself.
 
 # Directory listing template	
+  dispatch._gallery_template = """
+                              <!DOCTYPE  html>
+                              <html>
+                                <head>
+                                  <title>Media Gallery of {{ cwd }}</title>
+                                  <link rel="stylesheet" type="text/css" href="{{& css}}" media="screen" />
+                                  <link rel="stylesheet" type="text/css" href="{{& theme}}" media="screen" />
+                                  <style>
+                                    /*
+                                    body {
+                                      margin-top: 60px;
+                                    }
+                                    */
+                                  </style>
+                                </head>
+                                <body>
+                                    <div class="reveal">
+                                      <div class="slides">
+                                        {{# files}}
+                                        <section data-background="#000000">
+                                          <img class="stretch" src="{{& url }}" />
+                                        </section>
+                                        {{/ files}}
+                                      </div>
+                                    </div>
+                                  <script src="{{& revealjs}}"></script>
+                                  <script type="text/javascript">
+                                     Reveal.initialize({
+                                        controls: true,
+                                        progress: true,
+                                        keyboard: true,
+                                        overview: true,
+                                        center: true,
+                                        touch: true,
+                                        width: 960,
+                                        height: 700,
+                                        // Factor of the display size that should remain empty around the content
+                                        margin: 0.1,
+                                        // Bounds for smallest/largest possible scale to apply to content
+                                        minScale: 0.2,
+                                        maxScale: 1.0
+                                     });
+                                  </script>
+                                </body>
+                              </html>
+                              """
 
   dispatch._dirlist_template = """
       <!DOCTYPE  html>
       <html>
         <head>
-            <title>Directory listing for {{ cwd }}</title>
+            <title>Index of {{ cwd }}</title>
             <style type="text/css" media="screen">
               *, *:before, *:after {
                 -moz-box-sizing: border-box;
@@ -293,7 +339,7 @@ Router = (options = {}) ->
             </style>
         </head>
         <body>
-            <h2 style="text-align: center;">Directory listing for <em>{{ cwd }}</em></h2>
+            <h2 style="text-align: center;">Index of <em>{{ cwd }}</em></h2>
             <!--<hr/>-->
             <div style="background: #fff; border: solid 1px; padding: 0.5em; padding-right: 3em; border-radius: 7px; width: 90%; margin: 0 auto;">
               <ul id="dircontents">
@@ -833,7 +879,27 @@ Router = (options = {}) ->
         dispatch.log "Error reading directory: #{err.message}" if dispatch.logging
     )
 
+
+  dispatch.gallery = (fpath, path, res) ->
+    context = revealjs: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/js/reveal.min.js'
+    context.css = '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/reveal.min.css'
+    context.theme = '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/theme/default.css'
+    context.cwd = if path is "." then "/" else path
+    dispatch.dir_list(fpath, path)
+    .then(
+      (arrs) ->
+        [files, stats] = arrs
+        #zipped = ([files[index], stats[index]] for file, index in files)
+        context.files = (url: "#{path}/#{querystring.escape(file)}" for file in files when mime_types[path_tools.extname file]?.match /image/)
+        res.writeHead 200, {'Content-type': 'text/html'}
+        #res.end JSON.stringify(context, null, '\t')
+        res.end dispatch.render_template dispatch._gallery_template, context
+      (err) ->
+        return dispatch._404(null, res, path)
+    )
+
   dispatch.directory = (fpath, path, res) ->
+
     context = cwd: if path is "." then "/" else path
     context.isRoot = path is "."
     context.parent = path_tools.dirname(path)
