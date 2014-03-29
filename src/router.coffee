@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.6-3'
+    version: '0.8.6-4'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -896,10 +896,7 @@ Router = (options = {}) ->
           res.end dispatch.render_template dispatch._gallery_template, context
         else
           # call directory method.
-          dispatch.static_directory fpath, path, ->
-            d = dispatch.util.defer()
-            d.resolve arrs
-            d.promise()
+          dispatch.static_directory fpath, path, res
       (err) ->
         return dispatch._404(null, res, path)
     )
