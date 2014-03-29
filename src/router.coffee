@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.6-1'
+    version: '0.8.6-2'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -436,7 +436,7 @@ Router = (options = {}) ->
 
   dispatch.get_icon = (x, y) ->
     template = """
-               <img src="pixel.gif" style="width: 30px; height: 30px; vertical-align: middle; background-image: url(icons.png); background-position: {{x}}px {{y}}px;" />
+               <img src="/pixel.gif" style="width: 30px; height: 30px; vertical-align: middle; background-image: url(/icons.png); background-position: {{x}}px {{y}}px;" />
                """
     offsetY = 8
     offsetX = 5
@@ -880,32 +880,35 @@ Router = (options = {}) ->
     )
 
 
-  dispatch.gallery = (fpath, path, res) ->
-    context = revealjs: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/js/reveal.min.js'
-    context.css = '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/reveal.min.css'
-    context.theme = '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/theme/default.css'
-    context.cwd = if path is "." then "/" else path
-    dispatch.dir_list(fpath, path)
+  dispatch.gallery = (fpath, path, res, list_func = dispatch.dir_list) ->
+    context =
+      revealjs: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/js/reveal.min.js'
+      css: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/reveal.min.css'
+      theme: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.6/css/theme/default.css'
+      cwd: if path is "." then "/" else path
+    list_func(fpath, path)
     .then(
       (arrs) ->
-        [files, stats] = arrs
-        #zipped = ([files[index], stats[index]] for file, index in files)
+        [files] = arrs
         context.files = (url: "#{path}/#{querystring.escape(file)}" for file in files when mime_types[path_tools.extname file]?.match /image/)
-        res.writeHead 200, {'Content-type': 'text/html'}
-        #res.end JSON.stringify(context, null, '\t')
-        res.end dispatch.render_template dispatch._gallery_template, context
+        if context.files.length isnt 0
+          res.writeHead 200, {'Content-type': 'text/html'}
+          res.end dispatch.render_template dispatch._gallery_template, context
+        else
+          # call directory method
+          dispatch.directory fpath, path, res
       (err) ->
         return dispatch._404(null, res, path)
     )
 
-  dispatch.directory = (fpath, path, res) ->
+  dispatch.directory = (fpath, path, res, list_func = dispatch.dir_list) ->
 
     context = cwd: if path is "." then "/" else path
     context.isRoot = path is "."
     context.parent = path_tools.dirname(path)
     context.icondir = dispatch.stock_icons.directory()
 
-    dispatch.dir_list(fpath, path)
+    list_func(fpath, path)
     .then(
       (arrs) ->
         [files, stats] = arrs
@@ -1009,7 +1012,7 @@ Router = (options = {}) ->
     else
       text_tokens.push template_string
       
-    for text_token, index in text_tokens            
+    for text_token, index in text_tokens
       variable_tokens = text_token.match variable_pattern_global
       token_obj = {}
       if variable_tokens

@@ -551,9 +551,14 @@
   });
 
   router.get("/gallery", function(request, response) {
-    var fpath;
-    fpath = "" + router.static_route + "/img";
-    return router.gallery(fpath, '/img', response);
+    var fpath, path;
+    fpath = "" + router.static_route;
+    path = request.get.dir ? "/" + request.get.dir : ".";
+    if (path !== ".") {
+      fpath = "" + fpath + path;
+    }
+    router.gallery(fpath, path, response);
+    return router.log(fpath);
   });
 
   fakehandler = function(request, opcode, sessObj, cb) {
