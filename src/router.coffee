@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.6-4'
+    version: '0.8.6-5'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -890,7 +890,7 @@ Router = (options = {}) ->
     .then(
       (arrs) ->
         [files] = arrs
-        context.files = (url: "#{path}/#{querystring.escape(file)}" for file in files when mime_types[path_tools.extname file]?.match /image/)
+        context.files = (url: "#{path}/#{querystring.escape(file)}" for file in files when mime_types[path_tools.extname file.toLowerCase()]?.match /image/)
         if context.files.length isnt 0
           res.writeHead 200, {'Content-type': 'text/html'}
           res.end dispatch.render_template dispatch._gallery_template, context
