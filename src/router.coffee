@@ -149,7 +149,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.6-5'
+    version: '0.8.6-6'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -896,14 +896,14 @@ Router = (options = {}) ->
           res.end dispatch.render_template dispatch._gallery_template, context
         else
           # call directory method.
-          dispatch.static_directory fpath, path, res
+          dispatch.static_directory fpath, path, res, list_func
       (err) ->
         return dispatch._404(null, res, path)
     )
 
   dispatch.directory = (fpath, path, res, list_func = dispatch.dir_list) ->
     # hack in case someone tinkers with gallery, directory the way guaycuru does.  
-    dispatch.static_directory fpath, path, res
+    dispatch.static_directory fpath, path, res, list_func
 
   dispatch.static_directory = (fpath, path, res, list_func = dispatch.dir_list) ->
     context = cwd: if path is "." then "/" else path
