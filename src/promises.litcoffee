@@ -16,8 +16,8 @@
       if x?.constructor.name is 'Promise'
         if x.isPending()
           return x._dependants.push promise
-        if x.isFullfilled()
-          return fullfill promise, x.value
+        if x.isFulfilled()
+          return fulfill promise, x.value
         if x.isRejected()
           return reject promise, x.reason
       
@@ -25,19 +25,19 @@
 ## Pending for now...
 
 
-## Else, fullfill this way...
+## Else, fulfill this way...
 
-      #console.log "resolve: fullfilling promise with", x
-      return fullfill promise, x
+      #console.log "resolve: fulfilling promise with", x
+      return fulfill promise, x
         
 
 ########################################################################################################################################
 
-# Fullfillment Procedure
+# Fulfillment Procedure
 
-    fullfill = (promise, value) ->
+    fulfill = (promise, value) ->
       return promise unless promise.isPending()
-      promise._state = Promise.states.fullfilled
+      promise._state = Promise.states.fulfilled
       promise._value = value
       fireHandlers promise, value
       promise._dependants.forEach (dependant) ->
@@ -66,8 +66,8 @@
         switch promise._state
           when Promise.states.rejected
             handlers = promise._rejectHandlers
-          when Promise.states.fullfilled
-            handlers = promise._fullfillHandlers
+          when Promise.states.fulfilled
+            handlers = promise._fulfillHandlers
           else
             return
         
@@ -81,7 +81,7 @@
               try
                 result = handler what
                 #console.log "Result of handler invocation is #{result}"
-                if promise._state is Promise.states.fullfilled
+                if promise._state is Promise.states.fulfilled
                   resolve cascade_promise, result
                 else
                   reject cascade_promise, result
@@ -89,7 +89,7 @@
                 reject cascade_promise, e
           else
             #console.log "Resolving cascade promise with received argument (named what)"
-            if promise._state is Promise.states.fullfilled
+            if promise._state is Promise.states.fulfilled
               resolve cascade_promise, what
             else
               reject cascade_promise, what
@@ -103,7 +103,7 @@
     class Promise
       "Returns a promise object which complies (really?) with promises A+ spec"
 
-      @states: {pending: 0, rejected: -1, fullfilled: 1}
+      @states: {pending: 0, rejected: -1, fulfilled: 1}
 
 ## ** Define value and reason getters
 
@@ -122,7 +122,7 @@
         
       @init: (obj) ->
         obj._state = Promise.states.pending
-        obj._fullfillHandlers = []
+        obj._fulfillHandlers = []
         obj._rejectHandlers = []
         obj._retPromises = []
         obj._handlerCalls = []
@@ -132,8 +132,8 @@
         
 ## **then** method of Promise class
 
-      then: (onFullfilled, onRejected) =>
-        @_fullfillHandlers.push onFullfilled or null
+      then: (onFulfilled, onRejected) =>
+        @_fulfillHandlers.push onFulfilled or null
         @_rejectHandlers.push onRejected or null
         retPromise = new Promise level: @_options.level + 1
         @_retPromises.push retPromise
@@ -143,9 +143,9 @@
           @_handlerCalls.push 1
           if @isRejected()
             reject retPromise, @_reason
-          if @isFullfilled()
-            if onFullfilled?.constructor.name is "Function"
-              resolve retPromise, onFullfilled(@_value)
+          if @isFulfilled()
+            if onFulfilled?.constructor.name is "Function"
+              resolve retPromise, onFulfilled(@_value)
             else
               resolve retPromise, @_value
               
@@ -154,8 +154,8 @@
 
 ## **done, fail** sugar methods for calling then
 
-      done: (onFullfilled) =>
-        @then onFullfilled, null
+      done: (onFulfilled) =>
+        @then onFulfilled, null
     
       fail: (onRejected) =>
         @then null, onRejected
@@ -165,8 +165,8 @@
       isRejected: =>
         if @_state is Promise.states.rejected then true else false
 
-      isFullfilled: =>
-        if @_state is Promise.states.fullfilled then true else false
+      isFulfilled: =>
+        if @_state is Promise.states.fulfilled then true else false
 
       isPending: =>
         if @_state is Promise.states.pending then true else false
@@ -216,7 +216,8 @@
 
       thousand_sep = (num, sep = ",") ->
         return num.toString() unless num.toString().length > 3
-        num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1#{sep}").split('').reverse().join('')
+        resp = num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1#{sep}").split('').reverse().join('')
+        if resp.charAt(0) is sep then resp.slice(1) else resp
 
       pad = (stri, quantity, direction = "r", padchar = " ") ->
         stri = stri.toString() if stri.constructor.name is "Number"
@@ -234,9 +235,9 @@
         ###
         setTimeout (->
           console.log "\n"
-          console.log util.inspect p._fullfillHandlers
-          console.log util.inspect p._retPromises[0]?._fullfillHandlers
-          console.log util.inspect p._retPromises[0]?._retPromises[0]?._fullfillHandlers
+          console.log util.inspect p._fulfillHandlers
+          console.log util.inspect p._retPromises[0]?._fulfillHandlers
+          console.log util.inspect p._retPromises[0]?._retPromises[0]?._fulfillHandlers
           console.log "\n"), 50
         ###
         console.log "Running test function"
@@ -276,7 +277,7 @@
           if err
             console.log "ERROR reading directory: "
           else
-            console.log "Retrieved", files.length, "file names"
+            console.log "Current working directory: #{process.cwd()}\n"
 
           if err then d.reject err else d.resolve files
           
@@ -296,7 +297,7 @@
               return d.reject err if err
               stats[index] = stat
               if index is len
-                console.log "Retrieved", stats.length, "stats"
+                console.log "Retrieved", stats.length, "items.\n"
                 d.resolve [files, stats]
           p
         (err) -> console.log "ERROR reading current directory: #{err.message}"
@@ -304,7 +305,6 @@
       .then(
         (arrs) ->
           [files, stats] = arrs
-          console.log "Received #{files.length} file names and #{stats.length} stats to process\n"
           fileSizes = []
           for file, index in files
             fileSizes.push name: ('' + file + if stats[index]?.isDirectory() then ' [DIR]' else ''), size: stats[index]?.size, isFile: stats[index]?.isFile()

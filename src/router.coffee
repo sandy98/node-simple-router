@@ -24,8 +24,9 @@ Router = (options = {}) ->
 
   thousandSep = (num, sep = ",") ->
     return num.toString() unless num.toString().length > 3
-    num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1#{sep}").split('').reverse().join('')
-
+    resp = num.toString().split('').reverse().join('').replace(/(\d{3})/g, "$1#{sep}").split('').reverse().join('')
+    if resp.charAt(0) is sep then resp.slice(1) else resp
+    
   padString = (stri, quantity, direction = "r", padchar = " ") ->
     stri = stri.toString() if stri.constructor.name is "Number"
     len = stri.length
@@ -149,7 +150,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.6-6'
+    version: '0.8.6-7'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
