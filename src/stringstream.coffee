@@ -32,7 +32,13 @@ StringStream.prototype._read = () ->
   #@emit 'end'
   @push null
     
-    
+StringStream.prototype.toString = () ->
+  @value
+
+StringStream.prototype.transform = (fn) ->
+  @value = fn(@value)
+  @
+        
 module?.exports = StringStream
 
 if not module?.parent
