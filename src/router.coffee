@@ -150,7 +150,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.8.7-2'
+    version: '0.8.8-1'
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -1060,6 +1060,17 @@ Router = (options = {}) ->
     
     ret_arr.join '\n'
 
+  dispatch.render_template_file = (file_name, context, cb = ((exists, text)-> [exists, text]), keep_tokens = false) ->
+    fs.exists file_name, (exists) ->
+      if not exists
+        return cb(exists, "Template file does not exist.")
+      tf = fs.createReadStream file_name, 'utf8'
+      ss = new dispatch.utils.StringStream
+      ss.on 'finish', ->
+        ss.transform (text) ->
+          dispatch.render_template(text, context, keep_tokens)
+        cb exists, '' + ss
+      tf.pipe ss
 
   dispatch.utils = {}
   dispatch.utils.uuid = uuid
@@ -1075,6 +1086,7 @@ Router = (options = {}) ->
   dispatch.utils.getEnv = dispatch.getEnv
   dispatch.utils.async = require './async'
   dispatch.utils.defer = require('./promises').defer
+  dispatch.utils.StringStream = require './stringstream'
   dispatch.utils.get_icon = dispatch.get_icon
   dispatch.utils.stock_icons = dispatch.stock_icons
 

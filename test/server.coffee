@@ -40,8 +40,7 @@ base_context =
 #
 
 site_router = (context, response, keep_tokens = false) ->
-  fs.readFile "#{__dirname}/templates/layout.html", encoding: "utf8", (err, layout_data) ->
-    response.end router.render_template(layout_data, context, keep_tokens)
+  router.render_template_file "#{__dirname}/templates/layout.html", context, ((exists, rendered_text) -> response.end rendered_text), keep_tokens
 
 
 router.get "/", (request, response) ->

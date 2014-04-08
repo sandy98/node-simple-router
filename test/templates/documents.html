@@ -278,6 +278,19 @@
                                </pre>
                               Give it a test ride <a href="/templates">here</a>
                             </p>
+                            <p>New in version 0.8.8: <code>render_template_file(fileName, context, callback, keep_tokens)</code> was added<br/>
+                               The method signature is almost the same than for <em>render_template</em> with 2 differences worth noting<br/>
+                               <ul>
+                                 <li>The first parameter is a string containing the file name, not the template string itself.</li>
+                                 <li>There is a new parameter, previous to last one: a callback function with the following signature
+                                     <code>cb(exists, rendered_text);</code>. The reason for this is that obviously file retrieval is an async IO
+                                     operation and as such it needs a callback, which <em>render_template</em> doesn't need as there is no IO involved.
+                                 </li> 
+                               </ul><br/>
+                               Obviously it would have been better to keep only one method (render_template), letting it guess if the first parameter is
+                               a file name or a template string, but doing it that way would introduce a backward incompatibility since <em>render_template</em>
+                               returns a string, while becoming async would make it need a callback. So... too late to regret. It's not big deal, anyway. 
+			    </p>
                         </div>
                     </li>
                     <li class="list-group-item">

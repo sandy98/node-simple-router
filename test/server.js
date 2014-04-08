@@ -59,11 +59,9 @@
     if (keep_tokens == null) {
       keep_tokens = false;
     }
-    return fs.readFile("" + __dirname + "/templates/layout.html", {
-      encoding: "utf8"
-    }, function(err, layout_data) {
-      return response.end(router.render_template(layout_data, context, keep_tokens));
-    });
+    return router.render_template_file("" + __dirname + "/templates/layout.html", context, (function(exists, rendered_text) {
+      return response.end(rendered_text);
+    }), keep_tokens);
   };
 
   router.get("/", function(request, response) {
