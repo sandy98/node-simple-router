@@ -76,17 +76,17 @@
           promise._handlerCalls[index] += 1
           cascade_promise = promise._retPromises[index]
           if handler?.constructor.name is "Function"
-            setImmediate ->
-              #console.log "Resolving cascade promise through handler invocation result"
-              try
-                result = handler what
-                #console.log "Result of handler invocation is #{result}"
-                if promise._state is Promise.states.fulfilled
-                  resolve cascade_promise, result
-                else
-                  reject cascade_promise, result
-              catch e
-                reject cascade_promise, e
+            #setImmediate ->
+            #console.log "Resolving cascade promise through handler invocation result"
+            try
+              result = handler what
+              #console.log "Result of handler invocation is #{result}"
+              if promise._state is Promise.states.fulfilled
+                resolve cascade_promise, result
+              else
+                reject cascade_promise, result
+            catch e
+              reject cascade_promise, e
           else
             #console.log "Resolving cascade promise with received argument (named what)"
             if promise._state is Promise.states.fulfilled
@@ -187,12 +187,14 @@
         @_promise
 
       resolve: (value) =>
-        return if not @_promise.isPending()
-        resolve @_promise, value
+        setImmediate =>
+          return if not @_promise.isPending()
+          resolve @_promise, value
 
       reject: (reason) =>
-        return if not @_promise.isPending()
-        reject @_promise, reason
+        setImmediate =>
+          return if not @_promise.isPending()
+          reject @_promise, reason
 
 
 # The Deferred creation function
