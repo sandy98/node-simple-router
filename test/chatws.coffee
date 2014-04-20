@@ -26,7 +26,7 @@ broadcastMsg = (msg) ->
 
   
 broadcastChattersList = () ->
-  lsocks = ({id: sock.id, color: sock.color, username: sock.username, currentRoundTrip: sock.currentRoundTrip} for sock in socks)
+  lsocks = ({id: sock.id, color: sock.color, username: sock.username, currentRoundTrip: sock.currentRoundTrip} for sock in socks when sock.username)
   for sock in socks
     try
       #console.log "Sending #{lsocks}"

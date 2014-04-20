@@ -47,12 +47,14 @@
       _results = [];
       for (_i = 0, _len = socks.length; _i < _len; _i++) {
         sock = socks[_i];
-        _results.push({
-          id: sock.id,
-          color: sock.color,
-          username: sock.username,
-          currentRoundTrip: sock.currentRoundTrip
-        });
+        if (sock.username) {
+          _results.push({
+            id: sock.id,
+            color: sock.color,
+            username: sock.username,
+            currentRoundTrip: sock.currentRoundTrip
+          });
+        }
       }
       return _results;
     })();
