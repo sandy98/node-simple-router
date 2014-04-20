@@ -1,0 +1,42 @@
+body {
+  background: #eeeeee;
+  padding: 1em;
+}
+
+.inputarea {
+  /* margin-bottom: 1em; */
+}
+
+.col-md-9 {
+  z-index: 1000;
+}
+ 
+.msglist {
+   background-color: #fafafa;
+   padding: 1em;
+   border: 1px solid;
+   border-radius: 10px;
+   height: 25em;
+   min-height: 25em;
+   overflow: auto;
+} 
+
+.user-name .btn-link{
+   /*
+   background: #fafafa;
+   font-family: Helvetica, sans-serif;
+   font-weight: bold;
+   font-size: 18pt;
+   padding: 5px;
+   border: solid 1px;
+   border-radius: 5px;
+   width: 15%;
+   text-align: center;
+   */
+  display: none;
+}
+     
+.row {
+   margin-bottom: 0.5em;
+}
+

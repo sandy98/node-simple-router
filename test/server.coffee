@@ -2,6 +2,7 @@
 
 process.chdir __dirname
 
+path = require 'path'
 fs = require 'fs'
 spawn = require('child_process').spawn
 
@@ -13,6 +14,8 @@ catch e
   catch e2
     console.log 'node-simple-router must be installed for this to work'
     process.exit(-1)
+
+{wsserver, socks, msgs} = require "#{__dirname}#{path.sep}chatws"
 
 http = require 'http'
 https = require 'https'
@@ -378,6 +381,12 @@ router.get "/gallery", (request, response) ->
   fpath = "#{fpath}#{path}" if path isnt "."
   router.gallery fpath, path, response
   router.log fpath
+
+router.get "/latencies", (request, response) ->
+  for sock in socks
+    response.write "#{sock.username}  -  #{sock.currentRoundTrip} secs.\n"
+  response.end()
+
 #End routes
 #
 
@@ -386,12 +395,6 @@ fakehandler = (request, opcode = 'get', sessObj = {}, cb = ((id) -> id)) ->
   "Narizota"
 
 func = router.addSessionHandler('fakehandler', fakehandler)
-###
-if not func
-  router.log "adding 'fakehandler' failed, going to try manually"
-  router.fakehandler = fakehandler
-  router.avail_nsr_session_handlers.push 'dispatch.fakehandler'
-###
 
 #Ok, just start the server!
 
@@ -407,8 +410,9 @@ catch e
   console.log "Couldn't spawn real child process because of: #{e.message}\nUsing a mock one."
 
 server.on 'listening', ->
-  addr = server.address() or {address: '0.0.0.0', port: argv[0] or 8000}
-  router.log "Serving web content at " + addr.address + ":" + addr.port  + " - PID: " + process.pid + " from directory: " + process.cwd()
+  wsserver.listen server
+  addr = server.address()
+  router.log "NSR v#{router.version} serving web content at #{if typeof addr is 'string' then addr else addr.address + ':' + addr.port} - PID: " + process.pid + " from directory: " + process.cwd()
 
 clean_up = ->
   router.log ' '

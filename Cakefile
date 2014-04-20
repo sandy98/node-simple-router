@@ -35,7 +35,7 @@ build_src = (cb) ->
 
 build_test = (cb) ->
   print "Building test/server.js\n"
-  run 'coffee -c test/server.coffee', ->
+  run 'coffee -c test', ->
     tmp = fs.createWriteStream("#{__dirname}#{path.sep}test#{path.sep}server.tmp", encoding: "utf8")
     tmp.write "#!/usr/bin/env node\n\n", "utf8"
     tmp.write fs.readFileSync("#{__dirname}#{path.sep}test#{path.sep}server.js", encoding: "utf8"), "utf8"
