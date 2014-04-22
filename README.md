@@ -404,6 +404,14 @@ This section deals with session handling utilities built in with NSR.
     </div>
 </div>
 
+### Real time
+
+Beginning with v0.9.0 NSR becomes real time. Now not only http requests routing is enabled, 
+but also the **ws** protocol (WebSockets) is implemented.
+
+See all the juicy details at <a target="_blank" href="https://github.com/sandy98/node-simple-router/wiki/WebSocket">WebSocket section of
+            NSR wiki</a> or see it in action <a href="http://node-simple-router.herokuapp.com/sillychat.html">at the demo site.</a>
+
 ### Added goodies
 
 Really? Need more goodies?
