@@ -1,5 +1,7 @@
 # Beginning of websocket specific section.
 
+net = require 'net'
+
 try
   ws = require '../src/ws'
   router = require('../src/router')()
@@ -20,7 +22,7 @@ setKey = (sock, key, value) ->
 broadcastMsg = (msg) ->
   for sock in socks
     try
-      sock.send msg
+      sock.send msg if sock.readyState is 'open'
     catch e
       console.log "Error sending data to clients: #{e.message}"
 
@@ -29,8 +31,7 @@ broadcastChattersList = () ->
   lsocks = ({id: sock.id, color: sock.color, username: sock.username, currentRoundTrip: sock.currentRoundTrip} for sock in socks when sock.username)
   for sock in socks
     try
-      #console.log "Sending #{lsocks}"
-      sock.send headers: {command: 'chatters-list', subcommand: 'init'}, body: lsocks
+      sock.send(headers: {command: 'chatters-list', subcommand: 'init'}, body: lsocks) if sock.readyState is 'open'
     catch e
       console.log "Error sending data to clients: #{e.message}"
 
@@ -123,9 +124,59 @@ wsserver = ws.createWebSocketServer (websock) ->
       if socks[index]?.id is websock.id
         socks.splice index, 1
     console.log "web socket closed with code #{if code then code else 'none'} owed to #{if reason then reason else 'no reason provided'}"
- 
 
-module.exports = {wsserver, socks, msgs}
+
+createProxy = (port) ->
+  proxyServer = net.createServer (sock) ->
+    console.log "Server raw socket connected."
+    wsock = new ws.WebSocketClientConnection("ws://0.0.0.0:#{port + 1}")
+    wsock.color = "#000000"
+
+    wsock.on 'close', (code) ->
+      console.log "Proxy WebSocket closed with code:", code
+
+    wsock.on 'data', (opcode, data) ->
+      #console.log "Received from web client opcode: #{opcode} with data #{data}"
+      msg = JSON.parse data
+      headers = msg.headers;
+      body = msg.body;
+      msgCommand = headers.command;
+      if msgCommand is 'chat-message'
+        sock.write "#{headers.from.replace(/\r/g, '').replace(/\n/g, '')}: #{body}\r\n", "utf8"
+      if msgCommand is 'set'
+        wsock[headers.key] = body
+
+    sock.on 'error', (err) ->
+      console.log "Error on raw socket:", err.message
+      sock.destroy()
+
+    sock.on 'end', ->
+      console.log 'Server raw socket disconnected'
+      wsock.close()
+
+    sock.on 'data', (data) ->
+      if wsock.readyState isnt 'open'
+        return console.log "WebSocket closed, '#{data}' could not be sent."
+      if not wsock.username
+        msg = body: data.toString('utf8').replace(/\r/g, '').replace(/\n/g, ''), headers: {command: 'set', key: 'username'}
+        wsock.send JSON.stringify msg
+        wsock.username = data.toString('utf8')
+      else
+        msg = body: data.toString('utf8').replace(/\r/g, '').replace(/\n/g, ''), headers: {command: 'chat-message', from: wsock.username, color: wsock.color}
+        if msg.body.match(/^quit/i)
+          sock.write('Bye\r\n')
+          wsock.close()
+          return sock.end()
+        setImmediate ->
+          if wsock.readyState is 'open'
+            wsock.send JSON.stringify msg
+
+     sock.write("Please enter your name: ")
+
+
+  proxyServer.listen port
+
+module.exports = {wsserver, socks, msgs, createProxy}
 
 # End of websocket specific section
 

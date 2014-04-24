@@ -2,6 +2,8 @@ events = require("events")
 http = require("http")
 crypto = require("crypto")
 util = require("util")
+URL = require('url')
+uuid = require('./uuid')
 
 # opcodes for WebSocket frames
 # http://tools.ietf.org/html/rfc6455#section-5.2
@@ -27,6 +29,18 @@ hashWebSocketKey = (key) ->
   sha1.update key + KEY_SUFFIX, "ascii"
   sha1.digest "base64"
 
+genWebSocketKey = ->
+  key = new Buffer(16)
+  for _, index in key
+    key.writeUInt8 Math.floor(Math.random() * 256), index
+  key.toString('base64')
+
+genMask = ->
+  mask = new Buffer(4)
+  for _, index in mask
+    mask.writeUInt8 Math.floor(Math.random() * 256), index
+  mask
+
 unmask = (maskBytes, data) ->
   payload = new Buffer(data.length)
   i = 0
@@ -36,32 +50,41 @@ unmask = (maskBytes, data) ->
     i++
   payload
 
-encodeMessage = (opcode, payload) ->
+encodeMessage = (opcode, payload, useMask = false) ->
   buf = undefined
-  
+  mask = undefined
+  maskLen = if useMask then 4 else 0
+
   # first byte: fin and opcode
   b1 = 0x80 | opcode # always send message as one frame (fin)
   
-  # second byte: maks and length part 1
+  # second byte: mask and length part 1
   # followed by 0, 2, or 4 additional bytes of continued length
-  b2 = 0 # server does not mask frames
+  b2 = if useMask then 0x80 else 0
   length = payload.length
+
+  if useMask
+    mask = genMask()
+    payload = unmask(mask, payload)
+
   if length < 126
-    buf = new Buffer(payload.length + 2 + 0) # zero extra bytes
+    buf = new Buffer(payload.length + 2 + 0 + maskLen) # zero extra bytes
     b2 |= length
     buf.writeUInt8 b1, 0
     buf.writeUInt8 b2, 1
-    payload.copy buf, 2
+    payload.copy(buf, 2 + maskLen)
+    mask.copy(buf, 2) if useMask
   else if length < (1 << 16)
-    buf = new Buffer(payload.length + 2 + 2) # two bytes extra
+    buf = new Buffer(payload.length + 2 + 2 + maskLen) # two bytes extra
     b2 |= 126
     buf.writeUInt8 b1, 0
     buf.writeUInt8 b2, 1
     # add two byte length
     buf.writeUInt16BE length, 2
-    payload.copy buf, 4
+    payload.copy(buf, 4 + maskLen)
+    mask.copy(buf, 4) if useMask
   else
-    buf = new Buffer(payload.length + 2 + 8) # eight bytes extra
+    buf = new Buffer(payload.length + 2 + 8 + maskLen) # eight bytes extra
     b2 |= 127
     buf.writeUInt8 b1, 0
     buf.writeUInt8 b2, 1
@@ -71,28 +94,103 @@ encodeMessage = (opcode, payload) ->
     # the 32 bit length is prefixed with 0x0000
     buf.writeUInt32BE 0, 2
     buf.writeUInt32BE length, 6
-    payload.copy buf, 10
+    payload.copy buf, 10 + maskLen
+    mask.copy buf, 10 if useMask
   #console.log "Returning this buffer:", buf
   buf
 
+WebSocketClientConnection = (url, options) ->
+  parsed_url = URL.parse(url)
+  throw new TypeError "URL scheme must be 'ws' or 'wss'" if parsed_url.protocol not in ['ws:', 'wss:']
 
-WebSocketConnection = (req, socket, upgradeHead) ->
-  self = this
-  key = hashWebSocketKey(lowerObjKeys(req.headers)["sec-websocket-key"])
+  self = @
+
+  @options =
+    hostname: parsed_url.hostname
+    port: parsed_url.port or (if parsed_url.protocol.match /ss/ then 443 else 80)
+    path: parsed_url.path or "/"
+    headers: {}
+
+  @options.headers.Host = "#{@options.hostname}:#{@options.port}"
+  @options.headers.Connection = "Upgrade"
+  @options.headers.Upgrade = "websocket"
+  @options.headers.Origin = "#{if parsed_url.protocol.match /ss/ then 'https' else 'http'}://#{@options.hostname}:#{@options.port}"
+  @options.headers['Sec-WebSocket-Version'] = 13
+  @options.headers['Sec-WebSocket-Key'] = genWebSocketKey()
+  @options.headers['Sec-WebSocket-Protocol'] = options['Sec-WebSocket-Protocol'] if options?['Sec-WebSocket-Protocol']?
+  @options.headers['Sec-WebSocket-Extensions'] = options['Sec-WebSocket-Extensions'] if options?['Sec-WebSocket-Extensions']?
+
+  @request = http.request @options
+  @request.on 'upgrade', (response, socket, upgradeHead) ->
+    self.socket = socket
+
+    self.socket.on 'error', (err) ->
+      console.log 'Client Socket error:', err.message
+
+    self.socket.on "data", (buf) ->
+      #console.log "Raw data:", buf
+      self.buffer = Buffer.concat([
+        self.buffer
+        buf
+      ])
+      # process buffer while it contains complete frames
+      continue  while self._processBuffer()
+      return
+
+
+    self.socket.on "close", (had_error) ->
+      unless self.closed
+        self.emit "close", 1006
+        self.closed = true
+      return
+
+  @request.end()
+
+  @buffer = new Buffer(0)
+  @closed = false
+  @currentRoundTrip = 0
+  return
+
+util.inherits WebSocketClientConnection, events.EventEmitter
+
+Object.defineProperty WebSocketClientConnection::, 'readyState',
+  get: -> @socket?.readyState
+
+WebSocketClientConnection::_doSend = (opcode, payload) ->
+  @socket.write encodeMessage(opcode, payload, true)
+  return
+
+
+WebSocketServerConnection = (request, socket, upgradeHead) ->
+  self = @
+
+  key = hashWebSocketKey(lowerObjKeys(request.headers)["sec-websocket-key"])
   
+  lines = []
+
   # handshake response
   # http://tools.ietf.org/html/rfc6455#section-4.2.2
-  socket.write "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" + "Upgrade: WebSocket\r\n" + "Connection: Upgrade\r\n" + "sec-websocket-accept: " + key + "\r\n\r\n"
+  lines.push "HTTP/1.1 101 Web Socket Protocol Handshake\r\n"
+  lines.push "Upgrade: WebSocket\r\n"
+  lines.push "Connection: Upgrade\r\n"
+  lines.push "sec-websocket-accept: #{key}"
+  lines.push "\r\n\r\n"
+
+  socket.write lines.join('')
+
+  socket.on 'error', (err) ->
+    console.log 'Server Socket error:', err.message
+
   socket.on "data", (buf) ->
     self.buffer = Buffer.concat([
       self.buffer
       buf
     ])
+    # process buffer while it contains complete frames
     continue  while self._processBuffer()
     return
 
   
-  # process buffer while it contains complete frames
   socket.on "close", (had_error) ->
     unless self.closed
       self.emit "close", 1006
@@ -101,24 +199,24 @@ WebSocketConnection = (req, socket, upgradeHead) ->
 
   
   # initialize connection state
-  @request = req
+  @request = request
   @socket = socket
   @buffer = new Buffer(0)
   @closed = false
   @currentRoundTrip = 0
   return
 
-util.inherits WebSocketConnection, events.EventEmitter
+util.inherits WebSocketServerConnection, events.EventEmitter
 
-Object.defineProperty WebSocketConnection::, 'readyState',
+Object.defineProperty WebSocketServerConnection::, 'readyState',
   get: -> @socket.readyState
 
 # Ping method
-WebSocketConnection::ping = ->
+WebSocketClientConnection::ping = WebSocketServerConnection::ping = ->
   @_doSend opcodes.PING, new Buffer(new Date().getTime().toString())
 
 # Send a text or binary message on the WebSocket connection
-WebSocketConnection::send = (obj) ->
+WebSocketClientConnection::send = WebSocketServerConnection::send = (obj) ->
   opcode = undefined
   payload = undefined
   if Buffer.isBuffer(obj)
@@ -140,7 +238,7 @@ WebSocketConnection::send = (obj) ->
 
 
 # Close the WebSocket connection
-WebSocketConnection::close = (code, reason) ->
+WebSocketClientConnection::close = WebSocketServerConnection::close = (code, reason) ->
   opcode = opcodes.CLOSE
   buffer = undefined
   
@@ -153,13 +251,19 @@ WebSocketConnection::close = (code, reason) ->
     buffer = new Buffer(0)
   @_doSend opcode, buffer
   @closed = true
+  try
+    @socket.end()
+    @socket.destroy()
+  catch e
+    console.log "Error while destroying underlying raw socket:", e.message
+
   return
 
 
 # Process incoming bytes
-WebSocketConnection::_processBuffer = ->
+WebSocketClientConnection::_processBuffer = WebSocketServerConnection::_processBuffer = ->
   buf = @buffer
-  
+
   # insufficient data read
   return  if buf.length < 2
   idx = 2
@@ -177,7 +281,6 @@ WebSocketConnection::_processBuffer = ->
       length = buf.readUInt16BE(2)
       idx += 2
     else if length is 127
-      
       # discard high 4 bits because this server cannot handle huge lengths
       highBits = buf.readUInt32BE(2)
       @close 1009, ""  unless highBits is 0
@@ -185,16 +288,18 @@ WebSocketConnection::_processBuffer = ->
       idx += 8
   
   # insufficient data read
-  return  if buf.length < idx + 4 + length
-  maskBytes = buf.slice(idx, idx + 4)
-  idx += 4
+  return  if buf.length < (idx + (if mask isnt 0 then 4 else 0) + length)
+  if mask isnt 0
+    maskBytes = buf.slice(idx, idx + 4)
+    idx += 4
   payload = buf.slice(idx, idx + length)
-  payload = unmask(maskBytes, payload)
+  if mask isnt 0
+    payload = unmask(maskBytes, payload)
   @_handleFrame opcode, payload
   @buffer = buf.slice(idx + length)
   true
 
-WebSocketConnection::_handleFrame = (opcode, buffer) ->
+WebSocketClientConnection::_handleFrame = WebSocketServerConnection::_handleFrame = (opcode, buffer) ->
   payload = undefined
   switch opcode
     when opcodes.TEXT
@@ -229,8 +334,8 @@ WebSocketConnection::_handleFrame = (opcode, buffer) ->
 
 
 # Format and send a WebSocket message
-WebSocketConnection::_doSend = (opcode, payload) ->
-  @socket.write encodeMessage(opcode, payload)
+WebSocketServerConnection::_doSend = (opcode, payload) ->
+  @socket.write encodeMessage(opcode, payload, false)
   return
 
 
@@ -266,9 +371,12 @@ WebSocketServer::listen = (port, host) ->
         throw new TypeError "WebSocketServer only listens on something that has a _handle."
         
   srv.on "upgrade", (req, socket, upgradeHead) ->
-    ws = new WebSocketConnection(req, socket, upgradeHead)
+    ws = new WebSocketServerConnection(req, socket, upgradeHead)
     self.connectionHandler ws
-    setTimeout (-> setInterval (-> ws.ping()), 2000), 1000
+    setTimeout (-> ws.periodicPing = setInterval (-> ws.ping() if ws.readyState is 'open'), 2000), 1000
+    ws.on 'close', ->
+      console.log "Closing server websocket connection", ws.id
+      clearInterval ws.periodicPing if ws.periodicPing?
     return
 
   return
@@ -278,7 +386,7 @@ createWebSocketServer = (handler) ->
 
 
 
-module?.exports = exports = {createWebSocketServer, WebSocketServer, WebSocketConnection, opcodes}
+module?.exports = exports = {createWebSocketServer, WebSocketServer, WebSocketServerConnection, WebSocketClientConnection, opcodes}
 
 
 

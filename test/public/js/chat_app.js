@@ -80,7 +80,7 @@
        var ws_init = function() {
          ws = new WebSocket(url);
          ws.onopen = function() {
-	   console.log("Client socket open.");
+	       console.log("Client socket open.");
            var username;
            while (!username || username.length == 0) {
              username = prompt("Please input your username to be used in the chat.");
@@ -88,7 +88,7 @@
                set_username(username);
                txt_msg.focus();
              }
-	   }	
+	       }
          };           
          ws.onclose = function() {
            txt_msg.value = '';
@@ -96,9 +96,9 @@
            chatters = [];
            chatters_list.innerHTML = '';
            set_username('');
-	   if (confirm("Client socket closed, so chat will no longer work. Care to try reconecting?")) {
-	     ws_init();
-	   }	
+	       if (confirm("Client socket closed, so chat will no longer work. Care to try reconecting?")) {
+	         ws_init();
+	       }
          };           
          ws.onerror = function(e) {
            txt_msg.value = "";
@@ -108,19 +108,25 @@
 	   //console.log("Client socket sent: " + JSON.stringify(msg.data));
            processMessage(ws, JSON.parse(msg.data));	
          };
+         return ws;
        };
  
        var onLoad = function onLoad() {
          //alert("Window loaded");
          msg_list = document.getElementById('msg-list');
-	 change_mycolor = document.getElementById('change-mycolor');
-	 txt_msg = document.getElementById('txt-msg');
-	 user_name = document.getElementById('user-name');
+	     change_mycolor = document.getElementById('change-mycolor');
+	     txt_msg = document.getElementById('txt-msg');
+	     user_name = document.getElementById('user-name');
          chatters_list = document.getElementById('chatters-list');
-	 form_uploader = document.getElementById('form-uploader');
+	     form_uploader = document.getElementById('form-uploader');
          file_uploader = document.getElementById('file-uploader');
 
-	 ws_init();
+	     var ws = ws_init();
+
+         window.onunload = function() {
+             console.log("Closing websocket...");
+             ws.close();
+         };
 
          var showFileInChat = function showFileInChat(file) {
            try {
@@ -132,7 +138,7 @@
                return alert("'" + file.name + "' is too big. Please choose a picture file smaller than 300,000 bytes."); 
              }
              var reader = new FileReader();
-	     reader.onload = function(evt) {
+	         reader.onload = function(evt) {
                var base64image = evt.target.result;
                var body = '' + txt_msg.value + ' <img src="' + base64image + '" />'
                var payload = JSON.stringify({headers: {command: 'chat-message', from: ws.username || ws.id, color: ws.color || "#880000"}, body: body});

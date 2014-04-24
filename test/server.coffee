@@ -15,7 +15,7 @@ catch e
     console.log 'node-simple-router must be installed for this to work'
     process.exit(-1)
 
-{wsserver, socks, msgs} = require "#{__dirname}#{path.sep}chatws"
+{wsserver, socks, msgs, createProxy} = require "#{__dirname}#{path.sep}wschat"
 
 http = require 'http'
 https = require 'https'
@@ -412,7 +412,8 @@ catch e
 server.on 'listening', ->
   wsserver.listen server
   addr = server.address()
-  router.log "NSR v#{router.version} serving web content at #{if typeof addr is 'string' then addr else addr.address + ':' + addr.port} - PID: " + process.pid + " from directory: " + process.cwd()
+  createProxy(addr.port - 1) if addr.port?
+  router.log "NSR v#{router.version} serving web content at #{if typeof addr is 'string' then addr else addr.address + ':' + addr.port} - PID: " + process.pid
 
 clean_up = ->
   router.log ' '
