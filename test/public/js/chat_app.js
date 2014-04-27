@@ -1,4 +1,14 @@
-       var form_uploader, file_uploader, msg_list, change_mycolor, user_name, txt_msg, ws, chatters = [], chatters_list, url = 'ws://' + location.host + '/';
+       var form_uploader, 
+       file_uploader, 
+       msg_list, 
+       change_mycolor, 
+       user_name, 
+       txt_msg, 
+       ws, 
+       chatters = [], 
+       chatters_list,
+       protocol = location.protocol == 'https:' ? 'wss:', 'ws',  
+       url = protocol + '//' + location.host + '/';
 
        var addMsg = function(msg) {
           var new_msg = document.createElement('div');
@@ -26,8 +36,8 @@
            name = chatters[index].username
            rt = chatters[index].currentRoundTrip
            background = "#00cc00";
-           if (rt > 0.1 && rt < 0.5) {background = "#ffbf00";}
-           if (rt >= 0.5) {background = "#cc0000";}
+           if (rt > 0.3 && rt < 0.75) {background = "#ffbf00";}
+           if (rt >= 0.75) {background = "#cc0000";}
            li.innerHTML = '<span style="color: ' + color + ';">' + name + '</span><span style="background: ' + background + '" class="badge">' + rt  + '</span>';
            li.attributes['data-id'] = chatters[index].id;
            chatters_list.appendChild(li);
@@ -134,8 +144,8 @@
  	     if (file.type.indexOf('image') == -1) {
                return alert("'" + file.name + "' is not a picture. Please choose a picture file to send."); 
              }
-             if (file.size > 300000) {
-               return alert("'" + file.name + "' is too big. Please choose a picture file smaller than 300,000 bytes."); 
+             if (file.size > 1048576) {
+               return alert("'" + file.name + "' is too big. Please choose a picture file smaller than 1 megabyte."); 
              }
              var reader = new FileReader();
 	         reader.onload = function(evt) {
