@@ -7,7 +7,7 @@
        ws, 
        chatters = [], 
        chatters_list,
-       protocol = location.protocol == 'https:' ? 'wss:', 'ws',  
+       protocol = location.protocol == 'https:' ? 'wss:' : 'ws:',  
        url = protocol + '//' + location.host + '/';
 
        var addMsg = function(msg) {
