@@ -137,12 +137,13 @@ WebSocketClientConnection = (url, options) ->
       continue  while self._processBuffer()
       return
 
-
     self.socket.on "close", (had_error) ->
       unless self.closed
         self.emit "close", 1006
         self.closed = true
       return
+
+    self.emit 'open', if self.id then self.id else null
 
   @request.end()
 
@@ -178,6 +179,9 @@ WebSocketServerConnection = (request, socket, upgradeHead) ->
 
   socket.write lines.join('')
 
+  socket.on 'connect', (evt) ->
+    self.emit 'open', if self.id then self.id else null
+
   socket.on 'error', (err) ->
     console.log 'Server Socket error:', err.message
 
@@ -197,13 +201,14 @@ WebSocketServerConnection = (request, socket, upgradeHead) ->
       self.closed = true
     return
 
-  
+
   # initialize connection state
   @request = request
   @socket = socket
   @buffer = new Buffer(0)
   @closed = false
   @currentRoundTrip = 0
+
   return
 
 util.inherits WebSocketServerConnection, events.EventEmitter
@@ -375,9 +380,8 @@ WebSocketServer::listen = (port, host) ->
     self.connectionHandler ws
     setTimeout (-> ws.periodicPing = setInterval (-> ws.ping() if ws.readyState is 'open'), 2000), 1000
     ws.on 'close', ->
-      console.log "Closing server websocket connection", ws.id
+      #console.log "Closing server websocket connection", ws.id
       clearInterval ws.periodicPing if ws.periodicPing?
-    return
 
   return
 
