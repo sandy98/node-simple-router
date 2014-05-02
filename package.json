@@ -1,26 +1,20 @@
-{ "name" : "node-simple-router"
-, "description" : "Yet another minimalistic router for node.js"
-, "tags" : ["http", "simple", "routing", "router", "utils", "async", "promises"]
-, "keywords": ["http", "url", "websockets", "dispatch", "router", "request handler", "middleware", "async", "promises"]
-, "version" : "0.9.1-3"
-, "homepage": "http://node-simple-router.herokuapp.com"
-, "author" : "Ernesto Savoretti <esavoretti@gmail.com>"
-, "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/sandy98/node-simple-router.git"
-  }
-, "bugs" :
-  { "url" : "http://github.com/sandy98/node-simple-router/issues" }
-, "engines" : ["node >= 0.8"]
-,  "devDependencies": {
-        "coffee-script": "latest"
-    }
-, "main" : "./lib/router.js"
-, "bin"  : {"mk-server": "./bin/mk-server"}
-, "scripts": {
-    "nix_test": "if [ ! -f test/server.js ] || [ test/server.js -ot test/server.coffee ]; then scripts/compile_test.sh; fi && test/server.js"
-    ,"nix_prepublish": "scripts/compile.sh"
-    ,"test": "cake test"
-    ,"prepublish": "cake build"
-  }
+{
+  "name":"node-simple-router",
+  "description":"Yet another minimalistic router for node.js",
+  "tags":["http","simple","routing","router","utils","async","promises"],
+  "keywords":["http","url","websockets","dispatch","router","request handler","middleware","async","promises"],
+  "version":"0.9.1-4",
+  "homepage":"http://node-simple-router.herokuapp.com",
+  "author":"Ernesto Savoretti <esavoretti@gmail.com>",
+  "repository":{"type":"git","url":"https://github.com/sandy98/node-simple-router.git"},
+  "bugs":{"url":"http://github.com/sandy98/node-simple-router/issues"},
+  "engines":["node >= 0.8"],
+  "devDependencies":{"coffee-script":"latest"},
+  "main":"./lib/router.js",
+  "bin":{"mk-server":"./bin/mk-server"},
+  "scripts":{"nix_test":"if [ ! -f test/server.js ] || [ test/server.js -ot test/server.coffee ]; then scripts/compile_test.sh; fi && test/server.js",
+             "nix_prepublish":"scripts/compile.sh",
+             "test":"cake test",
+             "prepublish":"cake build"
+             }
 }

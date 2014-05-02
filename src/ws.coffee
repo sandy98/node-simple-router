@@ -158,7 +158,7 @@ Object.defineProperty WebSocketClientConnection::, 'readyState',
   get: -> @socket?.readyState
 
 WebSocketClientConnection::_doSend = (opcode, payload) ->
-  @socket.write encodeMessage(opcode, payload, true)
+  @socket?.write encodeMessage(opcode, payload, true)
   return
 
 
@@ -340,7 +340,7 @@ WebSocketClientConnection::_handleFrame = WebSocketServerConnection::_handleFram
 
 # Format and send a WebSocket message
 WebSocketServerConnection::_doSend = (opcode, payload) ->
-  @socket.write encodeMessage(opcode, payload, false)
+  @socket?.write encodeMessage(opcode, payload, false)
   return
 
 
@@ -351,9 +351,11 @@ WebSocketServer = (handler) ->
     throw new Error("Must provide a socket handler function to instantiate a WebSocketServer")
   return
 
-WebSocketServer::listen = (port, host) ->
+util.inherits WebSocketServer, events.EventEmitter
+
+WebSocketServer::listen = (port, host, route = "/") ->
   srv = undefined
-  self = this
+  self = @
   switch port.constructor.name
     when "Server"
       srv = port
@@ -374,19 +376,53 @@ WebSocketServer::listen = (port, host) ->
         srv = port
       else
         throw new TypeError "WebSocketServer only listens on something that has a _handle."
-        
-  srv.on "upgrade", (req, socket, upgradeHead) ->
-    ws = new WebSocketServerConnection(req, socket, upgradeHead)
-    self.connectionHandler ws
-    setTimeout (-> ws.periodicPing = setInterval (-> ws.ping() if ws.readyState is 'open'), 2000), 1000
-    ws.on 'close', ->
-      #console.log "Closing server websocket connection", ws.id
-      clearInterval ws.periodicPing if ws.periodicPing?
 
-  return
+  srv.on 'listening', => @emit 'listening'
 
-createWebSocketServer = (handler) ->
-  new WebSocketServer(handler)
+  srv.on "upgrade", (request, socket, upgradeHead) ->
+    if URL.parse(request.url).path isnt route
+      return
+      #console.log "websocket out of path, aborting."
+      #ws = new WebSocketServerConnection(request, socket, upgradeHead)
+      #ws.close()
+    else
+      ws = new WebSocketServerConnection(request, socket, upgradeHead)
+      self.connectionHandler ws
+      setTimeout (-> ws.periodicPing = setInterval (-> ws.ping() if ws.readyState is 'open'), 2000), 1000
+      ws.on 'close', ->
+        #console.log "Closing server websocket connection", ws.id
+        clearInterval ws.periodicPing if ws.periodicPing?
+      self.emit 'upgrade'
+
+###
+# Didn't work because request doesn't register upgrade event. Must be done at server level.
+WebSocketServer::listenOnRoute = (router, path, socket_handler_fn = null) ->
+  self = @
+  socket_handler_fn = socket_handler_fn or self.connectionHandler # use ad-hoc socket handler if provided, else use "default" socket handler
+  obj = router.get_route_handler(path, 'get')
+  if obj
+    http_handler_fn = obj.handler_obj.handler
+  else
+    http_handler_fn = (request, response) ->
+      response.end 'websocket server listening at ' + path
+  path = "/#{path}" unless path.charAt(0) is "/"
+  router.get path, (request, response) ->
+    if request.headers['upgrade'] or request.headers['Upgrade']
+      ( (response, socket, upgradeHead) ->
+        console.log "Received upgrade request on path: #{request.url}"
+        ws = new WebSocketServerConnection(request, socket, upgradeHead)
+        socket_handler_fn ws
+        setTimeout (-> ws.periodicPing = setInterval (-> ws.ping() if ws.readyState is 'open'), 2000), 1000
+        ws.on 'close', ->
+          #console.log "Closing server websocket connection", ws.id
+          clearInterval ws.periodicPing if ws.periodicPing?
+        self.emit 'upgrade')(null, request.socket, '')
+
+    http_handler_fn request, response
+###
+
+createWebSocketServer = (socket_handler_fn) ->
+  new WebSocketServer(socket_handler_fn)
 
 
 

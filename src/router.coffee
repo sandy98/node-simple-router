@@ -150,7 +150,7 @@ Router = (options = {}) ->
     '.cpp':  'text/x-c++src'
 
   default_options =
-    version: '0.9.1-3'
+    version: require('../package.json').version
     logging: true
     log: console.log
     static_route: "#{process.cwd()}/public"
@@ -434,6 +434,19 @@ Router = (options = {}) ->
 
 
 # Dispatch function properties and methods 	
+
+  dispatch.get_route_handler = (path, method) ->
+    if not method #search all methods until a match is found or null is returned
+      for key, objects of dispatch.routes
+        for object in objects
+          return {method: key, handler_obj: object} if path.match object.pattern
+      return null
+    else #search a handler for the given path, but only with the given method
+      chosen = dispatch.routes[method]
+      return null if not chosen
+      for object in chosen
+        return {method: method, handler_obj: object} if path.match object.pattern
+      return null
 
   dispatch.get_icon = (x, y) ->
     template = """
@@ -938,7 +951,7 @@ Router = (options = {}) ->
 
 
   dispatch.get = (pattern, callback) ->
-      _pushRoute pattern, callback, 'get'
+    _pushRoute pattern, callback, 'get'
 
   dispatch.post = (pattern, callback) ->
     _pushRoute pattern, _make_request_wrapper(callback), 'post'
@@ -957,6 +970,7 @@ Router = (options = {}) ->
 
   dispatch.any = (pattern, callback) ->
     _pushRoute pattern, _make_request_wrapper(callback), 'any'
+
 
 
   dispatch._404 = (req, res, path) ->

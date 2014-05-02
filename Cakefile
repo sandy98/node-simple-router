@@ -82,7 +82,7 @@ test = (cb) ->
 task "build", "Builds the app", ->
   build()
 
-task "build_src", "Compiles_src", ->
+task "build_src", "Compiles src", ->
   build_src -> print "Source files compiled.\n"
 
 task "build_test", "Builds test/server.js", ->
@@ -94,3 +94,12 @@ task "build_mk_server", "Builds bin/mk-server", ->
 task "test", "Checks existence/validity of test/server.js and recompiles if necessary, then run it", ->
   test -> print "test/server.js ran OK."
 
+task "version", "Shows current version of the project", ->
+  #if arguments.length is 1
+    console.log "NSR version: #{require('./package.json').version}"
+  #else
+    #json = require './package.json'
+    #console.log "NSR current version: #{json.version}"
+    #json.version = arguments[1]
+    #fs.writeFileSync './package.json', JSON.stringify json, 'utf8'
+    #console.log "NSR version set to: #{json.version}"
