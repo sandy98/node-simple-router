@@ -192,7 +192,7 @@ Router = (options = {}) ->
       req.body = _extend {}, req.get
       method = req.method.toLowerCase()
       if dispatch.logging
-        dispatch.log "#{req.client.remoteAddress} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
+        dispatch.log "#{dispatch.getRemoteAddress(req)} - [#{new Date().toLocaleString()}] - #{method.toUpperCase()} #{pathname} - HTTP #{req.httpVersion}"
 
       if dispatch.routes[method]
         selected_method = dispatch.routes[method].concat dispatch.routes['any']
@@ -435,6 +435,9 @@ Router = (options = {}) ->
 
 # Dispatch function properties and methods 	
 
+  dispatch.getRemoteAddress = (req) ->
+    ip = req.headers['x-forwarded-for'] or req.connection.remoteAddress or req.socket.remoteAddress or req.connection.socket.remoteAddress
+
   dispatch.get_route_handler = (path, method) ->
     if not method #search all methods until a match is found or null is returned
       for key, objects of dispatch.routes
@@ -653,7 +656,7 @@ Router = (options = {}) ->
       env["QUERY_STRING"] = "#{query_pairs.join('&')}"
     else
       env['QUERY_STRING'] = ''
-    env['REMOTE_ADDRESS'] = req.connection.remoteAddress
+    env['REMOTE_ADDRESS'] = dispatch.getRemoteAddress(req)
     env['REQUEST_URI'] = pathname
     env['GATEWAY_INTERFACE'] = "CGI/1.1"
     env['SERVER_NAME'] = req.headers.host.split(':')[0]
@@ -776,7 +779,7 @@ Router = (options = {}) ->
     req += "SCGI\u0000\u0031\u0000"
     req += "SERVER_PROTOCOL\0HTTP/1.1\0"
     #req += "HTTPS\0#{'$https if_not_empty'}\0"
-    req += "REMOTE_ADDR\0#{request.connection.remoteAddress}\0"
+    req += "REMOTE_ADDR\0#{dispatch.getRemoteAddress(request)}\0"
     req += "REMOTE_PORT\0#{request.connection.remotePort}\0"
     req += "SERVER_PORT\0#{request.headers['host'].match(/:(\d+)$/)[1] or '80'}\0"
     req += "SERVER_NAME\0#{request.headers['host'].replace /:\d+/, ''}\0"
