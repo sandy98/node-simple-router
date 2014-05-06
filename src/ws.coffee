@@ -166,7 +166,16 @@ WebSocketServerConnection = (request, socket, upgradeHead) ->
   self = @
 
   key = hashWebSocketKey(lowerObjKeys(request.headers)["sec-websocket-key"])
-  
+
+  protocol = (->
+    if 'sec-websocket-protocol' of request.headers
+      protocols = lowerObjKeys(request.headers)["sec-websocket-protocol"].split /\s*,\s*/
+      #console.log "Protocol: #{protocols[0]}"
+      return protocols[0]
+    else
+      return null
+  )()
+
   lines = []
 
   # handshake response
@@ -175,6 +184,7 @@ WebSocketServerConnection = (request, socket, upgradeHead) ->
   lines.push "Upgrade: WebSocket\r\n"
   lines.push "Connection: Upgrade\r\n"
   lines.push "sec-websocket-accept: #{key}"
+  lines.push "\r\nsec-websocket-protocol: #{protocol}" if protocol
   lines.push "\r\n\r\n"
 
   socket.write lines.join('')
