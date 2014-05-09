@@ -8,22 +8,25 @@ try {
 
 // Set up WAMP connection to router
 var connection = new autobahn.Connection({
-   url: 'ws://'+ location.hostnem + ':8000',
+   url: 'ws://'+ location.host + '/wamp',
    realm: 'tutorialpubsub'}
 );
 
+var global = global ? global : window ? window : {};
+
 // Set up 'onopen' handler
 connection.onopen = function (session) {
-
-   var currentSubscription = null;
+   global.session = session;
+   global.currentSubscription = null;
 
    // Define an event handler
-   function onEvent(args, kwargs, details) {
+   global.onEvent = function onEvent(args, kwargs, details) {
 
       console.log("Event received ", args, kwargs, details);
 
       if ( args[0] > 20 ) {
-         session.unsubscribe(subscription).then(
+         console.log("Will try to unsubscribe now, cause this is very boring... ;-(");
+         session.unsubscribe(currentSubscription).then(
 
             function(gone) {
                console.log("unsubscribe successfull");
@@ -39,18 +42,24 @@ connection.onopen = function (session) {
    }
 
    // Subscribe to a topic
-   session.subscribe('com.myapp.topic1', onEvent).then(
+   global.do_subscribe = function do_subscribe() {
+    session.subscribe('com.myapp.topic1', onEvent).then(
 
-      function(subscription) {
-         console.log("subscription successfull", subscription);
-         currentSubscription = subscription;
-      },
+        function(subscription) {
+            console.log("subscription successfull", subscription);
+            console.log ("subscription id: ", subscription.id ? subscription.id : 'subscription has no id');
+            currentSubscription = subscription;
+        },
 
-      function(error) {
-         console.log("subscription failed", error);
-      }
+        function(error) {
+            console.log("subscription failed", error);
+        }
 
-   );
+    );
+   };
+
+   do_subscribe();
+
 };
 
 // Open connection

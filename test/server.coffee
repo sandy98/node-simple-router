@@ -16,7 +16,7 @@ catch e
     process.exit(-1)
 
 {wsserver, socks, msgs, createProxy} = require "#{__dirname}#{path.sep}wschat"
-
+wamp = require "../lib/wamp"
 http = require 'http'
 https = require 'https'
 router = Router(list_dir: true)
@@ -413,6 +413,9 @@ server.on 'listening', ->
   wsserver.listen server
   addr = server.address()
   createProxy(addr.port - 1) if addr.port?
+
+  wampRouter = new wamp.WampRouter wsPort: server
+
   router.log "NSR v#{router.version} serving web content at #{if typeof addr is 'string' then addr else addr.address + ':' + addr.port} - PID: " + process.pid
 
 clean_up = ->

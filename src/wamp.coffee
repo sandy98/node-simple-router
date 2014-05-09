@@ -66,22 +66,29 @@ class WampSession extends events.EventEmitter
 class WampPeer extends events.EventEmitter
 
   constructor: (@parent, @transport, @roles) ->
+    @isClosed = false
+    @transport.on 'close', (code) =>
+      @isClosed = true
 
   sendMessage: (message) =>
-    @transport.send(message)
+    @transport.send(message) unless @isClosed
 
   processMessage: (message) =>
+    return if @isClosed
     arr = JSON.parse message
     [code] = arr
+    if code not in [MESSAGE_TYPES.HELLO, MESSAGE_TYPES.WELCOME]
+      return unless @session
     switch code
       when MESSAGE_TYPES.HELLO
-        console.log "Router received HELLO"
+        console.log "Router received HELLO message"
         [realm, details] = arr.slice(1)
         @session = new WampSession @parent.nextSessionId, {peer: @, realm, details}
-        @parent.realms[realm] = {sessions: [], registered_procedures: [], invocations: [], subscriptions: []} unless realm of @parent.realms
+        @parent.realms[realm] = {sessions: [], registered_procedures: [], invocations: [], subscriptions: {}} unless realm of @parent.realms
         @parent.realms[realm].sessions.push @session
         console.log "@realms[#{realm}].sessions.length: %d", @parent.realms[realm].sessions.length
         @sendMessage JSON.stringify [MESSAGE_TYPES.WELCOME, @parent.nextSessionId, {roles: @roles}]
+        console.log "Router sent WELCOME message to #{@parent.nextSessionId}"
         @parent.nextSessionId += 1
       when MESSAGE_TYPES.WELCOME
         console.log "Received Welcome Message"
@@ -96,15 +103,51 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.HEARTBEAT
         console.log "Received HeartBeat Message"
       when MESSAGE_TYPES.PUBLISH
-        console.log "Received Publish Message"
+        #console.log "Received publish message from session #{@session.id}"
+        [RequestId, OptionsDict, TopicUri, ArgumentsList, ArgumentsKwDict] = arr.slice(1)
+        PublicationId = @session.nextId
+        @session.nextId += 1
+        topic = @parent.realms[@session.realm].subscriptions[TopicUri]
+        if topic
+          for suscription in topic
+            for session in @parent.realms[@session.realm].sessions
+              if session.id is suscription.sessionId
+                msgArray = [MESSAGE_TYPES.EVENT, suscription.SubscriptionId, PublicationId, OptionsDict]
+                msgArray.push ArgumentsList if ArgumentsList
+                msgArray.push ArgumentsKwDict if ArgumentsKwDict
+                session.peer.sendMessage JSON.stringify(msgArray)
+                break
+        if OptionsDict.acknowledge
+          @sendMessage(JSON.stringify [MESSAGE_TYPES.PUBLISHED, RequestId, PublicationId])
       when MESSAGE_TYPES.PUBLISHED
         console.log "Received Published Message"
       when MESSAGE_TYPES.SUBSCRIBE
-        console.log "Received Subscribe Message"
+        console.log "Received subscribe message from session #{@session.id}"
+        [RequestId, OptionsDict, TopicUri] = arr.slice(1)
+        SubscriptionId = @session.nextId
+        @session.nextId += 1
+        @parent.realms[@session.realm].subscriptions[TopicUri] = [] if not @parent.realms[@session.realm].subscriptions[TopicUri]
+        @parent.realms[@session.realm].subscriptions[TopicUri].push {
+        sessionId: @session.id
+        SubscriptionId
+        OptionsDict
+        }
+        resp = [MESSAGE_TYPES.SUBSCRIBED, RequestId, SubscriptionId]
+        @sendMessage(JSON.stringify resp)
+        console.log "Registered subscription for #{TopicUri} in realm #{@session.realm}"
       when MESSAGE_TYPES.SUBSCRIBED
         console.log "Received Subscribed Message"
       when MESSAGE_TYPES.UNSUBSCRIBE
-        console.log "Received Unsubscribe Message"
+        [RequestId, SubscriptionId] = arr.slice(1)
+        console.log "Received unsubscribe message from session #{@session.id} with requestId: #{RequestId} and subscriptionId: #{SubscriptionId}"
+        for key, topic of @parent.realms[@session.realm].subscriptions
+          for subscription, index in topic
+            if (subscription.SubscriptionId is SubscriptionId) and (subscription.sessionId is @session.id)
+              console.log "Found subscription to erase at index #{index}. Going to do it for request: #{RequestId}"
+              topic.splice(index, 1)
+              return @sendMessage JSON.stringify([MESSAGE_TYPES.UNSUBSCRIBED, RequestId])
+        console.log "Did not find a subscription to erase. Sending error message: 'wamp.error.no_such_subscription'"
+        return @sendMessage JSON.stringify([MESSAGE_TYPES.ERROR, MESSAGE_TYPES.UNSUBSCRIBE, RequestId, {}, "wamp.error.no_such_subscription"])
       when MESSAGE_TYPES.UNSUBSCRIBED
         console.log "Received Unsubscribed Message"
       when MESSAGE_TYPES.EVENT
@@ -140,7 +183,6 @@ class WampPeer extends events.EventEmitter
         console.log "Received Result Message"
       when MESSAGE_TYPES.REGISTER
         console.log "Received register message from session #{@session.id}"
-        return if not @session
         [RequestId, OptionsDict, ProcedureUri] = arr.slice(1)
         RegistrationId = @session.nextId
         @session.nextId += 1
