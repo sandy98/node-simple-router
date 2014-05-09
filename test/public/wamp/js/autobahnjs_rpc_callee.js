@@ -8,7 +8,7 @@ try {
 
 // Set up WAMP connection to router
 var connection = new autobahn.Connection({
-   url: 'ws://' + location.hostname + ':8000',
+   url: 'ws://'+ location.host + '/wamp',
    realm: 'tutorialrpc'}
 );
 
