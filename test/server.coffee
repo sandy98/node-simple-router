@@ -414,9 +414,11 @@ server.on 'listening', ->
   addr = server.address()
   createProxy(addr.port - 1) if addr.port?
 
-  wampRouter = new wamp.WampRouter wsPort: server
+  wampRouter = wamp.createWampRouter()
+  wampRouter.listen server
 
-  router.log "NSR v#{router.version} serving web content at #{if typeof addr is 'string' then addr else addr.address + ':' + addr.port} - PID: " + process.pid
+  addrString = if typeof addr is 'string' then "'#{addr}'" else "#{addr.address}:#{addr.port}"
+  router.log "NSR v#{router.version} serving web content at #{addrString} - PID: " + process.pid
 
 clean_up = ->
   router.log ' '

@@ -6,10 +6,12 @@ try {
    // be included without a module system
 }
 
+
 // Set up WAMP connection to router
+var protocol = location.protocol == 'https:' ? 'wss:' : 'ws:'
 var connection = new autobahn.Connection({
-   url: 'ws://'+ location.host + '/wamp',
-   realm: 'tutorialrpc'}
+        url: protocol + '//'+ location.host + '/wamp',
+        realm: 'tutorialrpc'}
 );
 
 // Set up 'onopen' handler

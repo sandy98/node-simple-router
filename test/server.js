@@ -614,16 +614,16 @@
   }
 
   server.on('listening', function() {
-    var addr, wampRouter;
+    var addr, addrString, wampRouter;
     wsserver.listen(server);
     addr = server.address();
     if (addr.port != null) {
       createProxy(addr.port - 1);
     }
-    wampRouter = new wamp.WampRouter({
-      wsPort: server
-    });
-    return router.log(("NSR v" + router.version + " serving web content at " + (typeof addr === 'string' ? addr : addr.address + ':' + addr.port) + " - PID: ") + process.pid);
+    wampRouter = wamp.createWampRouter();
+    wampRouter.listen(server);
+    addrString = typeof addr === 'string' ? "'" + addr + "'" : "" + addr.address + ":" + addr.port;
+    return router.log(("NSR v" + router.version + " serving web content at " + addrString + " - PID: ") + process.pid);
   });
 
   clean_up = function() {
