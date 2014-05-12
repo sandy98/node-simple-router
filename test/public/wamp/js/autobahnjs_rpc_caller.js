@@ -6,6 +6,11 @@ try {
    // be included without a module system
 }
 
+var log = function(msg) {
+    document.getElementById('log').innerHTML = msg;
+};
+
+
 // Set up WAMP connection to router
 var protocol = location.protocol == 'https:' ? 'wss:' : 'ws:'
 var connection = new autobahn.Connection({
@@ -15,19 +20,19 @@ var connection = new autobahn.Connection({
 
 // Set up 'onopen' handler
 connection.onopen = function (session) {
-   console.log("Session opened - Id: ", session.id)
+   log("Session opened - Id: " + session.id);
    setInterval(function() {
       session.call('com.timeservice.now').then(
          // RPC success callback
          function (now) {
-            console.log("Current time:", now.args[0]);
+            log("Current time: " + now.args[0]);
          },
          // RPC error callback
          function (error) {
-            console.log("Call failed:", error);
+            log("Call failed: " + error);
          }
       );
-   }, 5000);
+   }, 1000);
 };
 
 // Open connection

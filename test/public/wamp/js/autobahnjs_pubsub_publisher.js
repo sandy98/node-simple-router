@@ -15,6 +15,10 @@ var connection = new autobahn.Connection({
 
 var global = global ? global : window ? window : {};
 
+var log = function(msg) {
+    document.getElementById('log').innerHTML = msg;
+};
+
 // Set up 'onopen' handler
 connection.onopen = function (session) {
 
@@ -27,11 +31,11 @@ connection.onopen = function (session) {
         session.publish ('com.myapp.topic1', [ counter ], {}, { acknowledge: true}).then(
 
            function(publication) {
-              console.log("published to topic 'com.myapp.topic1', publication ID is ", publication);
+              log("Published to topic 'com.myapp.topic1'<br/> Publication ID is " + publication.id);
            },
 
            function(error) {
-              console.log("publication error", error);
+               log("Publication error: " + error);
            }
 
         );

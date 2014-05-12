@@ -71,6 +71,7 @@ class WampPeer extends events.EventEmitter
     @isOpen = true
     @transport.on 'close', (code) =>
       @isOpen = false
+      @cleanUp()
       console.log "Closing WampPeer due to transport closed."
     @id = null
     @nextId = 1
@@ -80,6 +81,45 @@ class WampPeer extends events.EventEmitter
     @_options = options or {}
     for key, val of @_options
       @[key] = val
+
+  cleanUp: =>
+    registered = @parent.realms?[@realm].registered_procedures
+    if registered
+      for proc, index in registered
+        try
+          if proc.sessionId is @id
+            @parent.realms[@realm].registered_procedures.splice(index, 1)
+        catch e
+          console.log "ERROR: #{e.message}"
+
+    invocations = @parent.realms?[@realm].invocations
+    if invocations
+      for invocation, index in invocations
+        try
+          if invocation.sessionId is @id
+            @parent.realms[@realm].invocations.splice(index, 1)
+        catch e
+          console.log "ERROR: #{e.message}"
+
+    subscriptions = @parent.realms?[@realm].subscriptions
+    if subscriptions
+      for key, topic of subscriptions
+        try
+          for subscription, index in topic
+            if subscription.sessionId is @id
+              topic.splice(index, 1)
+        catch e
+          console.log "ERROR: #{e.message}"
+
+    sessions = @parent.realms?[@realm].sessions
+    if sessions
+      for session, index in sessions
+        try
+          if session.id is @id
+            @parent.realms[@realm].sessions.splice(index, 1)
+            break
+        catch e
+          console.log "ERROR: #{e.message}"
 
   sendMessage: (message) =>
     @transport.send(message) if @isOpen
@@ -113,14 +153,10 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.AUTHENTICATE
         console.log "Received Authenticate Message"
       when MESSAGE_TYPES.GOODBYE
+        console.log "Received GoodBye Message"
         @sendMessage message
-        sessions = @parent.realms?[@realm].sessions
-        if sessions
-          for session, index in sessions
-            if session.id is @id
-              @parent.realms[@realm].sessions.splice(index, 1)
-              break
         #@isOpen = false
+        @cleanUp()
         @transport.close()
       when MESSAGE_TYPES.HEARTBEAT
         console.log "Received HeartBeat Message"
@@ -175,7 +211,7 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.EVENT
         console.log "Received Event Message"
       when MESSAGE_TYPES.CALL
-        console.log "Received Call Message from session #{@id} with request Id = #{arr[1]}"
+        #console.log "Received Call Message from session #{@id} with request Id = #{arr[1]}"
         [RequestId, OptionsDict, ProcedureUri, ArgumentsList, ArgumentsKwDict] = arr.slice(1)
         for proc in @parent.realms[@realm].registered_procedures
           if proc.ProcedureUri is ProcedureUri
@@ -184,8 +220,6 @@ class WampPeer extends events.EventEmitter
             for session in @parent.realms[@realm].sessions
               if session.id is callee_sessionId
                 callee_session = session
-                #requestId = @session.nextId
-                #@session.nextId += 1
                 invocation_message = [
                   MESSAGE_TYPES.INVOCATION,
                   RequestId,
@@ -198,6 +232,7 @@ class WampPeer extends events.EventEmitter
                   sessionId: @id
                   requestId: RequestId
                 }
+                #console.log "Going to invoke requestId: #{RequestId} for registrationId: #{registrationId} on session: #{callee_session.id}"
                 return callee_session.sendMessage(JSON.stringify invocation_message)
       when MESSAGE_TYPES.CANCEL
         console.log "Received Cancel Message"
@@ -206,6 +241,10 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.REGISTER
         console.log "Received register message from session #{@id}"
         [RequestId, OptionsDict, ProcedureUri] = arr.slice(1)
+        for procedure in @parent.realms[@realm].registered_procedures
+          if procedure.ProcedureUri is ProcedureUri
+            console.log "ERROR: procedure #{ProcedureUri} already registered."
+            return @sendMessage(JSON.stringify [MESSAGE_TYPES.ERROR, MESSAGE_TYPES.REGISTER, RequestId, {}, 'wamp.error.procedure_already_exists'])
         RegistrationId = @nextId
         @nextId += 1
         @parent.realms[@realm].registered_procedures.push {
@@ -221,6 +260,12 @@ class WampPeer extends events.EventEmitter
         console.log "Received Registered Message"
       when MESSAGE_TYPES.UNREGISTER
         console.log "Received Unregister Message"
+        [RequestId, RegistrationId] = arr.slice(1)
+        for procedure, index in @parent.realms[@realm].registered_procedures
+          if procedure.RegistrationId is RegistrationId
+            @parent.realms[@realm].registered_procedures.splice(index, 1)
+            return @sendMessage(JSON.stringify [MESSAGE_TYPES.UNREGISTERED, RequestId])
+        return @sendMessage(JSON.stringify [MESSAGE_TYPES.ERROR, MESSAGE_TYPES.UNREGISTER, RequestId, {}, 'wamp.error.no_such_registration'])
       when MESSAGE_TYPES.UNREGISTERED
         console.log "Received Unregistered Message"
       when MESSAGE_TYPES.INVOCATION
@@ -228,12 +273,12 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.INTERRUPT
         console.log "Received Interrupt Message"
       when MESSAGE_TYPES.YIELD
-        console.log "Received Yield Message from session #{@id}"
+        #console.log "Received Yield Message from session #{@id}"
         [RequestId, OptionsDict, ArgumentsList, ArgumentsKwDict] = arr.slice(1)
-        console.log "Yield message data\nRequestId: #{RequestId}"
-        console.log "OptionsDict: %j", OptionsDict
-        console.log "ArgumentsList: #{ArgumentsList}"
-        console.log "ArgumentsKwDict: #{ArgumentsKwDict}"
+        #console.log "Yield message data\nRequestId: #{RequestId}"
+        #console.log "OptionsDict: %j", OptionsDict
+        #console.log "ArgumentsList: #{ArgumentsList}"
+        #console.log "ArgumentsKwDict: #{ArgumentsKwDict}"
         for invocation in @parent.realms[@realm].invocations
           if invocation.requestId is RequestId
             caller_sessionId = invocation.sessionId
@@ -247,7 +292,7 @@ class WampPeer extends events.EventEmitter
                   ArgumentsList or [],
                   ArgumentsKwDict or {}
                 ]
-                console.log "Sending results to session #{caller_session.id} corresponding to request Id: #{RequestId}"
+                #console.log "Sending results to session #{caller_session.id} corresponding to request Id: #{RequestId}"
                 return caller_session.sendMessage(JSON.stringify result_message)
       else
         console.log "Unknown code received."

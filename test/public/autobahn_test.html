@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <style>
+        iframe {
+            height: 25em;
+        }
+        .bordered-col {
+            border: solid 1px;
+            padding: 0.5em;
+        }
+    </style>
+    <title> WAMP Test </title>
+</head>
+<body>
+  <div class="container">
+    <div class="jumbotron">
+        <h2 style="text-align: center;">WAMP Test using Autobahn.js client side</h2>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">
+          <iframe src="/wamp/autobahnjs_pubsub_publisher.html"></iframe>
+      </div>
+      <div class="col-xs-3">
+          <iframe src="/wamp/autobahnjs_pubsub_subscriber.html"></iframe>
+      </div>
+      <div class="col-xs-3">
+          <iframe src="/wamp/autobahnjs_rpc_callee.html"></iframe>
+      </div>
+      <div class="col-xs-3">
+          <iframe src="/wamp/autobahnjs_rpc_caller.html"></iframe>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+</html>

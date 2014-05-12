@@ -15,6 +15,12 @@ var connection = new autobahn.Connection({
 
 var global = global ? global : window ? window : {};
 
+global.maxEvents = 20;
+
+var log = function(msg) {
+    document.getElementById('log').innerHTML = msg;
+};
+
 // Set up 'onopen' handler
 connection.onopen = function (session) {
    global.session = session;
@@ -23,18 +29,18 @@ connection.onopen = function (session) {
    // Define an event handler
    global.onEvent = function onEvent(args, kwargs, details) {
 
-      console.log("Event received ", args, kwargs, details);
+      log("Event received " + JSON.stringify(args) + JSON.stringify(kwargs) + JSON.stringify(details));
 
-      if ( args[0] > 20 ) {
-         console.log("Will try to unsubscribe now, cause this is very boring... ;-(");
+      if ( args[0] > global.maxEvents ) {
+         log("Will try to unsubscribe now, cause this is very boring... ;-(");
          session.unsubscribe(currentSubscription).then(
 
             function(gone) {
-               console.log("unsubscribe successfull");
+               log("Unsubscribe successfull");
             },
 
             function(error) {
-               console.log("unsubscribe failed", error);
+               log("Unsubscribe failed: " + error);
             }
 
          );
@@ -47,13 +53,13 @@ connection.onopen = function (session) {
     session.subscribe('com.myapp.topic1', onEvent).then(
 
         function(subscription) {
-            console.log("subscription successfull", subscription);
-            console.log ("subscription id: ", subscription.id ? subscription.id : 'subscription has no id');
+            log("Subscription successfull: " + subscription.id);
+            log ("Subscription id: " + subscription.id ? subscription.id : 'subscription has no id');
             currentSubscription = subscription;
         },
 
         function(error) {
-            console.log("subscription failed", error);
+            log("Subscription failed: " + error);
         }
 
     );
