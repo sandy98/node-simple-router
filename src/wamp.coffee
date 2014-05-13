@@ -4,6 +4,10 @@ events = require 'events'
 util = require 'util'
 net = require 'net'
 ws = require './ws'
+try
+  {defer} = require './promises.litcoffee'
+catch e
+  {defer} = require './promises'
 
 #Message Constants
 
@@ -146,6 +150,13 @@ class WampPeer extends events.EventEmitter
         @parent.nextSessionId += 1
       when MESSAGE_TYPES.WELCOME
         console.log "Received Welcome Message"
+        [sid, details] = arr.slice(1)
+        @id = sid
+        @routerRoles = details
+        @realm = @parent.realm
+        @subscriptions = []
+        @registrations = []
+        @parent.onopen?({@id, @realm, @roles, @routerRoles, @subscriptions, @registrations})
       when MESSAGE_TYPES.ABORT
         console.log "Received Abort Message"
       when MESSAGE_TYPES.CHALLENGE
@@ -300,6 +311,18 @@ class WampPeer extends events.EventEmitter
 
 class WampClient extends events.EventEmitter
 
+  constructor: (options) ->
+    if (not options?.url) or (not options?.realm)
+      throw new Error "Must provide a url and a realm to connect to"
+    @[key] = value for key, value of options
+    @roles = @roles or {subscriber: {}, publisher: {}, callee: {}, caller: {}}
+
+  connect: =>
+    @websocket = new ws.WebSocketClientConnection(@url)
+    @peer = new WampPeer(@, @websocket, @roles)
+    #@connectDeferred = defer()
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.HELLO, @realm, @roles])
+    #@connectDeferred.promise()
 
 class WampRouter extends events.EventEmitter
   _webSocketHandler: (websocket) =>
@@ -308,8 +331,8 @@ class WampRouter extends events.EventEmitter
       console.log "WebSocket opened"
     websocket.on 'data', (opcode, data) =>
       websocket.peer.processMessage(data)
-    websocket.on 'close', (wasClean, code, reason) =>
-      console.log "Websocket closed. Close event data:\n wasClean: #{wasClean or 'no data'} - Code: #{code or 'no data'} - Reason: #{reason or 'no data'}"
+    websocket.on 'close', (code, reason) =>
+      console.log "Websocket closed. Close event data:\n Code: #{code or 'no data'} - Reason: #{reason or 'no data'}"
 
   constructor: (options) ->
     @_options = options or {}
