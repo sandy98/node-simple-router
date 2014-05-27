@@ -626,20 +626,19 @@
       url: "ws://" + addr.address + ":" + addr.port + "/wamp",
       realm: "test"
     });
-    console.log("Create wamp client at url: " + wampClient.url + " in realm: " + wampClient.realm);
     wampClient.onopen = function(sessionData) {
-      var key, val;
+      var add2, key, val;
+      add2 = function() {
+        return arguments[0] + arguments[1];
+      };
       for (key in sessionData) {
         val = sessionData[key];
         wampClient[key] = val;
       }
-      console.log("wampClient onopen handler (triggered when session is opened)");
-      console.log("------------------------------------------------------------");
-      for (key in sessionData) {
-        val = sessionData[key];
-        console.log("" + key + " = " + (JSON.stringify(val)));
-      }
-      return console.log("------------------------------------------------------------");
+      wampClient.register('localhost.test.add2', add2);
+      return wampClient.call('localhost.test.add2', [30, 40]).then(function(results) {
+        return console.log("Result from RPC is: %j", results[0]);
+      });
     };
     wampClient.websocket.on('open', function(id) {
       console.log("wampClient websocket opened with id:", id);

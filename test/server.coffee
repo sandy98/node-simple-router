@@ -418,16 +418,21 @@ server.on 'listening', ->
   wampRouter.listen server
 
   wampClient = new wamp.WampClient url: "ws://#{addr.address}:#{addr.port}/wamp", realm: "test"
-  console.log "Create wamp client at url: #{wampClient.url} in realm: #{wampClient.realm}"
+  #console.log "Create wamp client at url: #{wampClient.url} in realm: #{wampClient.realm}"
   wampClient.onopen = (sessionData) ->
-    add2 = (args) ->
-      args[0] + args[1]
+    add2 = () ->
+      #console.log "Function 'add2' invoked with args: %j, producing result: %s", arguments, arguments[0] + arguments[1]
+      arguments[0] + arguments[1]
+
     wampClient[key] = val for key, val of sessionData
-    console.log "wampClient onopen handler (triggered when session is opened)"
-    console.log "------------------------------------------------------------"
-    console.log "#{key} = #{JSON.stringify(val)}" for key, val of sessionData
-    console.log "------------------------------------------------------------"
+    #console.log "wampClient onopen handler (triggered when session is opened)"
+    #console.log "------------------------------------------------------------"
+    #console.log "#{key} = #{JSON.stringify(val)}" for key, val of sessionData
+    #console.log "------------------------------------------------------------"
     wampClient.register('localhost.test.add2', add2)
+    wampClient.call('localhost.test.add2', [30, 40]).then((results) -> console.log "Result from RPC is: %j", results[0])
+    #console.log "callIt constructor: #{callIt.constructor.name}"
+
   wampClient.websocket.on 'open', (id) ->
     console.log "wampClient websocket opened with id:", id
     wampClient.connect()

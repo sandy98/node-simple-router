@@ -128,10 +128,12 @@ class WampPeer extends events.EventEmitter
           console.log "ERROR: #{e.message}"
 
   sendMessage: (message) =>
+    ###
     if @parent.constructor.name is "WampClient"
       console.log @parent.constructor.name, "sends a message:", JSON.stringify(message)
       console.log "Open condition is:", @isOpen
       console.log "WebSocket state is: %s", @transport.readyState
+    ###
     @transport.send(message) if @isOpen
 
   processMessage: (message) =>
@@ -255,9 +257,20 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.CANCEL
         console.log "Received Cancel Message"
       when MESSAGE_TYPES.RESULT
-        console.log "Received Result Message"
+        [RequestId, OptionsDict, ArgumentsList, KwArguments] = arr.slice(1)
+        console.log "Client received Result Message for request id: #{RequestId}. Results are: %j , %j", ArgumentsList, KwArguments
+        for pendingCall, index in @calls
+          if pendingCall.RequestId is RequestId
+            ArgumentsList push KwArguments if Object.keys(KwArguments).length isnt 0
+            #console.log "Client resolving '#{pendingCall.uri}' with %j", ArgumentsList
+            #console.log "Pending call data:"
+            #console.log k, v for k, v of pendingCall
+            pendingCall.deferred?.resolve ArgumentsList
+            @calls.splice index, 1
+            break
+
       when MESSAGE_TYPES.REGISTER
-        console.log "Received register message from session #{@id}"
+        console.log "Router received register message from session #{@id}"
         [RequestId, OptionsDict, ProcedureUri] = arr.slice(1)
         for procedure in @parent.realms[@realm].registered_procedures
           if procedure.ProcedureUri is ProcedureUri
@@ -273,13 +286,14 @@ class WampPeer extends events.EventEmitter
         }
         resp = [MESSAGE_TYPES.REGISTERED, RequestId, RegistrationId]
         @sendMessage(JSON.stringify resp)
-        console.log "Registered procedure #{ProcedureUri} in realm #{@realm}"
+        console.log "Router registered procedure #{ProcedureUri} in realm #{@realm}"
       when MESSAGE_TYPES.REGISTERED
         [RequestId, RegistrationId] = arr.slice(1)
-        console.log "Received Registered Message for RequestId: %s - RegistrationId: %s", RequestId, RegistrationId
+        console.log "Client received Registered Message for RequestId: %s - RegistrationId: %s", RequestId, RegistrationId
         for registered_procedure in @parent.registrations
           if registered_procedure.RequestId is RequestId
             registered_procedure.RegistrationId = RegistrationId
+            console.log "Updated registered procedure #{registered_procedure.uri} with registration id: #{RegistrationId}"
             break
       when MESSAGE_TYPES.UNREGISTER
         console.log "Received Unregister Message"
@@ -293,11 +307,19 @@ class WampPeer extends events.EventEmitter
         [RequestId] = arr.slice(1)
         console.log "Received Unregistered Message for RequestId: %s", RequestId
       when MESSAGE_TYPES.INVOCATION
-        console.log "Received Invocation Message"
+        [RequestId, RegistrationId, OptionsDict, ArgumentsList, KwArguments]= arr.slice(1)
+        console.log "Client received Invocation Message for registration id: #{RegistrationId} with arguments: %j", ArgumentsList
+        for registration, index in @parent.registrations
+          if registration.RegistrationId is RegistrationId
+            #console.log "Invoking function '#{registration.uri}'"
+            result = registration.fn.apply null, ArgumentsList, KwArguments
+            #console.log "Result of invocation is: #{result}"
+            @sendMessage(JSON.stringify([MESSAGE_TYPES.YIELD, RequestId, OptionsDict, [result]]))
+            break
       when MESSAGE_TYPES.INTERRUPT
-        console.log "Received Interrupt Message"
+        console.log "Client received Interrupt Message"
       when MESSAGE_TYPES.YIELD
-        #console.log "Received Yield Message from session #{@id}"
+        console.log "Router received Yield Message from session #{@id}"
         [RequestId, OptionsDict, ArgumentsList, ArgumentsKwDict] = arr.slice(1)
         #console.log "Yield message data\nRequestId: #{RequestId}"
         #console.log "OptionsDict: %j", OptionsDict
@@ -340,10 +362,19 @@ class WampClient extends events.EventEmitter
     true
 
   register: (uri, fn, options) =>
-    regId = @peer.nextId
+    reqId = @peer.nextId
     @peer.nextId += 1
     @registrations.push RequestId: reqId, uri: uri, fn: fn
-    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.REGISTER, options or {}, uri])
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.REGISTER, reqId, options or {}, uri])
+
+  call: (procUri, args = [], kwArgs = {}, options = {}) =>
+    reqId = @peer.nextId
+    @peer.nextId += 1
+    deferred = defer()
+    callData = {RequestId: reqId, uri: procUri, args: args, kwArgs: kwArgs, options: options, deferred: deferred}
+    @peer.calls.push callData
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.CALL, reqId, options, procUri, args, kwArgs])
+    deferred.promise()
 
 class WampRouter extends events.EventEmitter
   _webSocketHandler: (websocket) =>
