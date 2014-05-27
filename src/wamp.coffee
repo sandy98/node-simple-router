@@ -4,6 +4,8 @@ events = require 'events'
 util = require 'util'
 net = require 'net'
 ws = require './ws'
+{defer} = require './promises'
+
 try
   {defer} = require './promises.litcoffee'
 catch e
@@ -126,6 +128,10 @@ class WampPeer extends events.EventEmitter
           console.log "ERROR: #{e.message}"
 
   sendMessage: (message) =>
+    if @parent.constructor.name is "WampClient"
+      console.log @parent.constructor.name, "sends a message:", JSON.stringify(message)
+      console.log "Open condition is:", @isOpen
+      console.log "WebSocket state is: %s", @transport.readyState
     @transport.send(message) if @isOpen
 
   processMessage: (message) =>
@@ -149,14 +155,15 @@ class WampPeer extends events.EventEmitter
         console.log "Router sent WELCOME message to #{@parent.nextSessionId}"
         @parent.nextSessionId += 1
       when MESSAGE_TYPES.WELCOME
-        console.log "Received Welcome Message"
+        console.log "Client Received Welcome Message"
         [sid, details] = arr.slice(1)
         @id = sid
         @routerRoles = details
         @realm = @parent.realm
         @subscriptions = []
         @registrations = []
-        @parent.onopen?({@id, @realm, @roles, @routerRoles, @subscriptions, @registrations})
+        @calls = []
+        @parent.onopen?({@id, @realm, @roles, @routerRoles, @subscriptions, @registrations, @calls})
       when MESSAGE_TYPES.ABORT
         console.log "Received Abort Message"
       when MESSAGE_TYPES.CHALLENGE
@@ -268,7 +275,12 @@ class WampPeer extends events.EventEmitter
         @sendMessage(JSON.stringify resp)
         console.log "Registered procedure #{ProcedureUri} in realm #{@realm}"
       when MESSAGE_TYPES.REGISTERED
-        console.log "Received Registered Message"
+        [RequestId, RegistrationId] = arr.slice(1)
+        console.log "Received Registered Message for RequestId: %s - RegistrationId: %s", RequestId, RegistrationId
+        for registered_procedure in @parent.registrations
+          if registered_procedure.RequestId is RequestId
+            registered_procedure.RegistrationId = RegistrationId
+            break
       when MESSAGE_TYPES.UNREGISTER
         console.log "Received Unregister Message"
         [RequestId, RegistrationId] = arr.slice(1)
@@ -278,7 +290,8 @@ class WampPeer extends events.EventEmitter
             return @sendMessage(JSON.stringify [MESSAGE_TYPES.UNREGISTERED, RequestId])
         return @sendMessage(JSON.stringify [MESSAGE_TYPES.ERROR, MESSAGE_TYPES.UNREGISTER, RequestId, {}, 'wamp.error.no_such_registration'])
       when MESSAGE_TYPES.UNREGISTERED
-        console.log "Received Unregistered Message"
+        [RequestId] = arr.slice(1)
+        console.log "Received Unregistered Message for RequestId: %s", RequestId
       when MESSAGE_TYPES.INVOCATION
         console.log "Received Invocation Message"
       when MESSAGE_TYPES.INTERRUPT
@@ -316,13 +329,21 @@ class WampClient extends events.EventEmitter
       throw new Error "Must provide a url and a realm to connect to"
     @[key] = value for key, value of options
     @roles = @roles or {subscriber: {}, publisher: {}, callee: {}, caller: {}}
+    @websocket = new ws.WebSocketClientConnection(@url)
 
   connect: =>
-    @websocket = new ws.WebSocketClientConnection(@url)
+    return false unless @websocket.readyState is 'open'
     @peer = new WampPeer(@, @websocket, @roles)
-    #@connectDeferred = defer()
+    @websocket.on 'data', (opcode, data) =>
+      @peer.processMessage(data)
     @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.HELLO, @realm, @roles])
-    #@connectDeferred.promise()
+    true
+
+  register: (uri, fn, options) =>
+    regId = @peer.nextId
+    @peer.nextId += 1
+    @registrations.push RequestId: reqId, uri: uri, fn: fn
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.REGISTER, options or {}, uri])
 
 class WampRouter extends events.EventEmitter
   _webSocketHandler: (websocket) =>

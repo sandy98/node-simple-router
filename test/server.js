@@ -614,7 +614,7 @@
   }
 
   server.on('listening', function() {
-    var addr, addrString, wampRouter;
+    var addr, addrString, wampClient, wampRouter;
     wsserver.listen(server);
     addr = server.address();
     if (addr.port != null) {
@@ -622,6 +622,29 @@
     }
     wampRouter = wamp.createWampRouter();
     wampRouter.listen(server);
+    wampClient = new wamp.WampClient({
+      url: "ws://" + addr.address + ":" + addr.port + "/wamp",
+      realm: "test"
+    });
+    console.log("Create wamp client at url: " + wampClient.url + " in realm: " + wampClient.realm);
+    wampClient.onopen = function(sessionData) {
+      var key, val;
+      for (key in sessionData) {
+        val = sessionData[key];
+        wampClient[key] = val;
+      }
+      console.log("wampClient onopen handler (triggered when session is opened)");
+      console.log("------------------------------------------------------------");
+      for (key in sessionData) {
+        val = sessionData[key];
+        console.log("" + key + " = " + (JSON.stringify(val)));
+      }
+      return console.log("------------------------------------------------------------");
+    };
+    wampClient.websocket.on('open', function(id) {
+      console.log("wampClient websocket opened with id:", id);
+      return wampClient.connect();
+    });
     addrString = typeof addr === 'string' ? "'" + addr + "'" : "" + addr.address + ":" + addr.port;
     return router.log(("NSR v" + router.version + " serving web content at " + addrString + " - PID: ") + process.pid);
   });

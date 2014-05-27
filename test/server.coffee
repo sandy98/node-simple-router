@@ -417,6 +417,21 @@ server.on 'listening', ->
   wampRouter = wamp.createWampRouter()
   wampRouter.listen server
 
+  wampClient = new wamp.WampClient url: "ws://#{addr.address}:#{addr.port}/wamp", realm: "test"
+  console.log "Create wamp client at url: #{wampClient.url} in realm: #{wampClient.realm}"
+  wampClient.onopen = (sessionData) ->
+    add2 = (args) ->
+      args[0] + args[1]
+    wampClient[key] = val for key, val of sessionData
+    console.log "wampClient onopen handler (triggered when session is opened)"
+    console.log "------------------------------------------------------------"
+    console.log "#{key} = #{JSON.stringify(val)}" for key, val of sessionData
+    console.log "------------------------------------------------------------"
+    wampClient.register('localhost.test.add2', add2)
+  wampClient.websocket.on 'open', (id) ->
+    console.log "wampClient websocket opened with id:", id
+    wampClient.connect()
+
   addrString = if typeof addr is 'string' then "'#{addr}'" else "#{addr.address}:#{addr.port}"
   router.log "NSR v#{router.version} serving web content at #{addrString} - PID: " + process.pid
 
