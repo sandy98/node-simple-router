@@ -629,16 +629,24 @@
       realm: "test"
     });
     wampClient.onopen = function(sessionData) {
-      var add2, key, val;
+      var add2, factorial, key, val;
       add2 = function() {
         var result;
         return result = arguments[0] + arguments[1];
+      };
+      factorial = function(n) {
+        if (n < 2) {
+          return n;
+        } else {
+          return n * factorial(n - 1);
+        }
       };
       for (key in sessionData) {
         val = sessionData[key];
         wampClient[key] = val;
       }
       wampClient.register('localhost.test.add2', add2);
+      wampClient.register('localhost.test.factorial', factorial);
       return wampClient.call('localhost.test.add2', [30, 40]).then(function(results) {
         return console.log("Result from RPC is: %j", results[0]);
       });

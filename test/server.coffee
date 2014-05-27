@@ -425,8 +425,11 @@ server.on 'listening', ->
       #console.log "Function 'add2' invoked with args: %j, producing result: %s", arguments, arguments[0] + arguments[1]
       result = arguments[0] + arguments[1]
 
+    factorial = (n) -> if n < 2 then n else n * factorial n - 1
+
     wampClient[key] = val for key, val of sessionData
     wampClient.register('localhost.test.add2', add2)
+    wampClient.register('localhost.test.factorial', factorial)
     wampClient.call('localhost.test.add2', [30, 40]).then((results) -> console.log "Result from RPC is: %j", results[0])
 
   wampClient.websocket.on 'open', (id) ->

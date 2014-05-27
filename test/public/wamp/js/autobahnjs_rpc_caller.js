@@ -57,6 +57,8 @@ connection2.open();
 var sum1 = document.getElementById("sum1");
 var sum2 = document.getElementById("sum2");
 var resultSpan = document.getElementById("result");
+var factorialNumber = document.getElementById("factorial-number");
+var factorialResult = document.getElementById("factorial-result");
 
 var onInput = function onInput(evt) {
     console.log("Calling RPC localhost.test.add2 with arguments: " + sum1.value + ", " + sum2.value);
@@ -65,7 +67,17 @@ var onInput = function onInput(evt) {
             console.log("RPC result received: ", JSON.stringify(result));
             resultSpan.innerHTML = result.args[0];
         });
-}
+};
+
+var onInputFactorial = function onInputFactorial(evt) {
+    console.log("Calling RPC localhost.test.factorial with arguments: " + factorialNumber.value);
+    session2.call('localhost.test.factorial', [parseInt(factorialNumber.value)])
+        .then(function(result) {
+            console.log("RPC result received: ", JSON.stringify(result));
+            factorialResult.innerHTML = result.args[0];
+        });
+};
 
 sum1.addEventListener("input", onInput);
 sum2.addEventListener("input", onInput);
+factorialNumber.addEventListener("input", onInputFactorial);
