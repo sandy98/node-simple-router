@@ -15,6 +15,7 @@ catch e
     console.log 'node-simple-router must be installed for this to work'
     process.exit(-1)
 
+{defer} = require '../lib/promises'
 {wsserver, socks, msgs, createProxy} = require "#{__dirname}#{path.sep}wschat"
 wamp = require "../lib/wamp"
 http = require 'http'
@@ -422,16 +423,11 @@ server.on 'listening', ->
   wampClient.onopen = (sessionData) ->
     add2 = () ->
       #console.log "Function 'add2' invoked with args: %j, producing result: %s", arguments, arguments[0] + arguments[1]
-      arguments[0] + arguments[1]
+      result = arguments[0] + arguments[1]
 
     wampClient[key] = val for key, val of sessionData
-    #console.log "wampClient onopen handler (triggered when session is opened)"
-    #console.log "------------------------------------------------------------"
-    #console.log "#{key} = #{JSON.stringify(val)}" for key, val of sessionData
-    #console.log "------------------------------------------------------------"
     wampClient.register('localhost.test.add2', add2)
     wampClient.call('localhost.test.add2', [30, 40]).then((results) -> console.log "Result from RPC is: %j", results[0])
-    #console.log "callIt constructor: #{callIt.constructor.name}"
 
   wampClient.websocket.on 'open', (id) ->
     console.log "wampClient websocket opened with id:", id

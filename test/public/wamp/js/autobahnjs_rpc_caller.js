@@ -37,3 +37,35 @@ connection.onopen = function (session) {
 
 // Open connection
 connection.open();
+
+
+var connection2 = new autobahn.Connection({
+        url: protocol + '//'+ location.host + '/wamp',
+        realm: 'test'}
+);
+
+var session2;
+
+// Set up 'onopen' handler
+connection2.onopen = function (session) {
+    log("Session 2 opened - Id: " + session.id);
+    session2 = session;
+};
+// Open connection
+connection2.open();
+
+var sum1 = document.getElementById("sum1");
+var sum2 = document.getElementById("sum2");
+var resultSpan = document.getElementById("result");
+
+var onInput = function onInput(evt) {
+    console.log("Calling RPC localhost.test.add2 with arguments: " + sum1.value + ", " + sum2.value);
+    session2.call('localhost.test.add2', [parseInt(sum1.value), parseInt(sum2.value)])
+    .then(function(result) {
+            console.log("RPC result received: ", JSON.stringify(result));
+            resultSpan.innerHTML = result.args[0];
+        });
+}
+
+sum1.addEventListener("input", onInput);
+sum2.addEventListener("input", onInput);
