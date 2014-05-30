@@ -387,6 +387,36 @@
     }
   });
 
+  router.get("/sillychat", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/sillychat.html", {
+      encoding: "utf8"
+    }, function(err, data) {
+      var context;
+      context = _extend(base_context, {
+        contents: data
+      });
+      return site_router(context, response);
+    });
+  });
+
+  router.get("/wampchat", function(request, response) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html'
+    });
+    return fs.readFile("" + __dirname + "/templates/wampchat.html", {
+      encoding: "utf8"
+    }, function(err, data) {
+      var context;
+      context = _extend(base_context, {
+        contents: data
+      });
+      return site_router(context, response);
+    });
+  });
+
   router.get('/getsession', function(request, response) {
     return router.getSession(request, function(sess_obj) {
       return response.end(JSON.stringify(sess_obj));
@@ -647,14 +677,21 @@
       }
       wampClient.register('localhost.test.add2', add2);
       wampClient.register('localhost.test.factorial', factorial);
-      return wampClient.call('localhost.test.add2', [30, 40]).then(function(results) {
+      wampClient.call('localhost.test.add2', [30, 40]).then(function(results) {
         return console.log("Result from RPC is: %j", results[0]);
       });
+      wampClient.subscribe('localhost.test.chat', function(args, kwArgs) {
+        if (args == null) {
+          args = [];
+        }
+        if (kwArgs == null) {
+          kwArgs = {};
+        }
+        return console.log("RECEIVED THE FOLLOWING MESSAGE: " + args[0] + " FROM SUBSCRIPTION localhost.test.chat");
+      });
+      return wampClient.publish('localhost.test.chat', ['Hi, everybody!']);
     };
-    wampClient.websocket.on('open', function(id) {
-      console.log("wampClient websocket opened with id:", id);
-      return wampClient.connect();
-    });
+    wampClient.connect();
     addrString = typeof addr === 'string' ? "'" + addr + "'" : "" + addr.address + ":" + addr.port;
     return router.log(("NSR v" + router.version + " serving web content at " + addrString + " - PID: ") + process.pid);
   });

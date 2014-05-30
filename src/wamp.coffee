@@ -162,9 +162,10 @@ class WampPeer extends events.EventEmitter
         @id = sid
         @routerRoles = details
         @realm = @parent.realm
-        @subscriptions = []
-        @registrations = []
-        @calls = []
+        @parent.subscriptions = @subscriptions = []
+        @parent.publications = @publications = []
+        @parent.registrations = @registrations = []
+        @parent.calls = @calls = []
         @parent.onopen?({@id, @realm, @roles, @routerRoles, @subscriptions, @registrations, @calls})
       when MESSAGE_TYPES.ABORT
         console.log "Received Abort Message"
@@ -198,7 +199,13 @@ class WampPeer extends events.EventEmitter
         if OptionsDict.acknowledge
           @sendMessage(JSON.stringify [MESSAGE_TYPES.PUBLISHED, RequestId, PublicationId])
       when MESSAGE_TYPES.PUBLISHED
-        console.log "Received Published Message"
+        [RequestId, PublicationId] = arr.slice(1)
+        console.log "Received Published Message for Request Id: #{RequestId} with Publication Id: #{PublicationId}"
+        for publication in @parent.publications
+          if publication.RequestId is RequestId
+            publication.PublicatioId = PublicatioId
+            console.log "Updated publication #{RequestId} with publication id: #{PublicationId}"
+            break
       when MESSAGE_TYPES.SUBSCRIBE
         console.log "Received subscribe message from session #{@id}"
         [RequestId, OptionsDict, TopicUri] = arr.slice(1)
@@ -214,7 +221,13 @@ class WampPeer extends events.EventEmitter
         @sendMessage(JSON.stringify resp)
         console.log "Registered subscription for #{TopicUri} in realm #{@realm}"
       when MESSAGE_TYPES.SUBSCRIBED
-        console.log "Received Subscribed Message"
+        [RequestId, SubscriptionId] = arr.slice(1)
+        console.log "Received Subscribed Message for Request Id: #{RequestId} with Subscription Id: #{SubscriptionId}"
+        for subscription in @parent.subscriptions
+          if subscription.RequestId is RequestId
+            subscription.SubscriptionId = SubscriptionId
+            console.log "Updated subscription #{subscription.topic} with subscription id: #{SubscriptionId}"
+            break
       when MESSAGE_TYPES.UNSUBSCRIBE
         [RequestId, SubscriptionId] = arr.slice(1)
         console.log "Received unsubscribe message from session #{@id} with requestId: #{RequestId} and subscriptionId: #{SubscriptionId}"
@@ -229,7 +242,12 @@ class WampPeer extends events.EventEmitter
       when MESSAGE_TYPES.UNSUBSCRIBED
         console.log "Received Unsubscribed Message"
       when MESSAGE_TYPES.EVENT
-        console.log "Received Event Message"
+        [SubscriptionId, PublicationId, Details, args, kwArgs] = arr.slice(1)
+        console.log "Received Event Message for subscription id: #{SubscriptionId} with the following args: %j", args
+        for subscription in @subscriptions
+          if subscription.SubscriptionId is SubscriptionId
+            subscription.handler args, kwArgs
+            break
       when MESSAGE_TYPES.CALL
         #console.log "Received Call Message from session #{@id} with request Id = #{arr[1]}"
         [RequestId, OptionsDict, ProcedureUri, ArgumentsList, ArgumentsKwDict] = arr.slice(1)
@@ -268,7 +286,6 @@ class WampPeer extends events.EventEmitter
             pendingCall.deferred?.resolve ArgumentsList
             @calls.splice index, 1
             break
-
       when MESSAGE_TYPES.REGISTER
         console.log "Router received register message from session #{@id}"
         [RequestId, OptionsDict, ProcedureUri] = arr.slice(1)
@@ -351,15 +368,16 @@ class WampClient extends events.EventEmitter
       throw new Error "Must provide a url and a realm to connect to"
     @[key] = value for key, value of options
     @roles = @roles or {subscriber: {}, publisher: {}, callee: {}, caller: {}}
-    @websocket = new ws.WebSocketClientConnection(@url)
 
   connect: =>
-    return false unless @websocket.readyState is 'open'
-    @peer = new WampPeer(@, @websocket, @roles)
-    @websocket.on 'data', (opcode, data) =>
-      @peer.processMessage(data)
-    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.HELLO, @realm, @roles])
-    true
+    @websocket = new ws.WebSocketClientConnection(@url)
+    #return false unless @websocket.readyState is 'open'
+    @websocket.on 'open', =>
+      @peer = new WampPeer(@, @websocket, @roles)
+      @websocket.on 'data', (opcode, data) =>
+        @peer.processMessage(data)
+      @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.HELLO, @realm, @roles])
+      true
 
   register: (uri, fn, options) =>
     reqId = @peer.nextId
@@ -375,6 +393,25 @@ class WampClient extends events.EventEmitter
     @peer.calls.push callData
     @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.CALL, reqId, options, procUri, args, kwArgs])
     deferred.promise()
+
+  subscribe: (topic, handler, options = {}) ->
+    reqId = @peer.nextId
+    @peer.nextId += 1
+    deferred = defer()
+    subscriptionData = {RequestId: reqId, topic: topic, handler: handler, options: options, deferred: deferred}
+    @peer.subscriptions.push subscriptionData
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.SUBSCRIBE, reqId, options, topic])
+    deferred.promise()
+
+  publish: (topic, args = [], kwArgs = {}, options = {}) =>
+    reqId = @peer.nextId
+    @peer.nextId += 1
+    deferred = defer()
+    publicationData = {RequestId: reqId, topic: topic, args: args, kwArgs: kwArgs, options: options, deferred: deferred}
+    @peer.publications.push publicationData
+    @peer.sendMessage(JSON.stringify [MESSAGE_TYPES.PUBLISH, reqId, options, topic, args, kwArgs])
+    deferred.promise()
+
 
 class WampRouter extends events.EventEmitter
   _webSocketHandler: (websocket) =>

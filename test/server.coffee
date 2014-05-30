@@ -242,7 +242,6 @@ router.get "/uploads_form", (request, response) ->
     context = _extend(base_context, {contents: data})
     site_router(context, response)
 
-
 router.post "/handle_upload", (request, response) ->
   response.writeHead(200, {'Content-type': 'text/html'})
   if request.fileName
@@ -276,6 +275,18 @@ router.post "/handle_upload", (request, response) ->
     response.end """
               <div style="text-align: center;"><button onclick="history.back();">Back</button></div>
               """
+
+router.get "/sillychat", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/sillychat.html", encoding: "utf8", (err, data) ->
+    context = _extend(base_context, {contents: data})
+    site_router(context, response)
+
+router.get "/wampchat", (request, response) ->
+  response.writeHead(200, {'Content-Type': 'text/html'})
+  fs.readFile "#{__dirname}/templates/wampchat.html", encoding: "utf8", (err, data) ->
+    context = _extend(base_context, {contents: data})
+    site_router(context, response)
 
 router.get '/getsession' , (request, response)  ->
   router.getSession request, (sess_obj) ->
@@ -431,10 +442,13 @@ server.on 'listening', ->
     wampClient.register('localhost.test.add2', add2)
     wampClient.register('localhost.test.factorial', factorial)
     wampClient.call('localhost.test.add2', [30, 40]).then((results) -> console.log "Result from RPC is: %j", results[0])
+    wampClient.subscribe 'localhost.test.chat', (args = [], kwArgs = {}) ->
+      console.log "RECEIVED THE FOLLOWING MESSAGE: #{args[0]} FROM SUBSCRIPTION localhost.test.chat"
+    wampClient.publish 'localhost.test.chat', ['Hi, everybody!']
 
-  wampClient.websocket.on 'open', (id) ->
-    console.log "wampClient websocket opened with id:", id
-    wampClient.connect()
+  #wampClient.websocket.on 'open', (id) ->
+  #  console.log "wampClient websocket opened with id:", id
+  wampClient.connect()
 
   addrString = if typeof addr is 'string' then "'#{addr}'" else "#{addr.address}:#{addr.port}"
   router.log "NSR v#{router.version} serving web content at #{addrString} - PID: " + process.pid

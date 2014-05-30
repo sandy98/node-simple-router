@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WAMP Chat Server</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="/css/sillychat_main.css" rel="stylesheet" type="text/css" media="screen" />
+    <style>
+    </style>
+  </head>
+  <body>     
+    <div class="Page Header"><h1 style="color: #aa0000;">Wamp Chat Server  <small>NSR Web Application Messaging Protocol Demo</small></h1></div>
+    <div class="container-fluid">
+       <div class="row" style="vertical-align: middle;">
+         <span class="user-name badge pull-right" id="user-name" style="color: #ffffff; font-size: 12pt; padding: 0.5em;"></span>
+         <button class="btn btn-link pull-right" id="change-mycolor">Change my color</button> 
+       </div>
+       <div class="inputarea row">
+         <div class="col-md-9">
+           <div class="col-md-2 pull-left" style="height: 2em;">Enter message: </div>
+           <div class="pull-right"><input id="txt-msg" type="text" value="" style="height: 2em; width: 45em;" /></div>
+         </div>
+         <div class="col-md-3">
+         </div>         
+       </div>
+       <div class="inputarea row">
+            <form id="form-uploader" class="navbar-form">
+              <div class="form-group"><input class="form-control" type="file" id="file-uploader"></div>
+              <button class="btn btn-link" type="submit">Send picture</button>
+            </form>
+       </div>
+       <div class="row">
+         <div id="msg-list" class="msglist col-md-9" title="Drop a picture here to send it to chat.">
+         </div>
+         <div class="chatters-list col-md-3">
+           <ul id="chatters-list" class="list-group">
+           </ul>
+         </div>
+       </div>
+    </div>
+    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+    <script type="text/javascript" src="/js/wamp_chat_app.js">
+    </script>
+  </body>
+</html>
