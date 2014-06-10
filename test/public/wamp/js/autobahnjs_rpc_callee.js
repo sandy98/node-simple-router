@@ -14,7 +14,7 @@ var log = function(msg) {
 // Set up WAMP connection to router
 var protocol = location.protocol == 'https:' ? 'wss:' : 'ws:'
 var connection = new autobahn.Connection({
-        url: protocol + '//'+ location.host + '/wamp',
+        url: protocol + '//'+ location.host + '/wampchat',
         realm: 'tutorialrpc'}
 );
 

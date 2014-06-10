@@ -1,6 +1,11 @@
-# Beginning of websocket specific section.
+getRandomRGB = ->
+  red = Math.floor(Math.random() * 128) + 64
+  green = Math.floor(Math.random() * 128) + 64
+  blue = Math.floor(Math.random() * 128) + 64
+  [red, green, blue] = [red, green, blue].map (color) ->
+    color.toString(16).replace('0x', '')
+  "##{red}#{green}#{blue}"
 
-net = require 'net'
 
 try
   wamp = require '../src/wamp'
@@ -11,6 +16,54 @@ catch e
     console.log 'node-simple-router must be installed for this to work'
     process.exit(-1)
 
+wampRouter = wamp.createWampRouter()
+
+
+class ChatManager extends wamp.WampClient
+
+  users: []
+
+  start: () =>
+    @register "addUser", @addUser
+    @register "deleteUser", @deleteUser
+    @register "getUsersList", @getUsersList
+    @register "modifyUser", @modifyUser
+
+  getUsersList: () =>
+    @users
+
+  deleteUser: (userId) =>
+    for userData, index in @users
+      if userData?.id is userId
+        @users.splice index, 1
+        @publish "deletedUser", userId
+        break
+
+  modifyUser: (sessionId) =>
+    selectedUsers = @users.filter (user) -> user.id is sessionId
+    return unless selectedUsers.length is 1
+    user = selectedUsers[0]
+    user.color = getRandomRGB();
+    @publish "modifiedUser", user
+    user
+
+  addUser: (name, sessionId) =>
+    same_name = @users.filter (user) -> user.username.toLowerCase() is name.toLowerCase()
+    if same_name.length isnt 0
+      return code: -1, reason: 'Username already taken'
+    else
+      retObj = username: name, color: getRandomRGB(), roundtrip: 0.0, id: sessionId
+      @publish "newUser", retObj
+      @users.push retObj
+      retObj.code = 0
+      #retObj.list = [{username: user.username, color: user.color, roundtrip: user.roundtrip, id: user.id} for user in @users]
+      console.log "User #{name} has joined the chat"
+      return retObj
+
+
+chatManager = new ChatManager url: 'ws://localhost:8000/wampchat', realm: 'wampchat'
+
+###
 socks = []
 msgs = []
 
@@ -174,7 +227,9 @@ createProxy = (port) ->
 
   proxyServer.listen port
 
-module.exports = {wsserver, socks, msgs, createProxy}
 
-# End of websocket specific section
+###
+
+module.exports = {wampRouter, chatManager}
+
 

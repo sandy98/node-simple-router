@@ -14,7 +14,7 @@ var log = function(msg) {
 // Set up WAMP connection to router
 var protocol = location.protocol == 'https:' ? 'wss:' : 'ws:'
 var connection = new autobahn.Connection({
-   url: protocol + '//'+ location.host + '/wamp',
+   url: protocol + '//'+ location.host + '/wampchat',
    realm: 'tutorialrpc'}
 );
 
@@ -40,7 +40,7 @@ connection.open();
 
 
 var connection2 = new autobahn.Connection({
-        url: protocol + '//'+ location.host + '/wamp',
+        url: protocol + '//'+ location.host + '/wampchat',
         realm: 'test'}
 );
 
@@ -65,7 +65,8 @@ var onInput = function onInput(evt) {
     session2.call('localhost.test.add2', [parseInt(sum1.value), parseInt(sum2.value)])
     .then(function(result) {
             console.log("RPC result received: ", JSON.stringify(result));
-            resultSpan.innerHTML = result.args[0];
+            //resultSpan.innerHTML = result.args[0];
+            resultSpan.innerHTML = result;
         });
 };
 
@@ -74,7 +75,8 @@ var onInputFactorial = function onInputFactorial(evt) {
     session2.call('localhost.test.factorial', [parseInt(factorialNumber.value)])
         .then(function(result) {
             console.log("RPC result received: ", JSON.stringify(result));
-            factorialResult.innerHTML = result.args[0];
+            //factorialResult.innerHTML = result.args[0];
+            factorialResult.innerHTML = result;
         });
 };
 

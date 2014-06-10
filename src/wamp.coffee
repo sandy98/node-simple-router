@@ -420,6 +420,8 @@ class WampRouter extends events.EventEmitter
       console.log "WebSocket opened"
     websocket.on 'data', (opcode, data) =>
       websocket.peer.processMessage(data)
+    #websocket.on 'heartbeat', (roundTrip, pongTimeMillis) =>
+    #  websocket.peer.processMessage()
     websocket.on 'close', (code, reason) =>
       console.log "Websocket closed. Close event data:\n Code: #{code or 'no data'} - Reason: #{reason or 'no data'}"
 

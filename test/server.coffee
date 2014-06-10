@@ -18,6 +18,7 @@ catch e
 {defer} = require '../lib/promises'
 {wsserver, socks, msgs, createProxy} = require "#{__dirname}#{path.sep}wschat"
 wamp = require "../lib/wamp"
+{wampRouter, chatManager} = require "#{__dirname}#{path.sep}wampchat"
 http = require 'http'
 https = require 'https'
 router = Router(list_dir: true)
@@ -284,9 +285,11 @@ router.get "/sillychat", (request, response) ->
 
 router.get "/wampchat", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
-  fs.readFile "#{__dirname}/templates/wampchat.html", encoding: "utf8", (err, data) ->
+  #fs.readFile "#{__dirname}/templates/wampchat.html", encoding: "utf8", (err, data) ->
+  fs.readFile "#{__dirname}/public/wampchat.html", encoding: "utf8", (err, data) ->
     context = _extend(base_context, {contents: data})
-    site_router(context, response)
+    #site_router(context, response)
+    response.end data
 
 router.get '/getsession' , (request, response)  ->
   router.getSession request, (sess_obj) ->
@@ -426,10 +429,10 @@ server.on 'listening', ->
   addr = server.address()
   createProxy(addr.port - 1) if addr.port?
 
-  wampRouter = wamp.createWampRouter()
-  wampRouter.listen server
+  #wampRouter = wamp.createWampRouter()
+  wampRouter.listen server, null, '/wampchat'
 
-  wampClient = new wamp.WampClient url: "ws://#{addr.address}:#{addr.port}/wamp", realm: "test"
+  wampClient = new wamp.WampClient url: "ws://#{addr.address}:#{addr.port}/wampchat", realm: "test"
   #console.log "Create wamp client at url: #{wampClient.url} in realm: #{wampClient.realm}"
   wampClient.onopen = (sessionData) ->
     add2 = () ->
@@ -446,9 +449,15 @@ server.on 'listening', ->
       console.log "RECEIVED THE FOLLOWING MESSAGE: #{args[0]} FROM SUBSCRIPTION localhost.test.chat"
     wampClient.publish 'localhost.test.chat', ['Hi, everybody!']
 
-  #wampClient.websocket.on 'open', (id) ->
-  #  console.log "wampClient websocket opened with id:", id
+  chatManager.onopen = (sessionData) ->
+    chatManager[key] = val for key, val of sessionData
+    chatManager.start()
+    #chatManager.subscribe 'greeting', (args, kwArgs) ->
+    #  console.log "Greetings, #{args}!!!"
+    #chatManager.publish "greeting", "World"
+
   wampClient.connect()
+  chatManager.connect()
 
   addrString = if typeof addr is 'string' then "'#{addr}'" else "#{addr.address}:#{addr.port}"
   router.log "NSR v#{router.version} serving web content at #{addrString} - PID: " + process.pid
