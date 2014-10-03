@@ -285,11 +285,11 @@ router.get "/sillychat", (request, response) ->
 
 router.get "/wampchat", (request, response) ->
   response.writeHead(200, {'Content-Type': 'text/html'})
-  #fs.readFile "#{__dirname}/templates/wampchat.html", encoding: "utf8", (err, data) ->
-  fs.readFile "#{__dirname}/public/wampchat.html", encoding: "utf8", (err, data) ->
+  fs.readFile "#{__dirname}/templates/wampchat.html", encoding: "utf8", (err, data) ->
+  #fs.readFile "#{__dirname}/public/wampchat.html", encoding: "utf8", (err, data) ->
     context = _extend(base_context, {contents: data})
-    #site_router(context, response)
-    response.end data
+    site_router(context, response)
+    #response.end data
 
 router.get '/getsession' , (request, response)  ->
   router.getSession request, (sess_obj) ->
