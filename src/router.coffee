@@ -163,6 +163,7 @@ Router = (options = {}) ->
     php_cgi: "php-cgi"
     served_by: 'Node Simple Router'
     software_name: 'node-simple-router'
+    regex: "/([A-Za-z0-9_\-]+)"
     admin_user: 'admin'
     admin_pwd: 'admin'
     use_nsr_session: true
