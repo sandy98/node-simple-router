@@ -57,7 +57,7 @@ Router = (options = {}) ->
     m = pat.match(re)
     if m
       pars = (x.slice(2) for x in m)
-      retpat = pat.replace(re, "/([A-Za-z0-9_\-]+)")
+      retpat = pat.replace(re, dispatch.regex)
     else
       retpat = pat
       pars = null
