@@ -50,7 +50,7 @@ Either case, the basic steps are the same:
 
 #### Add some routes
 
-`router.get("/hello", function(request, response) {response.end("Hello, World!"};});`
+`router.get("/hello", function(request, response) {response.end("Hello, World!");});`
 
 #### Create an http server using router as the handler
 
