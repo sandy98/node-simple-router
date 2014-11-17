@@ -3,7 +3,7 @@
   "description":"Yet another minimalistic router for node.js",
   "tags":["http","simple","routing","router","utils","async","promises"],
   "keywords":["http","url","websockets","dispatch","router","request handler","middleware","async","promises"],
-  "version":"0.9.2-11",
+  "version":"0.9.3-1",
   "homepage":"http://node-simple-router.herokuapp.com",
   "author":"Ernesto Savoretti <esavoretti@gmail.com>",
   "repository":{"type":"git","url":"https://github.com/sandy98/node-simple-router.git"},
