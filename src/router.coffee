@@ -79,7 +79,7 @@ Router = (options = {}) ->
           if contentType is 'text/plain'
             body = body.replace('\r\n', '')
           if mp_index is -1
-            req.post = _bodyparser(body)
+            req.post = _bodyparser(body, contentType)
           else
             req.post = _multipartparser(body, contentType)
             for obj in req.post['multipart-data']
@@ -407,8 +407,8 @@ Router = (options = {}) ->
         resp['multipart-data'].push obj
     resp
 
-  _bodyparser = (body) ->
-    if body.indexOf('=') isnt -1
+  _bodyparser = (body, contentType) ->
+    if contentType isnt 'application/json' and body.indexOf('=') isnt -1
       try
         return querystring.parse(body)
       catch e
@@ -730,8 +730,11 @@ Router = (options = {}) ->
       req.on 'data', (chunk) ->
         body.push(chunk)
       req.on 'end', ->
+        contentType = 'application/x-www-form-urlencoded'
+        if req.headers['content-type']
+          contentType = req.headers['content-type']
         body = body.join ''
-        req.post = _bodyparser body
+        req.post = _bodyparser body, contentType
         req.body = _extend req.body, req.post
         try
           data = querystring.stringify(req.body)
