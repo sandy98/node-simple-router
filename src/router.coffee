@@ -408,7 +408,7 @@ Router = (options = {}) ->
     resp
 
   _bodyparser = (body, contentType) ->
-    if contentType isnt 'application/json' and body.indexOf('=') isnt -1
+    if (contentType.match(/application\/json/) is null) and body.indexOf('=') isnt -1
       try
         return querystring.parse(body)
       catch e
