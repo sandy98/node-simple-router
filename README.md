@@ -8,7 +8,7 @@
 
 From Node Package Manager:
 
-    npm install node-simple-router`</pre>
+    npm install node-simple-router
 
 From source:
 
