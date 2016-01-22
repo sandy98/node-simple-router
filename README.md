@@ -8,17 +8,21 @@
 
 From Node Package Manager:
 
-    npm install node-simple-router
+```sh
+npm install node-simple-router
+```
 
 From source:
 
-    git clone https://github.com/sandy98/node-simple-router
+```sh
+git clone https://github.com/sandy98/node-simple-router
+```
 
 
 ## 
 **Step 2: Test**
 
-    cd to your installation directory and run `npm test`
+`cd` to your installation directory and run `npm test`
 then point your browser to _http://localhost:8000_ and review the info
 and above all, try the examples.
 
@@ -32,33 +36,45 @@ You can roll your own, or use the sample server that NSR provides by means of th
 
 In order for this to work, you must have installed NSR global, like so:
 
-   `sudo npm install -g node-simple-router`, or have the .bin directory of NSR in your path by whatever means you see fit.
+`sudo npm install -g node-simple-router`, or have the .bin directory of NSR in your path by whatever means you see fit.
 
 Either case, the basic steps are the same:
 
 #### Import 'http'
 
-`var http = require('http');`
+```js
+var http = require('http');
+```
 
 #### Import NSR
 
-`var Router = require('node-simple-router');`
+```js
+var Router = require('node-simple-router');
+```
 
 #### Instantiate the router
 
-`var router = Router(); // may also be router = new Router();`
+```js
+var router = Router(); // may also be router = new Router();
+```
 
 #### Add some routes
 
-`router.get("/hello", function(request, response) {response.end("Hello, World!");});`
+```js
+router.get("/hello", function(request, response) {response.end("Hello, World!");});
+```
 
 #### Create an http server using router as the handler
 
-`var server = http.createServer(router);`
+```js
+var server = http.createServer(router);
+```
 
 #### Finally, make it listen on your chosen port and you're in business
 
-`server.listen(1234);`
+```js
+server.listen(1234);
+```
 
 
 # Documents
@@ -74,8 +90,11 @@ inner workings in order to be productive using it. Having said that, it is never
 have some insight on a couple of key aspects, fundamentally what could be called the <em>"request wrapping
 mechanism"</em>.
 
-When you feed <span class="nsr">NSR</span> with a url handling function, i.e. <code class="js">
-router.get("/answertoall", function(request, response) {response.end("42");});</code>
+When you feed <span class="nsr">NSR</span> with a url handling function, i.e. 
+
+```js
+router.get("/answertoall", function(request, response) {response.end("42");});
+```
 
 what <span class="nsr">NSR</span>
 does is to wrap that function into another, unnamed one, which has the primary mission of _"augmenting"_ the request
@@ -85,22 +104,23 @@ At run time, when a client invokes the matching URL, the "middleware" function w
 What does _"augmenting-dressing"_  the request object mean?
 
 Well, basically, <span class="nsr">NSR</span> provides the request object with 3 properties:
-            <ul>
-              <li>**request.get** which is an object representation of the <dfn>query string</dfn></li>
-              <li>**request.post** an object representation of what was posted, if anything</li>
-              <li>**request.body** is the union of the two previous items</li>
-            </ul>
-            It should be pointed down that regardless the transmission method, <span class="nsr">NSR</span>
-            takes the necessary steps to make all 3 of them true javascript objects with all that implies, JSON and all.
-            Worst case is an empty object **{}**, no errors.
-            So, you can use `request.get.whatever` for `router.get`,
-            `request.post.whatever` for `router.post`, but in any case, if you don't care about request method,
-            using `request.body.whatever` is a safe bet, most obviously useful if you do not know in advance
-            the request method, for example: <code class="js">router.any("/threefold", function(request, response)
-            {response.end((parseInt(request.body.number) * 3).toString();});</code>
-         </p>
-         <p>
-             Wrapping up, you just got to remember **request.get, request.post** and **request.body**
+
+* `request.get` which is an object representation of the <dfn>query string</dfn>
+* `request.post` an object representation of what was posted, if anything
+* `request.body` is the union of the two previous items
+            
+It should be pointed down that regardless the transmission method, <span class="nsr">NSR</span> takes the necessary steps to make all 3 of them true javascript objects with all that implies, JSON and all.
+
+Worst case is an empty object **{}**, no errors.
+
+So, you can use `request.get.whatever` for `router.get`, `request.post.whatever` for `router.post`, but in any case, if you don't care about request method, using `request.body.whatever` is a safe bet, most obviously useful if you do not know in advance
+the request method. For example: 
+
+```js
+router.any("/threefold", function(request, response){response.end((parseInt(request.body.number) * 3).toString();});
+```
+
+Wrapping up, you just got to remember `request.get`, `request.post` and `request.body`.
              
 And that's all there is about it.
 
@@ -109,36 +129,36 @@ And that's all there is about it.
 NSR sticks to some conventions ("public" as directory name for static assets, etc),
 which the programmer can override when instantiating the router, for instance:
 
-    var router = new Router({static_route: __dirname + "/static"});
+```js
+var router = new Router({static_route: __dirname + "/static"});
+```
+    
 to change usage of the default "public" directory for static resources
             
 
 List of default options:
-            <p>
-                <pre><code class="js">
-                logging: true
-                log: console.log
-                static_route: "#{process.cwd()}/public"
-                serve_static: true
-                list_dir: true
-                default_home: ['index.html', 'index.htm', 'default.htm']
-                cgi_dir: "cgi-bin"
-                serve_cgi: true
-                serve_php: true
-                php_cgi: "php-cgi"
-                served_by: 'Node Simple Router'
-                software_name: 'node-simple-router'
-                admin_user: 'admin'
-                admin_pwd: 'admin'
-                use_nsr_session: true
-                avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']
-                nsr_session_handler: 'dispatch.memory_store'
-                </code></pre>
-            </p>
-            <p>
-                Most of them are self explanatory, but some deserve further comments,
-                which will be added on doc completion.
-            </p>
+
+```js
+logging: true
+log: console.log
+static_route: "#{process.cwd()}/public"
+serve_static: true
+list_dir: true
+default_home: ['index.html', 'index.htm', 'default.htm']
+cgi_dir: "cgi-bin"
+serve_cgi: true
+serve_php: true
+php_cgi: "php-cgi"
+served_by: 'Node Simple Router'
+software_name: 'node-simple-router'
+admin_user: 'admin'
+admin_pwd: 'admin'
+use_nsr_session: true
+avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']
+nsr_session_handler: 'dispatch.memory_store'
+```
+
+Most of them are self explanatory, but some deserve further comments, which will be added on doc completion.
  
 ## Router API
 
@@ -146,17 +166,23 @@ Router object supports the following methods
 #### <dfn>get</dfn>
 _Usage:_
 
-      router.get('/users/:id', function(request, response) {
-        response.end("User: " + getUserById(request.params.id).fullName);});
+```js
+router.get('/users/:id', function(request, response) {
+    response.end("User: " + getUserById(request.params.id).fullName);
+});
+```
           
 #### <dfn>post</dfn>
 _Usage:_
 
-    router.post('/users', function(request, response) {
-                        insertUser(request.post.user, function(new_user_id) {
-                          request.post.user.id = new_user_id;
-                          response.end(JSON.stringify(request.post.user);});
-                        });
+```js
+router.post('/users', function(request, response) {
+    insertUser(request.post.user, function(new_user_id) {
+        request.post.user.id = new_user_id;
+        response.end(JSON.stringify(request.post.user);
+    });
+});
+```
 
 #### Handling file uploads
 <span class="nsr">NSR</span> handles 'multipart/form-data' out of the box.
@@ -166,37 +192,38 @@ fileType</em>, which client code (your server) can handle as shown in the follow
 
 _Usage:_
 
-        router.post("/handle_upload", function(request, response) {
-        var encoding, fullname;
-        response.writeHead(200, {'Content-type': 'text/html'});
-        if (request.fileName) {
-           response.write("&lt;h2&gt;Uploaded File Data&lt;/h2&g");
-           response.write("File name = " + request.fileName + "&lt;br/&gt;");
-           response.write("File length = " + request.fileLen + " bytes&lt;br/&gt;");
-           response.write("File type = " + request.fileType + "&lt;br/&gt;");
-           fullname = "" + __dirname + "/public/uploads/" + request.fileName;
-           if (request.fileType.indexOf('text') &gt;= 0) {
-              encoding = 'utf8';
-           }
-           else {
-             encoding = 'binary';
-           }
-           return fs.writeFile(fullname, request.fileData, {encoding: encoding}, function(err) {
-             if (err) {
-               response.write("&lt;p style='color: red;'&gt;Something went wrong, uploaded file could not be saved.&lt;/p&gt;");
-             }
-             else {
-               response.write('&lt;div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;"&gt;');
-               if (request.fileType.indexOf('image') &gt;= 0) {
-                 response.write("&lt;img src='/uploads/" + request.fileName + "' /&gt;");
-               }
-               else {
-                 response.write("&lt;pre&gt;" + request.fileData + "&lt;/pre&gt;");
-               }
-               response.write("&lt;/div&gt;");
-             }
-             response.write("&lt;hr/&gt;");
-             return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
+```js
+router.post("/handle_upload", function(request, response) {
+    var encoding, fullname;
+    response.writeHead(200, {'Content-type': 'text/html'});
+    if (request.fileName) {
+        response.write("&lt;h2&gt;Uploaded File Data&lt;/h2&g");
+        response.write("File name = " + request.fileName + "&lt;br/&gt;");
+        response.write("File length = " + request.fileLen + " bytes&lt;br/&gt;");
+        response.write("File type = " + request.fileType + "&lt;br/&gt;");
+        fullname = "" + __dirname + "/public/uploads/" + request.fileName;
+        if (request.fileType.indexOf('text') &gt;= 0) {
+            encoding = 'utf8';
+        }
+        else {
+            encoding = 'binary';
+        }
+        return fs.writeFile(fullname, request.fileData, {encoding: encoding}, function(err) {
+            if (err) {
+                response.write("&lt;p style='color: red;'&gt;Something went wrong, uploaded file could not be saved.&lt;/p&gt;");
+            }
+            else {
+                response.write('&lt;div style="text-align:center; padding: 1em; border: 1px solid; border-radius: 5px;"&gt;');
+                if (request.fileType.indexOf('image') &gt;= 0) {
+                    response.write("&lt;img src='/uploads/" + request.fileName + "' /&gt;");
+                }
+                else {
+                    response.write("&lt;pre&gt;" + request.fileData + "&lt;/pre&gt;");
+                }
+                response.write("&lt;/div&gt;");
+            }
+            response.write("&lt;hr/&gt;");
+            return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
            });
          }
          else {
@@ -204,16 +231,23 @@ _Usage:_
            return response.end("&lt;div style=\"text-align: center;\"&gt;&lt;button onclick=\"history.back();\"&gt;Back&lt;/button&gt;&lt;/div&gt;");
          }
       });
+```
       
 #### <dfn>put</dfn>
 _Usage:_
 
-    router.put('/users', function(request, response) {
-        updateUser(request.post.user, function(updated_user_id) {
-        response.end(updated_user_id);})
-    });                use_nsr_session: true<br/>
-                avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']<br/>
-                nsr_session_handler: 'dispatch.memory_store'<br/>
+```js
+router.put('/users', function(request, response) {
+    updateUser(request.post.user, function(updated_user_id) {
+    response.end(updated_user_id);})
+});
+```
+
+```js
+use_nsr_session: true
+avail_nsr_session_handlers: ['dispatch.memory_store', 'dispatch.text_store']
+nsr_session_handler: 'dispatch.memory_store'
+```
 
 
 #### <dfn>patch</dfn>
@@ -221,29 +255,35 @@ A variant for PUT
 
 _Usage:_
 
-    router.patch('/users', function(request, response) {
-        updateUser(request.post.user, function(updated_user_id) {
-        response.end(updated_user_id);});
-    });
+```js
+router.patch('/users', function(request, response) {
+    updateUser(request.post.user, function(updated_user_id) {
+    response.end(updated_user_id);});
+});
+```
 
 #### <dfn>delete</dfn>
 
 _Usage:_
 
-    router.delete('/users', function(request, response) {
-        deleteUser(request.post.user_id, function(user_id) {
-        response.end(user_id);});
-    });
+```js
+router.delete('/users', function(request, response) {
+    deleteUser(request.post.user_id, function(user_id) {
+    response.end(user_id);});
+});
+```
 
 #### <dfn>any</dfn>
 To be used when the request method is not known in advance. Sort of "catch all"
 
 _Usage:_
 
-    // Observe usage of 'request.body' as the union of 'request.get' and 'request.post'
-    router.any('/users', function(request, response) {
-        response.end("User: " + getUserById(request.body.user_id).fullName);}); 
-
+```js
+// Observe usage of 'request.body' as the union of 'request.get' and 'request.post'
+router.any('/users', function(request, response) {
+    response.end("User: " + getUserById(request.body.user_id).fullName);
+}); 
+```
 
 ### <dfn>Complementary methods</dfn>
  
@@ -259,8 +299,11 @@ To deliver to the client the contents of an url from another server
 
 _Usage:_
 
-    router.get('/whatismyip', function(request, response) {
-        router.proxy_pass('http://testing.savos.ods.org/wimi', response);});
+```js
+router.get('/whatismyip', function(request, response) {
+    router.proxy_pass('http://testing.savos.ods.org/wimi', response);
+});
+```
 
 #### <dfn><abbr title="Common Gateway Interface">cgi</abbr></dfn>
 
@@ -296,10 +339,12 @@ Why SCGI and not <dfn title="Fast CGI">FCGI</dfn>? Well, SCGI protocol was far e
 
 _Usage:_
 
-    //Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
-    router.post("/scgi", function(request, response) {
-      router.scgi_pass(26000, request, response);
-    });
+```js
+//Example SCGI invocation. Output will be provided by a SCGI process listening on tcp port 26000.
+router.post("/scgi", function(request, response) {
+  router.scgi_pass(26000, request, response);
+});
+```
 
 The first parameter for scgi_pass is the port number (for tcp sockets)
 or the socket name (for unix sockets) at which the SCGI process is listening.
@@ -315,13 +360,15 @@ It is basically a naive implementation of [mustache.js](http://mustache.github.i
 
 _Usage:_
 
-    router.get("/greet_user/:user_id", function(request, response) {
-      get_user_by_id(request.params.user_id, function (user) {
+```js
+router.get("/greet_user/:user_id", function(request, response) {
+    get_user_by_id(request.params.user_id, function (user) {
         template_str = "&lt;h2&gt;Hello, {{ name }}!&lt;h2&gt;";
         compiled_str = router.render_template(template_str, user); // returns "&lt;h2&gt;Hello, Joe Router!&lt;h2&gt;"
         response.end(compiled_str);
-      }
-    });
+    }
+});
+```
 
 New in version 0.8.8: `render_template_file(fileName, context, callback, keep_tokens)` was added
 The method signature is almost the same than for **render_template** with 2 differences worth noting
