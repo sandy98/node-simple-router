@@ -375,36 +375,41 @@ Router = (options = {}) ->
 
   _multipartparser = (body, content_type) ->
     resp = "multipart-data": []
-    boundary = content_type.split(/;\s+/)[1].split('=')[1].trim()
-    parts = body.split("--#{boundary}")
-    for part in parts
-      if part and part.match(/Content-Disposition:/i)
-        #dispatch.log "PART: #{part}"
-        obj = {}
-        m = part.match(/Content-Disposition:\s+(.+?);/i)
-        if m
-          obj.contentDisposition = m[1]
-        m = part.match(/name="(.+?)"/i)
-        if m
-          obj.fieldName = m[1]
-        m = part.match(/filename="(.+?)"/i)
-        if m
-          obj.fileName = m[1]
-        m = part.match(/Content-Type:\s+(.+?)\s/i)
-        if m
-          obj.fileType = m[1]
-        else
-          obj.fileType = 'text/plain'
-        m = part.match(/Content-Length:\s+(\d+?)/i)
-        if m
-          obj.contentLength = m[1]
-
-        m = part.match /\r\n\r\n/
-        if m
-          obj.fileData = part.slice(m.index + 4, -2)
-          obj.fileLen = obj.fileData.length
-        
-        resp['multipart-data'].push obj
+    # boundary = content_type.split(/;\s+/)[1].split('=')[1].trim()  
+    boundary = content_type.split(/;\s+/)[1]
+    if boundary
+      boundary = boundary.split('=')[1]
+      if boundary
+        boundary = boundary.trim()
+        parts = body.split("--#{boundary}")
+        for part in parts
+          if part and part.match(/Content-Disposition:/i)
+            #dispatch.log "PART: #{part}"
+            obj = {}
+            m = part.match(/Content-Disposition:\s+(.+?);/i)
+            if m
+              obj.contentDisposition = m[1]
+            m = part.match(/name="(.+?)"/i)
+            if m
+              obj.fieldName = m[1]
+            m = part.match(/filename="(.+?)"/i)
+            if m
+              obj.fileName = m[1]
+            m = part.match(/Content-Type:\s+(.+?)\s/i)
+            if m
+              obj.fileType = m[1]
+            else
+              obj.fileType = 'text/plain'
+            m = part.match(/Content-Length:\s+(\d+?)/i)
+            if m
+              obj.contentLength = m[1]
+    
+            m = part.match /\r\n\r\n/
+            if m
+              obj.fileData = part.slice(m.index + 4, -2)
+              obj.fileLen = obj.fileData.length
+            
+            resp['multipart-data'].push obj
     resp
 
   _bodyparser = (body, contentType) ->
