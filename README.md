@@ -1,6 +1,8 @@
 # Node Simple Router <img src="https://raw.github.com/sandy98/node-simple-router/master/test/public/img/router50.png" />
 ### Yet another minimalistic router for node.js 
 
+[![Known Vulnerabilities](https://snyk.io/test/github/sandy98/node-simple-router/badge.svg)](https://snyk.io/test/github/andy98/node-simple-router)
+
 # Getting started
 
 ## 
