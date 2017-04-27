@@ -613,6 +613,8 @@ Router = (options = {}) ->
 
   dispatch.static = (pathname, req, res) ->
     full_path = "#{dispatch.static_route}#{unescape(pathname)}"
+    if full_path.indexOf('..') isnt -1
+      return dispatch._403(null, res, pathname, "Trying to get private things through directory traversal is a nasty thing to do.")
     fs.exists full_path, (exists) ->
       if exists
         if ((pathname.indexOf("#{dispatch.cgi_dir}/") isnt - 1) or (pathname.match /\.php$/)) and (pathname.substr(-1) isnt "/") and (dispatch.serve_cgi is true)
@@ -1001,6 +1003,14 @@ Router = (options = {}) ->
             res.end default_resp
           else
             res.end data
+
+  dispatch._403 = (req, res, path, message) ->
+    res.writeHead(500, {'Content-Type': 'text/html'})
+    res.end("""
+                <h2>403 - Forbidden: #{message}</h2>
+                <hr/><h3>Served by #{dispatch.served_by} v#{dispatch.version}</h3>
+                <p style="text-align: center;"><button onclick='history.back();'>Back</button></p>
+            """)
 
   dispatch._405 = (req, res, path, message) ->
     res.writeHead(405, {'Content-Type': 'text/html'})
