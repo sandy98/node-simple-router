@@ -21,7 +21,7 @@
     "async",
     "promises"
   ],
-  "version": "0.10.1",
+  "version": "0.10.2",
   "homepage": "http://node-simple-router.herokuapp.com",
   "author": "Ernesto Savoretti <esavoretti@gmail.com>",
   "repository": {

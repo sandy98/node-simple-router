@@ -182,9 +182,9 @@ Router = (options = {}) ->
 
 # Dispatcher (router) function.	
 
-  dispatch = (req, res) ->
+  dispatch = (req, res, next) ->
 
-    final_dispatch = (req, res) ->
+    final_dispatch = (req, res, next) ->
       parsed = urlparse(req.url)
       pathname = parsed.pathname
       pathname = pathname.replace /\/$/, "" if (pathname.split '/') .length > 2
@@ -208,7 +208,7 @@ Router = (options = {}) ->
             args = m.slice(1)
             for param, index in route.params
               req.params[param] = args[index]
-          return route.handler(req, res)
+          return route.handler(req, res, next)
 
       if pathname is "/"
         homes = ("#{dispatch.static_route}#{path_tools.sep}#{home_page}" for home_page in dispatch.default_home)
@@ -217,7 +217,10 @@ Router = (options = {}) ->
             if dispatch.list_dir
               return dispatch.directory dispatch.static_route, '.', res
             else
-              return dispatch._404 req, res, pathname
+              if next && next.constructor.name == 'Function'
+                return next()
+              else
+                return dispatch._404 req, res, pathname
           else
             fs.exists candidates[0], (exists) ->
               if exists
@@ -231,7 +234,10 @@ Router = (options = {}) ->
         if dispatch.serve_static
           return dispatch.static pathname, req, res
         else
-          return dispatch._404 req, res, pathname
+          if next && next.constructor.name == 'Function'
+            return next()
+          else
+            return dispatch._404 req, res, pathname
 
 
     if dispatch.use_nsr_session
@@ -242,7 +248,7 @@ Router = (options = {}) ->
 
       dispatch.getSession(req)
 
-    final_dispatch req, res
+    final_dispatch req, res, next
 
 # End of Dispatcher (router) function.	
 
