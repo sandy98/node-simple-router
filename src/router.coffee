@@ -653,7 +653,7 @@ Router = (options = {}) ->
           res.writeHead 200, {'Content-Type': mime_types[path_tools.extname('pixel.gif')] or 'image/gif'}
           return res.end new Buffer(unescape(escaped_pixel_gif), 'binary')
         else
-          dispatch._404 null, res, pathname
+          dispatch._404 req, res, pathname
 
 # CGI support (improved on 2012-09-07, further fixes on 2013-08-03)
     
