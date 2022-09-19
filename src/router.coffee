@@ -610,12 +610,13 @@ Router = (options = {}) ->
 #
 
   dispatch.routes =
-    get:  []
-    post: []
-    put:  []
-    patch: []
+    get:     []
+    post:    []
+    put:     []
+    patch:   []
     delete:  []
-    any: []
+    any:     []
+    options: []
 
   dispatch.static = (pathname, req, res) ->
     full_path = "#{dispatch.static_route}#{unescape(pathname)}"
@@ -990,6 +991,9 @@ Router = (options = {}) ->
 
   dispatch.any = (pattern, callback) ->
     _pushRoute pattern, _make_request_wrapper(callback), 'any'
+
+  dispatch.options = (pattern, callback) ->
+    _pushRoute pattern, callback, 'options'
 
 
 
